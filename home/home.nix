@@ -45,7 +45,7 @@
 		unzip
 
     # system-wide font
-    (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+    (nerd-fonts.override { fonts = [ "JetBrainsMono" ]; })
 
 		] ++ [
 		pkgs.typescript-language-server
