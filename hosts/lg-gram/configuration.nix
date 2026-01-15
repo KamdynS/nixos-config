@@ -58,6 +58,7 @@
   programs.niri.package = pkgs.niri-unstable;  # Uses the overlay automatically
 
   services.displayManager.sessionPackages = [ pkgs.niri-unstable ];
+  services.xserver.enable = true;
   
   # Needed for screen sharing, file dialogs
   services.dbus.packages = [ pkgs.nautilus ];
