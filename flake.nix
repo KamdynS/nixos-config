@@ -8,9 +8,14 @@ inputs = {
 	url = "github:nix-community/home-manager";
 	inputs.nixpkgs.follows = "nixpkgs";
 	};
+
+  niri = {
+      url = "github:sodiboo/nix-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 };
 
-outputs = { self, nixpkgs, home-manager, ... }@inputs:
+outputs = { self, nixpkgs, home-manager, niri, ... }@inputs:
 	let
 		system = "x86_64-linux";
 	in
@@ -20,11 +25,15 @@ outputs = { self, nixpkgs, home-manager, ... }@inputs:
 			specialArgs = { inherit inputs; };
 			modules = [
 				./hosts/lg-gram/configuration.nix
+
+        niri.nixosModules.niri
+
 				home-manager.nixosModules.home-manager
 				{
 					home-manager.useGlobalPkgs = true;
 					home-manager.useUserPackages = true;
 					home-manager.users.kamdyns = import ./home/home.nix;
+          home-manager.extraSpecialArgs = { inherit inputs; };
 				}
 			];
 		};

@@ -44,18 +44,21 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
-
-  # Enable the GNOME Desktop Environment.
+  # Disable GNOME
+  services.xserver.desktopManager.gnome.enable = false;
+  
+  # Keep GDM for login, but you could switch to greetd later
   services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
-
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
+  services.xserver.displayManager.gdm.wayland = true;
+  
+  # Enable niri
+  programs.niri.enable = true;
+  
+  # XWayland for X11 app compatibility (Slack, Spotify, etc.)
+  programs.niri.package = pkgs.niri-unstable;  # Uses the overlay automatically
+  
+  # Needed for screen sharing, file dialogs
+  services.dbus.packages = [ pkgs.nautilus ];
 
   # Enable CUPS to print documents.
   services.printing.enable = true;

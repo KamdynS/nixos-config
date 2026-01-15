@@ -1,6 +1,9 @@
 { config, pkgs, ... }:
 
 {
+  imports = [
+    ./niri.nix
+  ]
 	home.username = "kamdyns";
 	home.homeDirectory = "/home/kamdyns";
 	home.stateVersion = "24.05";
@@ -8,6 +11,14 @@
 	programs.home-manager.enable = true;
 
   fonts.fontconfig.enable = true;
+
+  programs.wofi = {
+    enable = true;
+  };
+
+  programs.waybar = {
+      enable = true;
+  };
 
 	# Neovim 
 	programs.neovim = {
