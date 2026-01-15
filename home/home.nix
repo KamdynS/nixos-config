@@ -3,7 +3,8 @@
 {
   imports = [
     ./niri.nix
-  ]
+  ];
+
 	home.username = "kamdyns";
 	home.homeDirectory = "/home/kamdyns";
 	home.stateVersion = "24.05";
