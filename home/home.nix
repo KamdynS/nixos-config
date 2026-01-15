@@ -17,6 +17,19 @@
 		viAlias = true;
 	};
 
+  # ghostty
+  programs.ghostty = {
+    enable = true;
+    enableZshIntegration = true;
+    settings = {
+      font-family = "JetBrains Mono";
+      font-size = 14;
+      theme = "Gruvbox Light";
+      window-padding-x = 8;
+      window-padding-y = 8;
+    };
+  };
+
 	# Neovim dotfiles
 	xdg.configFile."nvim".source = config.lib.file.mkOutOfStoreSymlink "/home/kamdyns/nixos-config/dotfiles/nvim";
 
@@ -43,6 +56,7 @@
 		gcc
 		gnumake
 		unzip
+
 		] ++ [
     pkgs.nerd-fonts.jetbrains-mono
 		pkgs.typescript-language-server
