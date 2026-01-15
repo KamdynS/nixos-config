@@ -7,6 +7,8 @@
 
 	programs.home-manager.enable = true;
 
+  fonts.fontconfig.enable = true;
+
 	# Neovim 
 	programs.neovim = {
 		enable = true;
@@ -41,6 +43,10 @@
 		gcc
 		gnumake
 		unzip
+
+    # system-wide font
+    (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+
 		] ++ [
 		pkgs.typescript-language-server
 		pkgs.clang-tools
