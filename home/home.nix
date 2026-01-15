@@ -16,7 +16,7 @@
 	};
 
 	# Neovim dotfiles
-	xdg.configFile."nvim".source = ../dotfiles/nvim;
+	xdg.configFile."nvim".source = ~/nixos-config/dotfiles/nvim;
 
 	# Dev tools needed in PATH
 	home.packages = with pkgs; [
