@@ -3,6 +3,7 @@
 {
   imports = [
     ./niri.nix
+    ./waybar.nix
   ];
 
 	home.username = "kamdyns";
