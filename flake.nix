@@ -24,6 +24,10 @@ outputs = { self, nixpkgs, home-manager, niri, ... }@inputs:
 			inherit system;
 			specialArgs = { inherit inputs; };
 			modules = [
+        {
+          nixpkgs.overlays = [ niri.overlays.niri ];
+        }
+
 				./hosts/lg-gram/configuration.nix
 
         niri.nixosModules.niri
