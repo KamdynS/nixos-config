@@ -86,6 +86,8 @@
 		gnumake
 		unzip
 
+    # Fun stuff
+    neofetch
 		] ++ [
     pkgs.nerd-fonts.jetbrains-mono
 		pkgs.typescript-language-server
