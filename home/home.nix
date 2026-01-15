@@ -43,11 +43,8 @@
 		gcc
 		gnumake
 		unzip
-
-    # system-wide font
-    (nerd-fonts.override { fonts = [ "JetBrainsMono" ]; })
-
 		] ++ [
+    pkgs.nerd-fonts.jetbrains-mono
 		pkgs.typescript-language-server
 		pkgs.clang-tools
 		pkgs.nodePackages.vscode-langservers-extracted
