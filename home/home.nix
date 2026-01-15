@@ -46,18 +46,16 @@
         src = pkgs.zsh-powerlevel10k;
         file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
       }
-      {
-        name = "powerlevel10k-config";
-        src = ../dotfiles/zsh;
-        file = "p10k.zsh";
-      }
     ];
 
-    initExtra = ''
+    initContent = ''
       # Powerlevel10k instant prompt
       if [[ -r "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh" ]]; then
         source "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh"
       fi
+      
+      # Load p10k config
+      [[ -f /home/kamdyns/nixos-config/dotfiles/zsh/p10k.zsh ]] && source /home/kamdyns/nixos-config/dotfiles/zsh/p10k.zsh
     '';
   };
 
