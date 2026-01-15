@@ -29,6 +29,12 @@
     
     # Keybindings
     binds = {
+      # App launcher
+      "Mod+D".action.spawn = [ "wofi" "--show" "drun" ];
+
+      # Power menu
+      "Mod+X".action.spawn = [ "bash" "-c" "~/.config/wofi/power-menu.sh" ];
+
       # App launchers
       "Mod+Return".action.spawn = [ "ghostty" ];
       "Mod+D".action.spawn = [ "wofi" "--show" "drun" ];

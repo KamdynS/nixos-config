@@ -4,6 +4,7 @@
   imports = [
     ./niri.nix
     ./waybar.nix
+    ./wofi.nix
   ];
 
 	home.username = "kamdyns";
