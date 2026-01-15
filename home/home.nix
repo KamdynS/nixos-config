@@ -16,7 +16,7 @@
 	};
 
 	# Neovim dotfiles
-	xdg.configFile."nvim".source = /home/kamdyns/nixos-config/dotfiles/nvim;
+	xdg.configFile."nvim".source = config.lib.file.mkOutOfStoreSymlink "/home/kamdyns/nixos-config/dotfiles/nvim";
 
 	# Dev tools needed in PATH
 	home.packages = with pkgs; [
