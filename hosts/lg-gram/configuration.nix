@@ -56,6 +56,8 @@
   
   # XWayland for X11 app compatibility (Slack, Spotify, etc.)
   programs.niri.package = pkgs.niri-unstable;  # Uses the overlay automatically
+
+  services.displayManager.sessionPackages = [ pkgs.niri-unstable ];
   
   # Needed for screen sharing, file dialogs
   services.dbus.packages = [ pkgs.nautilus ];
