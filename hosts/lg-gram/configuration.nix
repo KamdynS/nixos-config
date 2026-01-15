@@ -92,6 +92,10 @@
   # Install firefox.
   programs.firefox.enable = true;
 
+  # Zsh
+  programs.zsh.enable = true;
+  users.users.kamdyns.shell = pkgs.zsh;
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
