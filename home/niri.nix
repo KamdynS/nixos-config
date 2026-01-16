@@ -29,9 +29,6 @@
     
     # Keybindings
     binds = {
-      # App launcher
-      "Mod+D".action.spawn = [ "wofi" "--show" "drun" ];
-
       # Power menu
       "Mod+X".action.spawn = [ "bash" "-c" "~/.config/wofi/power-menu.sh" ];
 
