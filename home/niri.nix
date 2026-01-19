@@ -92,7 +92,7 @@
     
     # Start apps with niri
     spawn-at-startup = [
-      { command = [ "nm-applet" ]; }
+      { command = [ "quickshell" ]; }
     ];
   };
 }

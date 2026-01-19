@@ -5,6 +5,7 @@
     ./niri.nix
     ./waybar.nix
     ./wofi.nix
+    ./quickshell.nix
   ];
 
 	home.username = "kamdyns";
