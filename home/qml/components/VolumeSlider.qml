@@ -8,7 +8,7 @@ Rectangle {
     property real value: 0.5
     property bool muted: false
 
-    signal valueChanged(real value)
+    signal sliderMoved(real newValue)
     signal muteClicked()
 
     implicitHeight: 48
@@ -92,7 +92,7 @@ Rectangle {
 
                 function updateValue(mouse) {
                     let newValue = Math.max(0, Math.min(1, mouse.x / width))
-                    root.valueChanged(newValue)
+                    root.sliderMoved(newValue)
                 }
             }
         }

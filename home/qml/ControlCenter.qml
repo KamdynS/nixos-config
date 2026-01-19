@@ -1,5 +1,6 @@
 import Quickshell
 import Quickshell.Wayland
+import Quickshell.Io
 import QtQuick
 import QtQuick.Layouts
 import "theme"
@@ -34,7 +35,7 @@ Scope {
         }
 
         margins {
-            top: 40  // Below bar
+            top: 40
             left: 8
         }
 
@@ -46,13 +47,11 @@ Scope {
         WlrLayershell.layer: WlrLayer.Overlay
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
 
-        // Click outside to close
         MouseArea {
             anchors.fill: parent
-            onClicked: {} // absorb clicks on panel
+            onClicked: {}
         }
 
-        // Background
         Rectangle {
             anchors.fill: parent
             color: Gruvbox.panelBg
@@ -60,7 +59,6 @@ Scope {
             border.color: Gruvbox.panelBorder
             border.width: 1
 
-            // Content
             ColumnLayout {
                 id: contentColumn
                 anchors.fill: parent
@@ -82,7 +80,6 @@ Scope {
 
                     Item { Layout.fillWidth: true }
 
-                    // Close button
                     Rectangle {
                         Layout.preferredWidth: 24
                         Layout.preferredHeight: 24
@@ -106,7 +103,6 @@ Scope {
                     }
                 }
 
-                // Separator
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 1
@@ -133,7 +129,7 @@ Scope {
                         label: "Bluetooth"
                         sublabel: "Off"
                         active: false
-                        onClicked: {} // TODO: implement
+                        onClicked: {}
                     }
 
                     QuickToggle {
@@ -142,27 +138,26 @@ Scope {
                         label: "DND"
                         sublabel: "Off"
                         active: false
-                        onClicked: {} // TODO: implement
+                        onClicked: {}
                     }
                 }
 
-                // Volume slider
+                // Volume slider - note the signal name change
                 VolumeSlider {
                     Layout.fillWidth: true
                     value: root.volume
                     muted: root.muted
-                    onValueChanged: (v) => root.volumeChanged(v)
+                    onSliderMoved: (v) => root.volumeChanged(v)
                     onMuteClicked: root.mutedChanged(!root.muted)
                 }
 
-                // Brightness slider
+                // Brightness slider - note the signal name change
                 BrightnessSlider {
                     Layout.fillWidth: true
                     value: root.brightness
-                    onValueChanged: (v) => root.brightnessChanged(v)
+                    onSliderMoved: (v) => root.brightnessChanged(v)
                 }
 
-                // Separator
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 1
@@ -206,7 +201,6 @@ Scope {
         }
     }
 
-    // Power button component (inline since it's simple)
     component PowerButton: Rectangle {
         property string icon
         property string label
@@ -243,8 +237,13 @@ Scope {
             hoverEnabled: true
             onClicked: {
                 root.closeRequested()
-                Quickshell.exec(command)
+                powerProc.running = true
             }
+        }
+
+        Process {
+            id: powerProc
+            command: parent.command
         }
     }
 }

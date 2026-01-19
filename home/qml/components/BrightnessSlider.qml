@@ -7,7 +7,7 @@ Rectangle {
 
     property real value: 1.0
 
-    signal valueChanged(real value)
+    signal sliderMoved(real newValue)
 
     implicitHeight: 48
     color: Gruvbox.bg1
@@ -80,8 +80,8 @@ Rectangle {
                 }
 
                 function updateValue(mouse) {
-                    let newValue = Math.max(0.05, Math.min(1, mouse.x / width))  // Min 5% brightness
-                    root.valueChanged(newValue)
+                    let newValue = Math.max(0.05, Math.min(1, mouse.x / width))
+                    root.sliderMoved(newValue)
                 }
             }
         }
