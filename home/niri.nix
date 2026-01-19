@@ -92,7 +92,7 @@
     
     # Start apps with niri
     spawn-at-startup = [
-      { command = [ "quickshell" ]; }
+      { command = [ "quickshell" "-p" "/home/kamdyns/.config/quickshell" ]; }
     ];
   };
 }
