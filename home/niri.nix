@@ -92,7 +92,7 @@
     
     # Start apps with niri
     spawn-at-startup = [
-      { command = [ "waybar" ]; }
+      { command = [ "waybar", "nm-applet" ]; }
     ];
   };
 }

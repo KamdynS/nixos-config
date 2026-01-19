@@ -103,7 +103,12 @@
 
     # Fun stuff
     neofetch
-		] ++ [
+
+    # Important for da 'puter
+    networkmanagerapplet
+    pavucontrol
+		
+    ] ++ [
     pkgs.nerd-fonts.jetbrains-mono
 		pkgs.typescript-language-server
 		pkgs.clang-tools
