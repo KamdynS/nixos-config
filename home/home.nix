@@ -99,6 +99,7 @@
 		gcc
 		gnumake
 		unzip
+    tree
 
     # Fun stuff
     neofetch
