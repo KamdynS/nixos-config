@@ -32,7 +32,7 @@ ShellRoot {
     // Control center (single instance, follows focused screen)
     ControlCenter {
         visible: root.controlCenterVisible
-        screen: Quickshell.screens[0]  // TODO: track focused screen
+        screen: Quickshell.screens[0]
 
         onCloseRequested: {
             root.controlCenterVisible = false
@@ -44,24 +44,25 @@ ShellRoot {
         wifiNetwork: root.wifiNetwork
         wifiEnabled: root.wifiEnabled
 
-        onVolumeChanged: (val) => {
+        onVolumeAdjusted: (val) => {
             root.volume = val
             volumeProc.command = ["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", val.toString()]
             volumeProc.running = true
         }
 
-        onMutedChanged: (val) => {
+        onMuteToggled: (val) => {
             root.muted = val
             muteProc.running = true
         }
 
-        onBrightnessChanged: (val) => {
+        onBrightnessAdjusted: (val) => {
             root.brightness = val
             brightnessProc.command = ["brightnessctl", "set", Math.round(val * 100) + "%"]
             brightnessProc.running = true
         }
 
         onWifiToggled: {
+            wifiToggleProc.command = ["nmcli", "radio", "wifi", root.wifiEnabled ? "off" : "on"]
             wifiToggleProc.running = true
         }
     }
@@ -86,7 +87,7 @@ ShellRoot {
     // WiFi toggle
     Process {
         id: wifiToggleProc
-        command: ["nmcli", "radio", "wifi", root.wifiEnabled ? "off" : "on"]
+        command: ["nmcli", "radio", "wifi", "on"]
         onRunningChanged: {
             if (!running) {
                 root.wifiEnabled = !root.wifiEnabled
@@ -101,7 +102,6 @@ ShellRoot {
         running: true
         stdout: StdioCollector {
             onStreamFinished: {
-                // Output looks like: "Volume: 0.50" or "Volume: 0.50 [MUTED]"
                 let text = this.text.trim()
                 let match = text.match(/Volume:\s*([\d.]+)/)
                 if (match) {
@@ -119,7 +119,6 @@ ShellRoot {
         running: true
         stdout: StdioCollector {
             onStreamFinished: {
-                // Output looks like: "device,class,current,100%,max"
                 let parts = this.text.trim().split(",")
                 if (parts.length >= 4) {
                     let pct = parseInt(parts[3])

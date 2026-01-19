@@ -18,9 +18,9 @@ Scope {
     required property bool wifiEnabled
 
     signal closeRequested()
-    signal volumeChanged(real value)
-    signal mutedChanged(bool value)
-    signal brightnessChanged(real value)
+    signal volumeAdjusted(real value)
+    signal muteToggled(bool value)
+    signal brightnessAdjusted(real value)
     signal wifiToggled()
 
     PanelWindow {
@@ -28,7 +28,6 @@ Scope {
         screen: root.screen
         visible: root.visible
 
-        // Position: top-left, below the bar
         anchors {
             top: true
             left: true
@@ -142,20 +141,20 @@ Scope {
                     }
                 }
 
-                // Volume slider - note the signal name change
+                // Volume slider
                 VolumeSlider {
                     Layout.fillWidth: true
                     value: root.volume
                     muted: root.muted
-                    onSliderMoved: (v) => root.volumeChanged(v)
-                    onMuteClicked: root.mutedChanged(!root.muted)
+                    onSliderMoved: (v) => root.volumeAdjusted(v)
+                    onMuteClicked: root.muteToggled(!root.muted)
                 }
 
-                // Brightness slider - note the signal name change
+                // Brightness slider
                 BrightnessSlider {
                     Layout.fillWidth: true
                     value: root.brightness
-                    onSliderMoved: (v) => root.brightnessChanged(v)
+                    onSliderMoved: (v) => root.brightnessAdjusted(v)
                 }
 
                 Rectangle {
