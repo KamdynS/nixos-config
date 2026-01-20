@@ -187,8 +187,8 @@ Item {
         // Animate in/out
         Item {
             id: popupContainer
-            width: parent.implicitWidth
-            height: popupBackground.height + popupContent.anchors.topMargin + Metrics.paddingLarge
+            width: 160
+            height: 120
 
             // Animation properties
             property real animProgress: 0
@@ -205,12 +205,8 @@ Item {
             // Background that melts into the border
             Rectangle {
                 id: popupBackground
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: parent.top
-                height: popupContent.implicitHeight + Metrics.paddingLarge * 2 + topStrip.height
-
-                color: "#504945"  // Hardcoded gruvbox bg2 for testing
+                anchors.fill: parent
+                color: "#504945"
                 radius: workspacePopup.popupRadius
 
                 // Square off top corners by overlaying a rect
@@ -222,25 +218,25 @@ Item {
                     height: workspacePopup.popupRadius
                     color: Gruvbox.screenBorder
                 }
+            }
 
-                // Border on sides and bottom only
+            // Border on sides and bottom only
+            Rectangle {
+                anchors.fill: parent
+                color: "transparent"
+                radius: workspacePopup.popupRadius
+                border.color: Gruvbox.panelBorder
+                border.width: 1
+
+                // Hide top border by covering it
                 Rectangle {
-                    anchors.fill: parent
-                    color: "transparent"
-                    radius: workspacePopup.popupRadius
-                    border.color: Gruvbox.panelBorder
-                    border.width: 1
-
-                    // Hide top border by covering it
-                    Rectangle {
-                        anchors.top: parent.top
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        anchors.leftMargin: 1
-                        anchors.rightMargin: 1
-                        height: workspacePopup.popupRadius + 1
-                        color: Gruvbox.screenBorder
-                    }
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.leftMargin: 1
+                    anchors.rightMargin: 1
+                    height: workspacePopup.popupRadius + 1
+                    color: Gruvbox.screenBorder
                 }
             }
 
@@ -261,13 +257,13 @@ Item {
             // Popup content
             Column {
                 id: popupContent
-                anchors.top: popupBackground.top
-                anchors.topMargin: topStrip.height + Metrics.paddingLarge
+                anchors.top: parent.top
+                anchors.topMargin: workspacePopup.popupRadius + 12
                 anchors.left: parent.left
                 anchors.right: parent.right
-                anchors.leftMargin: Metrics.paddingLarge
-                anchors.rightMargin: Metrics.paddingLarge
-                spacing: Metrics.paddingNormal
+                anchors.leftMargin: 12
+                anchors.rightMargin: 12
+                spacing: 8
 
                 // Workspace number
                 Text {
@@ -288,7 +284,7 @@ Item {
                 // Workspace info
                 Column {
                     width: parent.width
-                    spacing: Metrics.paddingSmall
+                    spacing: 4
 
                     Text {
                         property var ws: root.workspaces.find(w => w.idx === root.hoveredWorkspace)
