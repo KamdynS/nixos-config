@@ -14,10 +14,10 @@
     # Struts to reserve space for quickshell panels
     # These values must match Layout.qml: totalBorderWidth=16, barHeight=32
     layout.struts = {
-      top = 32;     # barHeight
-      left = 16;    # totalBorderWidth (screenBorderWidth + windowGap)
-      right = 16;
-      bottom = 16;
+      top = 42;     # barHeight
+      left = 26;    # totalBorderWidth (screenBorderWidth + windowGap)
+      right = 26;
+      bottom = 26;
     };
 
     # Window borders
