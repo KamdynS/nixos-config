@@ -14,6 +14,10 @@ ShellRoot {
     property string wifiNetwork: "..."
     property bool wifiEnabled: true
 
+    // Workspace state
+    property var workspaces: []
+    property int activeWorkspace: 1
+
     // Unified screen frame (border + bar) on each screen
     Variants {
         model: Quickshell.screens
@@ -22,8 +26,16 @@ ShellRoot {
             property var modelData
             screen: modelData
 
+            workspaces: root.workspaces
+            activeWorkspace: root.activeWorkspace
+
             onControlCenterToggled: {
                 root.controlCenterVisible = !root.controlCenterVisible
+            }
+
+            onWorkspaceSwitchRequested: (idx) => {
+                workspaceSwitchProc.command = ["niri", "msg", "action", "focus-workspace", idx.toString()]
+                workspaceSwitchProc.running = true
             }
         }
     }
@@ -148,6 +160,39 @@ ShellRoot {
         }
     }
 
+    // Poll workspaces from niri
+    Process {
+        id: workspacePoll
+        command: ["niri", "msg", "-j", "workspaces"]
+        running: true
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    let data = JSON.parse(this.text)
+                    // Sort by idx for consistent ordering
+                    data.sort((a, b) => a.idx - b.idx)
+                    root.workspaces = data
+
+                    // Find active workspace
+                    for (let ws of data) {
+                        if (ws.is_active) {
+                            root.activeWorkspace = ws.idx
+                            break
+                        }
+                    }
+                } catch (e) {
+                    console.log("Failed to parse workspaces:", e)
+                }
+            }
+        }
+    }
+
+    // Switch workspace
+    Process {
+        id: workspaceSwitchProc
+        command: ["niri", "msg", "action", "focus-workspace", "1"]
+    }
+
     // Refresh state periodically
     Timer {
         interval: 2000
@@ -157,6 +202,16 @@ ShellRoot {
             volumePoll.running = true
             brightnessPoll.running = true
             wifiPoll.running = true
+        }
+    }
+
+    // Workspace polling (more frequent for responsiveness)
+    Timer {
+        interval: 500
+        running: true
+        repeat: true
+        onTriggered: {
+            workspacePoll.running = true
         }
     }
 }

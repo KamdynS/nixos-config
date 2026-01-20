@@ -6,11 +6,17 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Shapes
 import "theme"
+import "components"
 
 Item {
     id: root
     required property var screen
     signal controlCenterToggled()
+    signal workspaceSwitchRequested(int idx)
+
+    // Workspace state from shell.qml
+    property var workspaces: []
+    property int activeWorkspace: 1
 
     // Frame dimensions (struts minus gap for breathing room)
     property int topHeight: 32      // niri struts.top (42) minus 10px gap
@@ -159,16 +165,26 @@ Item {
                 }
             }
 
+            // Clock (moved to left side)
+            Text {
+                text: root.currentTime
+                color: Gruvbox.fg3
+                font.family: Metrics.fontFamily
+                font.pixelSize: Metrics.fontSizeSmall
+            }
+
             // Spacer
             Item { Layout.fillWidth: true }
 
-            // Center: Clock
-            Text {
-                text: root.currentTime
-                color: Gruvbox.fg
-                font.family: Metrics.fontFamily
-                font.pixelSize: Metrics.fontSizeNormal
-                font.bold: true
+            // Center: Workspace indicator
+            WorkspaceIndicator {
+                workspaces: root.workspaces
+                activeWorkspace: root.activeWorkspace
+                screen: root.screen
+
+                onWorkspaceClicked: (idx) => {
+                    root.workspaceSwitchRequested(idx)
+                }
             }
 
             // Spacer

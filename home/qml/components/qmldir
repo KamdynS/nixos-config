@@ -2,3 +2,5 @@ QuickToggle 1.0 QuickToggle.qml
 VolumeSlider 1.0 VolumeSlider.qml
 BrightnessSlider 1.0 BrightnessSlider.qml
 WifiPanel 1.0 WifiPanel.qml
+BorderWidget 1.0 BorderWidget.qml
+WorkspaceIndicator 1.0 WorkspaceIndicator.qml
