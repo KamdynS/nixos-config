@@ -7,6 +7,15 @@
     
     # Enable window shadows
     layout.shadow.enable = true;
+
+    # Window borders - always visible, even fullscreen
+    layout.border = {
+      enable = true;
+      width = 2;
+      active.color = "#d79921";   # Gruvbox yellow
+      inactive.color = "#928374"; # Gruvbox gray
+    };
+    layout.always-show-borders = true;
     
     # Screenshot path
     screenshot-path = "~/Pictures/Screenshots/%Y-%m-%d_%H-%M-%S.png";
