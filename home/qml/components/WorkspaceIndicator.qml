@@ -145,8 +145,8 @@ Item {
         onTriggered: {
             if (!popupMouseArea.containsMouse) {
                 popupState.shouldShow = false
-                root.hoveredWorkspace = -1
-                root.hoveredIndicator = null
+                // Don't clear hoveredIndicator here - let closeTimer do it
+                // to prevent position jump during close animation
             }
         }
     }
@@ -206,37 +206,62 @@ Item {
             Rectangle {
                 id: popupBackground
                 anchors.fill: parent
-                color: "#504945"
-                radius: workspacePopup.popupRadius
-
-                // Square off top corners by overlaying a rect
-                Rectangle {
-                    id: topStrip
-                    anchors.top: parent.top
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    height: workspacePopup.popupRadius
-                    color: Gruvbox.screenBorder
-                }
-            }
-
-            // Border on sides and bottom only
-            Rectangle {
-                anchors.fill: parent
                 color: "transparent"
-                radius: workspacePopup.popupRadius
-                border.color: Gruvbox.panelBorder
-                border.width: 1
 
-                // Hide top border by covering it
+                // Main popup body (below the melt zone)
                 Rectangle {
-                    anchors.top: parent.top
+                    id: popupBody
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    anchors.leftMargin: 1
-                    anchors.rightMargin: 1
-                    height: workspacePopup.popupRadius + 1
+                    anchors.top: parent.top
+                    anchors.topMargin: 6  // Small gap where it "emerges" from border
+                    anchors.bottom: parent.bottom
+                    color: Gruvbox.bg1
+                    radius: workspacePopup.popupRadius
+
+                    // Subtle inner shadow/highlight at top
+                    Rectangle {
+                        anchors.top: parent.top
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.topMargin: 1
+                        anchors.leftMargin: 1
+                        anchors.rightMargin: 1
+                        height: 1
+                        color: Gruvbox.bg3
+                        opacity: 0.5
+                    }
+
+                    // Border
+                    border.color: Gruvbox.bg4
+                    border.width: 1
+                }
+
+                // Connection strip that blends with the frame
+                Rectangle {
+                    id: connectionStrip
+                    anchors.top: parent.top
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    width: 40
+                    height: 8
                     color: Gruvbox.screenBorder
+
+                    // Rounded bottom corners only
+                    Rectangle {
+                        anchors.top: parent.top
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        height: parent.height / 2
+                        color: parent.color
+                    }
+                    Rectangle {
+                        anchors.bottom: parent.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        height: parent.height / 2 + 2
+                        color: parent.color
+                        radius: 4
+                    }
                 }
             }
 
@@ -257,12 +282,12 @@ Item {
             // Popup content
             Column {
                 id: popupContent
-                anchors.top: parent.top
-                anchors.topMargin: workspacePopup.popupRadius + 12
+                anchors.top: popupBody.top
+                anchors.topMargin: 14
                 anchors.left: parent.left
                 anchors.right: parent.right
-                anchors.leftMargin: 12
-                anchors.rightMargin: 12
+                anchors.leftMargin: 14
+                anchors.rightMargin: 14
                 spacing: 8
 
                 // Workspace number
@@ -332,6 +357,9 @@ Item {
             onTriggered: {
                 if (!popupState.shouldShow) {
                     popupState.active = false
+                    // Now safe to clear position - popup is hidden
+                    root.hoveredWorkspace = -1
+                    root.hoveredIndicator = null
                 }
             }
         }
