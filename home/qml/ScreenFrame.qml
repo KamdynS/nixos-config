@@ -12,16 +12,106 @@ Item {
     required property var screen
     signal controlCenterToggled()
 
-    property int borderWidth: Metrics.totalBorderWidth
-    property int barHeight: Metrics.barHeight
-    property int outerRadius: Metrics.frameCornerRadius  // Outer screen corner radius
-    property int innerRadius: Metrics.frameCornerRadius  // Inner content area corner radius
+    // Dimensions matching niri struts exactly
+    property int topHeight: 42      // niri struts.top
+    property int sideWidth: 26      // niri struts.left/right/bottom
+    property int innerRadius: 12    // niri window corner radius
     property color frameColor: Gruvbox.screenBorder
 
     property string currentTime: ""
 
-    // ==================== TOP BAR ====================
-    // Shaped bar with rounded outer corners (top-left, top-right of screen)
+    // ==================== UNIFIED FRAME VISUAL ====================
+    // Single full-screen panel that draws the entire border frame
+    // Square outer edges, rounded inner edges (matching window corners)
+    PanelWindow {
+        id: framePanel
+        screen: root.screen
+        anchors {
+            top: true
+            bottom: true
+            left: true
+            right: true
+        }
+        color: "transparent"
+        exclusionMode: ExclusionMode.Ignore  // niri handles struts
+        WlrLayershell.layer: WlrLayer.Bottom
+        WlrLayershell.namespace: "screen-frame"
+
+        Shape {
+            id: frameShape
+            anchors.fill: parent
+            antialiasing: true
+
+            ShapePath {
+                fillColor: root.frameColor
+                strokeColor: "transparent"
+                fillRule: ShapePath.OddEvenFill
+
+                // Outer rectangle (clockwise) - square corners at screen edges
+                startX: 0
+                startY: 0
+                PathLine { x: frameShape.width; y: 0 }
+                PathLine { x: frameShape.width; y: frameShape.height }
+                PathLine { x: 0; y: frameShape.height }
+                PathLine { x: 0; y: 0 }
+
+                // Inner rounded rectangle (counter-clockwise) - creates the cutout
+                // Start at top-left inner corner, on the left edge
+                PathMove { x: sideWidth; y: topHeight + innerRadius }
+
+                // Left edge going down
+                PathLine { x: sideWidth; y: frameShape.height - sideWidth - innerRadius }
+
+                // Bottom-left corner (rounded)
+                PathArc {
+                    x: sideWidth + innerRadius
+                    y: frameShape.height - sideWidth
+                    radiusX: innerRadius
+                    radiusY: innerRadius
+                    direction: PathArc.Counterclockwise
+                }
+
+                // Bottom edge going right
+                PathLine { x: frameShape.width - sideWidth - innerRadius; y: frameShape.height - sideWidth }
+
+                // Bottom-right corner (rounded)
+                PathArc {
+                    x: frameShape.width - sideWidth
+                    y: frameShape.height - sideWidth - innerRadius
+                    radiusX: innerRadius
+                    radiusY: innerRadius
+                    direction: PathArc.Counterclockwise
+                }
+
+                // Right edge going up
+                PathLine { x: frameShape.width - sideWidth; y: topHeight + innerRadius }
+
+                // Top-right corner (rounded)
+                PathArc {
+                    x: frameShape.width - sideWidth - innerRadius
+                    y: topHeight
+                    radiusX: innerRadius
+                    radiusY: innerRadius
+                    direction: PathArc.Counterclockwise
+                }
+
+                // Top edge going left
+                PathLine { x: sideWidth + innerRadius; y: topHeight }
+
+                // Top-left corner (rounded) - closes the inner path
+                PathArc {
+                    x: sideWidth
+                    y: topHeight + innerRadius
+                    radiusX: innerRadius
+                    radiusY: innerRadius
+                    direction: PathArc.Counterclockwise
+                }
+            }
+        }
+    }
+
+    // ==================== TOP BAR (Interactive Layer) ====================
+    // Separate panel for interactive elements, positioned above windows
     PanelWindow {
         id: topBar
         screen: root.screen
@@ -30,88 +120,20 @@ Item {
             left: true
             right: true
         }
-        height: barHeight
+        height: topHeight
         color: "transparent"
-        exclusionMode: ExclusionMode.Normal
+        exclusionMode: ExclusionMode.Ignore  // niri handles struts
         WlrLayershell.layer: WlrLayer.Top
-        WlrLayershell.namespace: "screen-frame"
+        WlrLayershell.namespace: "screen-frame-bar"
 
-        Shape {
-            id: topBarShape
-            anchors.fill: parent
-            antialiasing: true
-
-            ShapePath {
-                fillColor: frameColor
-                strokeColor: "transparent"
-
-                // Start at left edge, below outer corner
-                startX: 0
-                startY: outerRadius
-
-                // Outer top-left corner (rounded)
-                PathArc {
-                    x: outerRadius
-                    y: 0
-                    radiusX: outerRadius
-                    radiusY: outerRadius
-                    direction: PathArc.Counterclockwise
-                }
-
-                // Top edge
-                PathLine { x: topBarShape.width - outerRadius; y: 0 }
-
-                // Outer top-right corner (rounded)
-                PathArc {
-                    x: topBarShape.width
-                    y: outerRadius
-                    radiusX: outerRadius
-                    radiusY: outerRadius
-                    direction: PathArc.Counterclockwise
-                }
-
-                // Right edge all the way down
-                PathLine { x: topBarShape.width; y: barHeight }
-
-                // Bottom edge - right border portion
-                PathLine { x: topBarShape.width - borderWidth + innerRadius; y: barHeight }
-
-                // Inner bottom-right corner (curves inward toward frame)
-                PathArc {
-                    x: topBarShape.width - borderWidth
-                    y: barHeight - innerRadius
-                    radiusX: innerRadius
-                    radiusY: innerRadius
-                    direction: PathArc.Counterclockwise
-                }
-
-                // Inner top edge (across content area)
-                PathLine { x: borderWidth; y: barHeight - innerRadius }
-
-                // Inner bottom-left corner (curves inward toward frame)
-                PathArc {
-                    x: borderWidth - innerRadius
-                    y: barHeight
-                    radiusX: innerRadius
-                    radiusY: innerRadius
-                    direction: PathArc.Counterclockwise
-                }
-
-                // Bottom edge - left border portion
-                PathLine { x: 0; y: barHeight }
-
-                // Left edge back up
-                PathLine { x: 0; y: outerRadius }
-            }
-        }
-
-        // Bar content overlay
         RowLayout {
-            anchors.fill: parent
-            anchors.leftMargin: borderWidth + Metrics.paddingLarge
-            anchors.rightMargin: borderWidth + Metrics.paddingLarge
-            anchors.topMargin: Metrics.paddingSmall
-            anchors.bottomMargin: Metrics.paddingSmall
+            anchors {
+                fill: parent
+                leftMargin: sideWidth + Metrics.paddingLarge
+                rightMargin: sideWidth + Metrics.paddingLarge
+                topMargin: Metrics.paddingSmall
+                bottomMargin: Metrics.paddingSmall
+            }
             spacing: Metrics.paddingNormal
 
             // Left: Control center button
@@ -191,140 +213,6 @@ Item {
                     }
                 }
             }
-        }
-    }
-
-    // ==================== BOTTOM BORDER ====================
-    // Shaped bar with rounded outer corners (bottom-left, bottom-right of screen)
-    PanelWindow {
-        id: bottomBar
-        screen: root.screen
-        anchors {
-            bottom: true
-            left: true
-            right: true
-        }
-        height: borderWidth
-        color: "transparent"
-        exclusionMode: ExclusionMode.Normal
-        WlrLayershell.layer: WlrLayer.Top
-        WlrLayershell.namespace: "screen-frame"
-
-        Shape {
-            id: bottomBarShape
-            anchors.fill: parent
-            antialiasing: true
-
-            ShapePath {
-                fillColor: frameColor
-                strokeColor: "transparent"
-
-                // Start at top-left corner of left border portion
-                startX: 0
-                startY: 0
-
-                // Top edge - left border portion
-                PathLine { x: borderWidth - innerRadius; y: 0 }
-
-                // Inner top-left corner (curves inward toward frame)
-                PathArc {
-                    x: borderWidth
-                    y: innerRadius
-                    radiusX: innerRadius
-                    radiusY: innerRadius
-                    direction: PathArc.Counterclockwise
-                }
-
-                // Inner bottom edge (across content area)
-                PathLine { x: bottomBarShape.width - borderWidth; y: innerRadius }
-
-                // Inner top-right corner (curves inward toward frame)
-                PathArc {
-                    x: bottomBarShape.width - borderWidth + innerRadius
-                    y: 0
-                    radiusX: innerRadius
-                    radiusY: innerRadius
-                    direction: PathArc.Counterclockwise
-                }
-
-                // Top edge - right border portion
-                PathLine { x: bottomBarShape.width; y: 0 }
-
-                // Right edge down to outer corner
-                PathLine { x: bottomBarShape.width; y: borderWidth - outerRadius }
-
-                // Outer bottom-right corner (rounded)
-                PathArc {
-                    x: bottomBarShape.width - outerRadius
-                    y: borderWidth
-                    radiusX: outerRadius
-                    radiusY: outerRadius
-                    direction: PathArc.Counterclockwise
-                }
-
-                // Bottom edge
-                PathLine { x: outerRadius; y: borderWidth }
-
-                // Outer bottom-left corner (rounded)
-                PathArc {
-                    x: 0
-                    y: borderWidth - outerRadius
-                    radiusX: outerRadius
-                    radiusY: outerRadius
-                    direction: PathArc.Counterclockwise
-                }
-
-                // Left edge back up
-                PathLine { x: 0; y: 0 }
-            }
-        }
-    }
-
-    // ==================== LEFT BORDER ====================
-    PanelWindow {
-        screen: root.screen
-        anchors {
-            top: true
-            bottom: true
-            left: true
-        }
-        width: borderWidth
-        margins {
-            top: barHeight
-            bottom: borderWidth
-        }
-        color: "transparent"
-        exclusionMode: ExclusionMode.Normal
-        WlrLayershell.layer: WlrLayer.Top
-        WlrLayershell.namespace: "screen-frame"
-
-        Rectangle {
-            anchors.fill: parent
-            color: frameColor
-        }
-    }
-
-    // ==================== RIGHT BORDER ====================
-    PanelWindow {
-        screen: root.screen
-        anchors {
-            top: true
-            bottom: true
-            right: true
-        }
-        width: borderWidth
-        margins {
-            top: barHeight
-            bottom: borderWidth
-        }
-        color: "transparent"
-        exclusionMode: ExclusionMode.Normal
-        WlrLayershell.layer: WlrLayer.Top
-        WlrLayershell.namespace: "screen-frame"
-
-        Rectangle {
-            anchors.fill: parent
-            color: frameColor
         }
     }
 
