@@ -11,8 +11,14 @@
     # Gaps between windows
     layout.gaps = 8;
 
-    # Struts handled by quickshell panels via ExclusionMode.Normal
-    # No additional struts needed
+    # Struts to reserve space for quickshell panels
+    # These values must match Layout.qml: totalBorderWidth=16, barHeight=32
+    layout.struts = {
+      top = 32;     # barHeight
+      left = 16;    # totalBorderWidth (screenBorderWidth + windowGap)
+      right = 16;
+      bottom = 16;
+    };
 
     # Window borders
     layout.border = {

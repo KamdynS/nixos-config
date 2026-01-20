@@ -13,26 +13,26 @@ Rectangle {
 
     implicitHeight: 48
     color: Gruvbox.bg1
-    radius: Gruvbox.radiusNormal
+    radius: Layout.radiusNormal
 
     RowLayout {
         anchors.fill: parent
-        anchors.margins: Gruvbox.paddingNormal
-        spacing: Gruvbox.paddingNormal
+        anchors.margins: Layout.paddingNormal
+        spacing: Layout.paddingNormal
 
         // Mute button / volume icon
         Rectangle {
             Layout.preferredWidth: 32
             Layout.preferredHeight: 32
             color: muteMouse.containsMouse ? Gruvbox.hoverBg : "transparent"
-            radius: Gruvbox.radiusSmall
+            radius: Layout.radiusSmall
 
             Text {
                 anchors.centerIn: parent
                 text: root.muted ? "" : (root.value > 0.5 ? "" : (root.value > 0 ? "" : ""))
                 color: root.muted ? Gruvbox.fg4 : Gruvbox.fg
-                font.family: Gruvbox.fontFamily
-                font.pixelSize: Gruvbox.fontSizeLarge
+                font.family: Layout.fontFamily
+                font.pixelSize: Layout.fontSizeLarge
             }
 
             MouseArea {
@@ -102,8 +102,8 @@ Rectangle {
             Layout.preferredWidth: 40
             text: Math.round(root.value * 100) + "%"
             color: root.muted ? Gruvbox.fg4 : Gruvbox.fg
-            font.family: Gruvbox.fontFamily
-            font.pixelSize: Gruvbox.fontSizeSmall
+            font.family: Layout.fontFamily
+            font.pixelSize: Layout.fontSizeSmall
             horizontalAlignment: Text.AlignRight
         }
     }

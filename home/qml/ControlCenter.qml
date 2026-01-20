@@ -54,26 +54,26 @@ Scope {
         Rectangle {
             anchors.fill: parent
             color: Gruvbox.panelBg
-            radius: Gruvbox.radiusLarge
+            radius: Layout.radiusLarge
             border.color: Gruvbox.panelBorder
             border.width: 1
 
             ColumnLayout {
                 id: contentColumn
                 anchors.fill: parent
-                anchors.margins: Gruvbox.paddingLarge
-                spacing: Gruvbox.paddingNormal
+                anchors.margins: Layout.paddingLarge
+                spacing: Layout.paddingNormal
 
                 // Header
                 RowLayout {
                     Layout.fillWidth: true
-                    spacing: Gruvbox.paddingNormal
+                    spacing: Layout.paddingNormal
 
                     Text {
                         text: "Quick Settings"
                         color: Gruvbox.fg
-                        font.family: Gruvbox.fontFamily
-                        font.pixelSize: Gruvbox.fontSizeLarge
+                        font.family: Layout.fontFamily
+                        font.pixelSize: Layout.fontSizeLarge
                         font.bold: true
                     }
 
@@ -83,14 +83,14 @@ Scope {
                         Layout.preferredWidth: 24
                         Layout.preferredHeight: 24
                         color: closeMouse.containsMouse ? Gruvbox.hoverBg : "transparent"
-                        radius: Gruvbox.radiusSmall
+                        radius: Layout.radiusSmall
 
                         Text {
                             anchors.centerIn: parent
                             text: ""
                             color: Gruvbox.fg4
-                            font.family: Gruvbox.fontFamily
-                            font.pixelSize: Gruvbox.fontSizeNormal
+                            font.family: Layout.fontFamily
+                            font.pixelSize: Layout.fontSizeNormal
                         }
 
                         MouseArea {
@@ -111,7 +111,7 @@ Scope {
                 // Quick toggles row
                 RowLayout {
                     Layout.fillWidth: true
-                    spacing: Gruvbox.paddingNormal
+                    spacing: Layout.paddingNormal
 
                     QuickToggle {
                         Layout.fillWidth: true
@@ -166,7 +166,7 @@ Scope {
                 // Power buttons
                 RowLayout {
                     Layout.fillWidth: true
-                    spacing: Gruvbox.paddingNormal
+                    spacing: Layout.paddingNormal
 
                     PowerButton {
                         Layout.fillWidth: true
@@ -207,7 +207,7 @@ Scope {
 
         implicitHeight: 56
         color: powerMouse.containsMouse ? Gruvbox.hoverBg : Gruvbox.bg1
-        radius: Gruvbox.radiusNormal
+        radius: Layout.radiusNormal
 
         ColumnLayout {
             anchors.centerIn: parent
@@ -217,16 +217,16 @@ Scope {
                 Layout.alignment: Qt.AlignHCenter
                 text: icon
                 color: Gruvbox.fg
-                font.family: Gruvbox.fontFamily
-                font.pixelSize: Gruvbox.fontSizeLarge
+                font.family: Layout.fontFamily
+                font.pixelSize: Layout.fontSizeLarge
             }
 
             Text {
                 Layout.alignment: Qt.AlignHCenter
                 text: label
                 color: Gruvbox.fg3
-                font.family: Gruvbox.fontFamily
-                font.pixelSize: Gruvbox.fontSizeSmall
+                font.family: Layout.fontFamily
+                font.pixelSize: Layout.fontSizeSmall
             }
         }
 

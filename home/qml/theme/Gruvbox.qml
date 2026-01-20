@@ -85,25 +85,6 @@ QtObject {
     readonly property color sliderTrack: bg3
     readonly property color sliderFill: yellow
 
-    // Screen border (always uses light bg for the frame effect)
+    // Screen border color (always uses light bg for the frame effect)
     readonly property color screenBorder: lightBg
-    readonly property int screenBorderWidth: 6
-    readonly property int barHeight: 32
-    readonly property int windowGap: 10  // Gap between windows and screen border
-    readonly property int totalBorderWidth: screenBorderWidth + windowGap  // Total reserved space for borders
-    readonly property int frameCornerRadius: 8  // Inverted corner radius for smooth transition to windows
-
-    // Fonts
-    readonly property string fontFamily: "JetBrainsMono Nerd Font"
-    readonly property int fontSizeSmall: 11
-    readonly property int fontSizeNormal: 13
-    readonly property int fontSizeLarge: 16
-
-    // Spacing
-    readonly property int paddingSmall: 4
-    readonly property int paddingNormal: 8
-    readonly property int paddingLarge: 12
-    readonly property int radiusSmall: 4
-    readonly property int radiusNormal: 8
-    readonly property int radiusLarge: 12
 }
