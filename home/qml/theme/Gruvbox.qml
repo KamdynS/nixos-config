@@ -89,7 +89,9 @@ QtObject {
     readonly property color screenBorder: lightBg
     readonly property int screenBorderWidth: 6
     readonly property int barHeight: 32
-    readonly property int frameCornerRadius: 8  // Inverted corner radius for screen frame
+    readonly property int windowGap: 10  // Gap between windows and screen border
+    readonly property int totalBorderWidth: screenBorderWidth + windowGap  // Total reserved space for borders
+    readonly property int frameCornerRadius: 8  // Inverted corner radius for smooth transition to windows
 
     // Fonts
     readonly property string fontFamily: "JetBrainsMono Nerd Font"

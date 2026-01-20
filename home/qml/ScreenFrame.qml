@@ -11,7 +11,7 @@ Item {
     required property var screen
     signal controlCenterToggled()
 
-    property int borderWidth: Gruvbox.screenBorderWidth
+    property int borderWidth: Gruvbox.totalBorderWidth  // Total reserved space (border + gap)
     property int barHeight: Gruvbox.barHeight
     property int cornerRadius: Gruvbox.frameCornerRadius
     property color frameColor: Gruvbox.screenBorder
