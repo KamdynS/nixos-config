@@ -24,7 +24,21 @@
       enable = true;
   };
 
-	# Neovim 
+  programs.ssh = {
+    enable = true;  # This installs openssh and creates ~/.ssh/config
+    addKeysToAgent = "yes";
+    matchBlocks = {
+      "github.com" = {
+        host = "github.com";
+        user = "git";
+        identityFile = "~/.ssh/github";
+      };
+    };
+  };
+
+  services.ssh-agent.enable = true;
+	
+  # Neovim 
 	programs.neovim = {
 		enable = true;
 		defaultEditor = true;
