@@ -8,14 +8,38 @@
     # Enable window shadows
     layout.shadow.enable = true;
 
-    # Window borders - always visible, even fullscreen
+    # Gaps between windows
+    layout.gaps = 8;
+
+    # Struts - reserved space at screen edges (matches screen border)
+    # This makes maximize-column respect the border
+    layout.struts = {
+      left = 6;
+      right = 6;
+      top = 6;
+      bottom = 6;
+    };
+
+    # Window borders
     layout.border = {
       enable = true;
       width = 2;
       active.color = "#d79921";   # Gruvbox yellow
       inactive.color = "#928374"; # Gruvbox gray
     };
-    layout.always-show-borders = true;
+
+    # Force borders on ALL windows (including fullscreen)
+    window-rules = [
+      {
+        matches = [];  # empty = match all windows
+        border = {
+          enable = true;
+          width = 2;
+          active.color = "#d79921";
+          inactive.color = "#928374";
+        };
+      }
+    ];
     
     # Screenshot path
     screenshot-path = "~/Pictures/Screenshots/%Y-%m-%d_%H-%M-%S.png";
@@ -47,8 +71,8 @@
       
       # Window management
       "Mod+Q".action.close-window = [];
-      "Mod+F".action.maximize-column = [];
-      "Mod+Shift+F".action.fullscreen-window = [];
+      "Mod+F".action.maximize-column = [];        # Respects struts/border
+      "Mod+Shift+F".action.fullscreen-window = []; # True fullscreen (covers border)
       
       # Focus
       "Mod+H".action.focus-column-left = [];
