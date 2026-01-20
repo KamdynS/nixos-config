@@ -12,9 +12,9 @@ Item {
     required property var screen
     signal controlCenterToggled()
 
-    property int borderWidth: Layout.totalBorderWidth
-    property int barHeight: Layout.barHeight
-    property int cornerRadius: Layout.frameCornerRadius
+    property int borderWidth: Metrics.totalBorderWidth
+    property int barHeight: Metrics.barHeight
+    property int cornerRadius: Metrics.frameCornerRadius
     property color frameColor: Gruvbox.screenBorder
 
     property string currentTime: ""
@@ -81,25 +81,25 @@ Item {
             // Bar content
             RowLayout {
                 anchors.fill: parent
-                anchors.leftMargin: borderWidth + Layout.paddingLarge
-                anchors.rightMargin: borderWidth + Layout.paddingLarge
-                anchors.topMargin: Layout.paddingSmall
-                anchors.bottomMargin: Layout.paddingSmall
-                spacing: Layout.paddingNormal
+                anchors.leftMargin: borderWidth + Metrics.paddingLarge
+                anchors.rightMargin: borderWidth + Metrics.paddingLarge
+                anchors.topMargin: Metrics.paddingSmall
+                anchors.bottomMargin: Metrics.paddingSmall
+                spacing: Metrics.paddingNormal
 
                 // Left: Control center button
                 Rectangle {
                     Layout.preferredWidth: 28
                     Layout.preferredHeight: 28
                     color: controlCenterMouse.containsMouse ? Gruvbox.hoverBg : "transparent"
-                    radius: Layout.radiusSmall
+                    radius: Metrics.radiusSmall
 
                     Text {
                         anchors.centerIn: parent
                         text: ""
                         color: Gruvbox.fg
-                        font.family: Layout.fontFamily
-                        font.pixelSize: Layout.fontSizeNormal
+                        font.family: Metrics.fontFamily
+                        font.pixelSize: Metrics.fontSizeNormal
                     }
 
                     MouseArea {
@@ -117,8 +117,8 @@ Item {
                 Text {
                     text: root.currentTime
                     color: Gruvbox.fg
-                    font.family: Layout.fontFamily
-                    font.pixelSize: Layout.fontSizeNormal
+                    font.family: Metrics.fontFamily
+                    font.pixelSize: Metrics.fontSizeNormal
                     font.bold: true
                 }
 
@@ -127,7 +127,7 @@ Item {
 
                 // Right: System tray
                 RowLayout {
-                    spacing: Layout.paddingSmall
+                    spacing: Metrics.paddingSmall
 
                     Repeater {
                         model: SystemTray.items
@@ -137,7 +137,7 @@ Item {
                             Layout.preferredWidth: 24
                             Layout.preferredHeight: 24
                             color: trayMouse.containsMouse ? Gruvbox.hoverBg : "transparent"
-                            radius: Layout.radiusSmall
+                            radius: Metrics.radiusSmall
 
                             Image {
                                 anchors.centerIn: parent

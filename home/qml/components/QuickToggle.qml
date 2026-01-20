@@ -14,7 +14,7 @@ Rectangle {
 
     implicitHeight: 72
     color: mouse.containsMouse ? Gruvbox.hoverBg : (active ? Gruvbox.bg2 : Gruvbox.bg1)
-    radius: Layout.radiusNormal
+    radius: Metrics.radiusNormal
 
     border.color: active ? Gruvbox.accent : "transparent"
     border.width: active ? 1 : 0
@@ -27,7 +27,7 @@ Rectangle {
             Layout.alignment: Qt.AlignHCenter
             text: root.icon
             color: root.active ? Gruvbox.accent : Gruvbox.fg
-            font.family: Layout.fontFamily
+            font.family: Metrics.fontFamily
             font.pixelSize: 20
         }
 
@@ -35,8 +35,8 @@ Rectangle {
             Layout.alignment: Qt.AlignHCenter
             text: root.label
             color: root.active ? Gruvbox.fg : Gruvbox.fg2
-            font.family: Layout.fontFamily
-            font.pixelSize: Layout.fontSizeSmall
+            font.family: Metrics.fontFamily
+            font.pixelSize: Metrics.fontSizeSmall
             font.bold: true
         }
 
@@ -44,7 +44,7 @@ Rectangle {
             Layout.alignment: Qt.AlignHCenter
             text: root.sublabel
             color: Gruvbox.fg4
-            font.family: Layout.fontFamily
+            font.family: Metrics.fontFamily
             font.pixelSize: 10
             elide: Text.ElideRight
             Layout.maximumWidth: parent.width - 8

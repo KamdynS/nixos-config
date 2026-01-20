@@ -11,12 +11,12 @@ Rectangle {
 
     implicitHeight: 48
     color: Gruvbox.bg1
-    radius: Layout.radiusNormal
+    radius: Metrics.radiusNormal
 
     RowLayout {
         anchors.fill: parent
-        anchors.margins: Layout.paddingNormal
-        spacing: Layout.paddingNormal
+        anchors.margins: Metrics.paddingNormal
+        spacing: Metrics.paddingNormal
 
         // Brightness icon
         Rectangle {
@@ -28,8 +28,8 @@ Rectangle {
                 anchors.centerIn: parent
                 text: root.value > 0.5 ? "" : ""
                 color: Gruvbox.fg
-                font.family: Layout.fontFamily
-                font.pixelSize: Layout.fontSizeLarge
+                font.family: Metrics.fontFamily
+                font.pixelSize: Metrics.fontSizeLarge
             }
         }
 
@@ -91,8 +91,8 @@ Rectangle {
             Layout.preferredWidth: 40
             text: Math.round(root.value * 100) + "%"
             color: Gruvbox.fg
-            font.family: Layout.fontFamily
-            font.pixelSize: Layout.fontSizeSmall
+            font.family: Metrics.fontFamily
+            font.pixelSize: Metrics.fontSizeSmall
             horizontalAlignment: Text.AlignRight
         }
     }
