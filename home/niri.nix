@@ -38,8 +38,8 @@
           active.color = "#d79921";
           inactive.color = "#928374";
         };
-        # Rounded corners for windows (inner radius, border outer radius computed automatically)
-        geometry-corner-radius = let r = 8.0; in {
+        # Rounded corners for windows - should harmonize with frame inner corners
+        geometry-corner-radius = let r = 12.0; in {
           top-left = r;
           top-right = r;
           bottom-left = r;

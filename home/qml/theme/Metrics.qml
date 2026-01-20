@@ -8,7 +8,7 @@ QtObject {
     readonly property int windowGap: 20             // Gap between border and windows
     readonly property int totalBorderWidth: screenBorderWidth + windowGap  // = 26 = struts left/right/bottom
     readonly property int barHeight: 42             // Top bar height = struts top
-    readonly property int frameCornerRadius: 8     // Must match niri's geometry-corner-radius
+    readonly property int frameCornerRadius: 12    // Outer corner radius for screen frame
 
     // Spacing (padding)
     readonly property int paddingSmall: 4

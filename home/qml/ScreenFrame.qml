@@ -14,51 +14,14 @@ Item {
 
     property int borderWidth: Metrics.totalBorderWidth
     property int barHeight: Metrics.barHeight
-    property int cornerRadius: Metrics.frameCornerRadius
+    property int outerRadius: Metrics.frameCornerRadius  // Outer screen corner radius
+    property int innerRadius: Metrics.frameCornerRadius  // Inner content area corner radius
     property color frameColor: Gruvbox.screenBorder
 
     property string currentTime: ""
 
-    // Reusable inverted corner component
-    component InvertedCorner: Shape {
-        id: cornerShape
-        required property int corner  // 0=topLeft, 1=topRight, 2=bottomLeft, 3=bottomRight
-        required property color fillColor
-        required property int radius
-
-        width: radius
-        height: radius
-        antialiasing: true
-
-        ShapePath {
-            fillColor: cornerShape.fillColor
-            strokeColor: "transparent"
-
-            // Start point depends on corner
-            startX: cornerShape.corner === 0 || cornerShape.corner === 2 ? cornerShape.radius : 0
-            startY: cornerShape.corner === 0 || cornerShape.corner === 1 ? cornerShape.radius : 0
-
-            PathArc {
-                x: cornerShape.corner === 0 || cornerShape.corner === 2 ? 0 : cornerShape.radius
-                y: cornerShape.corner === 0 || cornerShape.corner === 1 ? 0 : cornerShape.radius
-                radiusX: cornerShape.radius
-                radiusY: cornerShape.radius
-                direction: cornerShape.corner === 0 || cornerShape.corner === 3 ? PathArc.Counterclockwise : PathArc.Clockwise
-            }
-
-            PathLine {
-                x: cornerShape.corner === 1 || cornerShape.corner === 3 ? cornerShape.radius : 0
-                y: cornerShape.corner === 2 || cornerShape.corner === 3 ? cornerShape.radius : 0
-            }
-
-            PathLine {
-                x: cornerShape.corner === 0 || cornerShape.corner === 2 ? cornerShape.radius : 0
-                y: cornerShape.corner === 0 || cornerShape.corner === 1 ? cornerShape.radius : 0
-            }
-        }
-    }
-
     // ==================== TOP BAR ====================
+    // Shaped bar with rounded outer corners (top-left, top-right of screen)
     PanelWindow {
         id: topBar
         screen: root.screen
@@ -73,123 +36,199 @@ Item {
         WlrLayershell.layer: WlrLayer.Top
         WlrLayershell.namespace: "screen-frame"
 
-        // Main bar background
-        Rectangle {
+        Shape {
+            id: topBarShape
             anchors.fill: parent
-            color: frameColor
+            antialiasing: true
 
-            // Bar content
-            RowLayout {
-                anchors.fill: parent
-                anchors.leftMargin: borderWidth + Metrics.paddingLarge
-                anchors.rightMargin: borderWidth + Metrics.paddingLarge
-                anchors.topMargin: Metrics.paddingSmall
-                anchors.bottomMargin: Metrics.paddingSmall
-                spacing: Metrics.paddingNormal
+            ShapePath {
+                fillColor: frameColor
+                strokeColor: "transparent"
 
-                // Left: Control center button
-                Rectangle {
-                    Layout.preferredWidth: 28
-                    Layout.preferredHeight: 28
-                    color: controlCenterMouse.containsMouse ? Gruvbox.hoverBg : "transparent"
-                    radius: Metrics.radiusSmall
+                // Start at left edge, below outer corner
+                startX: 0
+                startY: outerRadius
 
-                    Text {
-                        anchors.centerIn: parent
-                        text: ""
-                        color: Gruvbox.fg
-                        font.family: Metrics.fontFamily
-                        font.pixelSize: Metrics.fontSizeNormal
-                    }
-
-                    MouseArea {
-                        id: controlCenterMouse
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        onClicked: root.controlCenterToggled()
-                    }
+                // Outer top-left corner (rounded)
+                PathArc {
+                    x: outerRadius
+                    y: 0
+                    radiusX: outerRadius
+                    radiusY: outerRadius
+                    direction: PathArc.Counterclockwise
                 }
 
-                // Spacer
-                Item { Layout.fillWidth: true }
+                // Top edge
+                PathLine { x: topBarShape.width - outerRadius; y: 0 }
 
-                // Center: Clock
+                // Outer top-right corner (rounded)
+                PathArc {
+                    x: topBarShape.width
+                    y: outerRadius
+                    radiusX: outerRadius
+                    radiusY: outerRadius
+                    direction: PathArc.Counterclockwise
+                }
+
+                // Right edge down
+                PathLine { x: topBarShape.width; y: barHeight }
+
+                // Bottom edge
+                PathLine { x: 0; y: barHeight }
+
+                // Left edge back up
+                PathLine { x: 0; y: outerRadius }
+            }
+        }
+
+        // Inner corner fills (create rounded content area corners)
+        // Bottom-left inner corner
+        Shape {
+            x: borderWidth - innerRadius
+            y: barHeight - innerRadius
+            width: innerRadius
+            height: innerRadius
+            antialiasing: true
+
+            ShapePath {
+                fillColor: frameColor
+                strokeColor: "transparent"
+                startX: innerRadius
+                startY: 0
+
+                PathArc {
+                    x: 0
+                    y: innerRadius
+                    radiusX: innerRadius
+                    radiusY: innerRadius
+                    direction: PathArc.Clockwise
+                }
+
+                PathLine { x: innerRadius; y: innerRadius }
+                PathLine { x: innerRadius; y: 0 }
+            }
+        }
+
+        // Bottom-right inner corner
+        Shape {
+            x: topBarShape.width - borderWidth
+            y: barHeight - innerRadius
+            width: innerRadius
+            height: innerRadius
+            antialiasing: true
+
+            ShapePath {
+                fillColor: frameColor
+                strokeColor: "transparent"
+                startX: 0
+                startY: 0
+
+                PathArc {
+                    x: innerRadius
+                    y: innerRadius
+                    radiusX: innerRadius
+                    radiusY: innerRadius
+                    direction: PathArc.Counterclockwise
+                }
+
+                PathLine { x: 0; y: innerRadius }
+                PathLine { x: 0; y: 0 }
+            }
+        }
+
+        // Bar content overlay
+        RowLayout {
+            anchors.fill: parent
+            anchors.leftMargin: borderWidth + Metrics.paddingLarge
+            anchors.rightMargin: borderWidth + Metrics.paddingLarge
+            anchors.topMargin: Metrics.paddingSmall
+            anchors.bottomMargin: Metrics.paddingSmall
+            spacing: Metrics.paddingNormal
+
+            // Left: Control center button
+            Rectangle {
+                Layout.preferredWidth: 28
+                Layout.preferredHeight: 28
+                color: controlCenterMouse.containsMouse ? Gruvbox.hoverBg : "transparent"
+                radius: Metrics.radiusSmall
+
                 Text {
-                    text: root.currentTime
+                    anchors.centerIn: parent
+                    text: ""
                     color: Gruvbox.fg
                     font.family: Metrics.fontFamily
                     font.pixelSize: Metrics.fontSizeNormal
-                    font.bold: true
                 }
 
-                // Spacer
-                Item { Layout.fillWidth: true }
+                MouseArea {
+                    id: controlCenterMouse
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    onClicked: root.controlCenterToggled()
+                }
+            }
 
-                // Right: System tray
-                RowLayout {
-                    spacing: Metrics.paddingSmall
+            // Spacer
+            Item { Layout.fillWidth: true }
 
-                    Repeater {
-                        model: SystemTray.items
+            // Center: Clock
+            Text {
+                text: root.currentTime
+                color: Gruvbox.fg
+                font.family: Metrics.fontFamily
+                font.pixelSize: Metrics.fontSizeNormal
+                font.bold: true
+            }
 
-                        Rectangle {
-                            required property SystemTrayItem modelData
-                            Layout.preferredWidth: 24
-                            Layout.preferredHeight: 24
-                            color: trayMouse.containsMouse ? Gruvbox.hoverBg : "transparent"
-                            radius: Metrics.radiusSmall
+            // Spacer
+            Item { Layout.fillWidth: true }
 
-                            Image {
-                                anchors.centerIn: parent
-                                width: 18
-                                height: 18
-                                source: modelData.icon ? Quickshell.iconPath(modelData.icon) : ""
-                                sourceSize: Qt.size(18, 18)
-                            }
+            // Right: System tray
+            RowLayout {
+                spacing: Metrics.paddingSmall
 
-                            MouseArea {
-                                id: trayMouse
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                acceptedButtons: Qt.LeftButton | Qt.RightButton
+                Repeater {
+                    model: SystemTray.items
 
-                                onClicked: (mouse) => {
-                                    if (mouse.button === Qt.LeftButton) {
-                                        modelData.activate()
-                                    } else {
-                                        modelData.secondaryActivate()
-                                    }
+                    Rectangle {
+                        required property SystemTrayItem modelData
+                        Layout.preferredWidth: 24
+                        Layout.preferredHeight: 24
+                        color: trayMouse.containsMouse ? Gruvbox.hoverBg : "transparent"
+                        radius: Metrics.radiusSmall
+
+                        Image {
+                            anchors.centerIn: parent
+                            width: 18
+                            height: 18
+                            source: modelData.icon ? Quickshell.iconPath(modelData.icon) : ""
+                            sourceSize: Qt.size(18, 18)
+                        }
+
+                        MouseArea {
+                            id: trayMouse
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+                            onClicked: (mouse) => {
+                                if (mouse.button === Qt.LeftButton) {
+                                    modelData.activate()
+                                } else {
+                                    modelData.secondaryActivate()
                                 }
                             }
                         }
                     }
                 }
             }
-
-            // Inverted corner - bottom left of top bar
-            InvertedCorner {
-                anchors.left: parent.left
-                anchors.bottom: parent.bottom
-                anchors.leftMargin: borderWidth - cornerRadius
-                corner: 2  // bottomLeft
-                fillColor: frameColor
-                radius: cornerRadius
-            }
-
-            // Inverted corner - bottom right of top bar
-            InvertedCorner {
-                anchors.right: parent.right
-                anchors.bottom: parent.bottom
-                anchors.rightMargin: borderWidth - cornerRadius
-                corner: 3  // bottomRight
-                fillColor: frameColor
-                radius: cornerRadius
-            }
         }
     }
 
     // ==================== BOTTOM BORDER ====================
+    // Shaped bar with rounded outer corners (bottom-left, bottom-right of screen)
     PanelWindow {
+        id: bottomBar
         screen: root.screen
         anchors {
             bottom: true
@@ -202,28 +241,103 @@ Item {
         WlrLayershell.layer: WlrLayer.Top
         WlrLayershell.namespace: "screen-frame"
 
-        Rectangle {
+        Shape {
+            id: bottomBarShape
             anchors.fill: parent
-            color: frameColor
+            antialiasing: true
 
-            // Inverted corner - top left of bottom bar
-            InvertedCorner {
-                anchors.left: parent.left
-                anchors.top: parent.top
-                anchors.leftMargin: borderWidth - cornerRadius
-                corner: 0  // topLeft
+            ShapePath {
                 fillColor: frameColor
-                radius: cornerRadius
+                strokeColor: "transparent"
+
+                // Start at top-left
+                startX: 0
+                startY: 0
+
+                // Top edge
+                PathLine { x: bottomBarShape.width; y: 0 }
+
+                // Right edge down to corner
+                PathLine { x: bottomBarShape.width; y: borderWidth - outerRadius }
+
+                // Outer bottom-right corner (rounded)
+                PathArc {
+                    x: bottomBarShape.width - outerRadius
+                    y: borderWidth
+                    radiusX: outerRadius
+                    radiusY: outerRadius
+                    direction: PathArc.Counterclockwise
+                }
+
+                // Bottom edge
+                PathLine { x: outerRadius; y: borderWidth }
+
+                // Outer bottom-left corner (rounded)
+                PathArc {
+                    x: 0
+                    y: borderWidth - outerRadius
+                    radiusX: outerRadius
+                    radiusY: outerRadius
+                    direction: PathArc.Counterclockwise
+                }
+
+                // Left edge back up
+                PathLine { x: 0; y: 0 }
             }
+        }
 
-            // Inverted corner - top right of bottom bar
-            InvertedCorner {
-                anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.rightMargin: borderWidth - cornerRadius
-                corner: 1  // topRight
+        // Inner corner fills (create rounded content area corners)
+        // Top-left inner corner
+        Shape {
+            x: borderWidth - innerRadius
+            y: 0
+            width: innerRadius
+            height: innerRadius
+            antialiasing: true
+
+            ShapePath {
                 fillColor: frameColor
-                radius: cornerRadius
+                strokeColor: "transparent"
+                startX: innerRadius
+                startY: innerRadius
+
+                PathArc {
+                    x: 0
+                    y: 0
+                    radiusX: innerRadius
+                    radiusY: innerRadius
+                    direction: PathArc.Counterclockwise
+                }
+
+                PathLine { x: innerRadius; y: 0 }
+                PathLine { x: innerRadius; y: innerRadius }
+            }
+        }
+
+        // Top-right inner corner
+        Shape {
+            x: bottomBarShape.width - borderWidth
+            y: 0
+            width: innerRadius
+            height: innerRadius
+            antialiasing: true
+
+            ShapePath {
+                fillColor: frameColor
+                strokeColor: "transparent"
+                startX: 0
+                startY: innerRadius
+
+                PathArc {
+                    x: innerRadius
+                    y: 0
+                    radiusX: innerRadius
+                    radiusY: innerRadius
+                    direction: PathArc.Clockwise
+                }
+
+                PathLine { x: 0; y: 0 }
+                PathLine { x: 0; y: innerRadius }
             }
         }
     }
