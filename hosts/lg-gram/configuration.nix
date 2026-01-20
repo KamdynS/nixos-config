@@ -45,11 +45,11 @@
   };
 
   # Disable GNOME
-  services.xserver.desktopManager.gnome.enable = false;
+  services.desktopManager.gnome.enable = false;
   
   # Keep GDM for login, but you could switch to greetd later
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.displayManager.gdm.wayland = true;
+  services.displayManager.gdm.enable = true;
+  services.displayManager.gdm.wayland = true;
   
   # Enable niri
   programs.niri.enable = true;
