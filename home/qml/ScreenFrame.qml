@@ -12,9 +12,9 @@ Item {
     required property var screen
     signal controlCenterToggled()
 
-    // Dimensions matching niri struts exactly
-    property int topHeight: 42      // niri struts.top
-    property int sideWidth: 26      // niri struts.left/right/bottom
+    // Frame dimensions (struts minus gap for breathing room)
+    property int topHeight: 32      // niri struts.top (42) minus 10px gap
+    property int sideWidth: 16      // niri struts.sides (26) minus 10px gap
     property int innerRadius: 12    // niri window corner radius
     property color frameColor: Gruvbox.screenBorder
 
