@@ -210,7 +210,7 @@ Item {
                 anchors.top: parent.top
                 height: popupContent.implicitHeight + Metrics.paddingLarge * 2 + topStrip.height
 
-                color: Gruvbox.bg2  // Slightly lighter for visibility
+                color: "#504945"  // Hardcoded gruvbox bg2 for testing
                 radius: workspacePopup.popupRadius
 
                 // Square off top corners by overlaying a rect
