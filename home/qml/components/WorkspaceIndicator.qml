@@ -133,7 +133,7 @@ Item {
         interval: 400
         onTriggered: {
             if (root.hoveredWorkspace >= 0) {
-                workspacePopup.visible = true
+                popupState.shouldShow = true
             }
         }
     }
@@ -144,18 +144,25 @@ Item {
         interval: 200
         onTriggered: {
             if (!popupMouseArea.containsMouse) {
-                workspacePopup.visible = false
+                popupState.shouldShow = false
                 root.hoveredWorkspace = -1
                 root.hoveredIndicator = null
             }
         }
     }
 
+    // Animation state controller
+    QtObject {
+        id: popupState
+        property bool shouldShow: false
+        property bool active: false
+    }
+
     // The popup window
     PanelWindow {
         id: workspacePopup
         screen: root.screen
-        visible: false
+        visible: popupState.active
 
         anchors {
             top: true
@@ -163,165 +170,172 @@ Item {
         }
 
         margins {
-            top: 42  // Below the top bar (strut height)
+            top: 32  // Align with bottom of the bar frame
             left: root.hoveredIndicator ? root.hoveredIndicator.globalX - 70 : 0
         }
 
         implicitWidth: 160
-        implicitHeight: popupContent.implicitHeight + stemHeight + 24
+        implicitHeight: popupContainer.height
         color: "transparent"
 
-        property int stemWidth: 32
-        property int stemHeight: 10
-        property int stemRadius: 6
         property int popupRadius: Metrics.radiusLarge
+        property int animDuration: 200
 
         WlrLayershell.namespace: "workspace-popup"
         WlrLayershell.layer: WlrLayer.Overlay
 
-        MouseArea {
-            id: popupMouseArea
-            anchors.fill: parent
-            hoverEnabled: true
+        // Animate in/out
+        Item {
+            id: popupContainer
+            width: parent.implicitWidth
+            height: popupBackground.height + popupContent.anchors.topMargin + Metrics.paddingLarge
 
-            onContainsMouseChanged: {
-                if (!containsMouse) {
-                    hideTimer.restart()
-                } else {
-                    hideTimer.stop()
+            // Animation properties
+            property real animProgress: 0
+            opacity: animProgress
+            transform: Translate { y: (1 - popupContainer.animProgress) * -20 }
+
+            Behavior on animProgress {
+                NumberAnimation {
+                    duration: workspacePopup.animDuration
+                    easing.type: Easing.OutCubic
                 }
             }
-        }
 
-        // Popup background with stem
-        Canvas {
-            id: popupCanvas
-            anchors.fill: parent
-            antialiasing: true
-
-            onPaint: {
-                let ctx = getContext("2d")
-                ctx.clearRect(0, 0, width, height)
-
-                let sw = workspacePopup.stemWidth
-                let sh = workspacePopup.stemHeight
-                let sr = workspacePopup.stemRadius
-                let pr = workspacePopup.popupRadius
-                let cx = width / 2  // Center X for stem
-
-                // Begin path
-                ctx.beginPath()
-
-                // Start at top-left of stem
-                ctx.moveTo(cx - sw/2, 0)
-
-                // Stem top edge
-                ctx.lineTo(cx + sw/2, 0)
-
-                // Stem right edge down
-                ctx.lineTo(cx + sw/2, sh - sr)
-
-                // Curve to popup (right side of stem)
-                ctx.quadraticCurveTo(cx + sw/2, sh, cx + sw/2 + sr, sh)
-
-                // Top edge to right corner
-                ctx.lineTo(width - pr, sh)
-
-                // Top-right corner
-                ctx.quadraticCurveTo(width, sh, width, sh + pr)
-
-                // Right edge
-                ctx.lineTo(width, height - pr)
-
-                // Bottom-right corner
-                ctx.quadraticCurveTo(width, height, width - pr, height)
-
-                // Bottom edge
-                ctx.lineTo(pr, height)
-
-                // Bottom-left corner
-                ctx.quadraticCurveTo(0, height, 0, height - pr)
-
-                // Left edge
-                ctx.lineTo(0, sh + pr)
-
-                // Top-left corner
-                ctx.quadraticCurveTo(0, sh, pr, sh)
-
-                // Top edge to stem
-                ctx.lineTo(cx - sw/2 - sr, sh)
-
-                // Curve to stem (left side)
-                ctx.quadraticCurveTo(cx - sw/2, sh, cx - sw/2, sh - sr)
-
-                // Close to start
-                ctx.lineTo(cx - sw/2, 0)
-
-                ctx.closePath()
-
-                // Fill popup body
-                ctx.fillStyle = Gruvbox.panelBg.toString()
-                ctx.fill()
-
-                // Stroke border
-                ctx.strokeStyle = Gruvbox.panelBorder.toString()
-                ctx.lineWidth = 1
-                ctx.stroke()
-            }
-        }
-
-        // Stem overlay (border color for morph effect)
-        Rectangle {
-            x: (parent.width - workspacePopup.stemWidth) / 2
-            y: 0
-            width: workspacePopup.stemWidth
-            height: workspacePopup.stemHeight + 1
-            color: Gruvbox.screenBorder
-        }
-
-        // Popup content
-        Column {
-            id: popupContent
-            x: Metrics.paddingLarge
-            y: workspacePopup.stemHeight + Metrics.paddingLarge
-            width: parent.width - Metrics.paddingLarge * 2
-            spacing: Metrics.paddingNormal
-
-            // Workspace number
-            Text {
-                text: "Workspace " + root.hoveredWorkspace
-                color: Gruvbox.fg
-                font.family: Metrics.fontFamily
-                font.pixelSize: Metrics.fontSizeLarge
-                font.bold: true
-            }
-
-            // Separator
+            // Background that melts into the border
             Rectangle {
-                width: parent.width
-                height: 1
-                color: Gruvbox.bg3
-            }
+                id: popupBackground
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+                height: popupContent.implicitHeight + Metrics.paddingLarge * 2 + topStrip.height
 
-            // Workspace info
-            Column {
-                width: parent.width
-                spacing: Metrics.paddingSmall
+                color: Gruvbox.panelBg
+                radius: workspacePopup.popupRadius
 
-                Text {
-                    property var ws: root.workspaces.find(w => w.idx === root.hoveredWorkspace)
-                    text: ws ? (ws.is_active ? "● Active" : "○ Inactive") : ""
-                    color: ws && ws.is_active ? Gruvbox.green : Gruvbox.fg3
-                    font.family: Metrics.fontFamily
-                    font.pixelSize: Metrics.fontSizeNormal
+                // Square off top corners by overlaying a rect
+                Rectangle {
+                    id: topStrip
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    height: workspacePopup.popupRadius
+                    color: Gruvbox.screenBorder
                 }
 
+                // Border on sides and bottom only
+                Rectangle {
+                    anchors.fill: parent
+                    color: "transparent"
+                    radius: workspacePopup.popupRadius
+                    border.color: Gruvbox.panelBorder
+                    border.width: 1
+
+                    // Hide top border by covering it
+                    Rectangle {
+                        anchors.top: parent.top
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.leftMargin: 1
+                        anchors.rightMargin: 1
+                        height: workspacePopup.popupRadius + 1
+                        color: Gruvbox.screenBorder
+                    }
+                }
+            }
+
+            MouseArea {
+                id: popupMouseArea
+                anchors.fill: parent
+                hoverEnabled: true
+
+                onContainsMouseChanged: {
+                    if (!containsMouse) {
+                        hideTimer.restart()
+                    } else {
+                        hideTimer.stop()
+                    }
+                }
+            }
+
+            // Popup content
+            Column {
+                id: popupContent
+                anchors.top: popupBackground.top
+                anchors.topMargin: topStrip.height + Metrics.paddingLarge
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.leftMargin: Metrics.paddingLarge
+                anchors.rightMargin: Metrics.paddingLarge
+                spacing: Metrics.paddingNormal
+
+                // Workspace number
                 Text {
-                    property var ws: root.workspaces.find(w => w.idx === root.hoveredWorkspace)
-                    text: ws && ws.active_window_id ? "Has windows" : "Empty"
-                    color: Gruvbox.fg4
+                    text: "Workspace " + root.hoveredWorkspace
+                    color: Gruvbox.fg
                     font.family: Metrics.fontFamily
-                    font.pixelSize: Metrics.fontSizeSmall
+                    font.pixelSize: Metrics.fontSizeLarge
+                    font.bold: true
+                }
+
+                // Separator
+                Rectangle {
+                    width: parent.width
+                    height: 1
+                    color: Gruvbox.bg3
+                }
+
+                // Workspace info
+                Column {
+                    width: parent.width
+                    spacing: Metrics.paddingSmall
+
+                    Text {
+                        property var ws: root.workspaces.find(w => w.idx === root.hoveredWorkspace)
+                        text: ws ? (ws.is_active ? "● Active" : "○ Inactive") : ""
+                        color: ws && ws.is_active ? Gruvbox.green : Gruvbox.fg3
+                        font.family: Metrics.fontFamily
+                        font.pixelSize: Metrics.fontSizeNormal
+                    }
+
+                    Text {
+                        property var ws: root.workspaces.find(w => w.idx === root.hoveredWorkspace)
+                        text: ws && ws.active_window_id ? "Has windows" : "Empty"
+                        color: Gruvbox.fg4
+                        font.family: Metrics.fontFamily
+                        font.pixelSize: Metrics.fontSizeSmall
+                    }
+                }
+            }
+        }
+
+        // Handle show/hide with animation
+        onVisibleChanged: {
+            if (visible) {
+                popupContainer.animProgress = 1
+            }
+        }
+
+        Connections {
+            target: popupState
+            function onShouldShowChanged() {
+                if (popupState.shouldShow) {
+                    popupState.active = true
+                    popupContainer.animProgress = 1
+                } else {
+                    popupContainer.animProgress = 0
+                    // Delay hiding until animation completes
+                    closeTimer.start()
+                }
+            }
+        }
+
+        Timer {
+            id: closeTimer
+            interval: workspacePopup.animDuration
+            onTriggered: {
+                if (!popupState.shouldShow) {
+                    popupState.active = false
                 }
             }
         }
