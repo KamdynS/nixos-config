@@ -132,17 +132,16 @@ Item {
         WlrLayershell.layer: WlrLayer.Top
         WlrLayershell.namespace: "screen-frame-bar"
 
+        // Left section
         RowLayout {
             anchors {
-                fill: parent
+                left: parent.left
                 leftMargin: sideWidth + Metrics.paddingLarge
-                rightMargin: sideWidth + Metrics.paddingLarge
-                topMargin: Metrics.paddingSmall
-                bottomMargin: Metrics.paddingSmall
+                verticalCenter: parent.verticalCenter
             }
             spacing: Metrics.paddingNormal
 
-            // Left: Control center button
+            // Control center button
             Rectangle {
                 Layout.preferredWidth: 28
                 Layout.preferredHeight: 28
@@ -165,65 +164,65 @@ Item {
                 }
             }
 
-            // Clock (moved to left side)
+            // Clock
             Text {
                 text: root.currentTime
                 color: Gruvbox.fg3
                 font.family: Metrics.fontFamily
                 font.pixelSize: Metrics.fontSizeSmall
             }
+        }
 
-            // Spacer
-            Item { Layout.fillWidth: true }
+        // Center: Workspace indicator (truly centered)
+        WorkspaceIndicator {
+            anchors.centerIn: parent
+            workspaces: root.workspaces
+            activeWorkspace: root.activeWorkspace
+            screen: root.screen
 
-            // Center: Workspace indicator
-            WorkspaceIndicator {
-                workspaces: root.workspaces
-                activeWorkspace: root.activeWorkspace
-                screen: root.screen
-
-                onWorkspaceClicked: (idx) => {
-                    root.workspaceSwitchRequested(idx)
-                }
+            onWorkspaceClicked: (idx) => {
+                root.workspaceSwitchRequested(idx)
             }
+        }
 
-            // Spacer
-            Item { Layout.fillWidth: true }
+        // Right section: System tray
+        RowLayout {
+            anchors {
+                right: parent.right
+                rightMargin: sideWidth + Metrics.paddingLarge
+                verticalCenter: parent.verticalCenter
+            }
+            spacing: Metrics.paddingSmall
 
-            // Right: System tray
-            RowLayout {
-                spacing: Metrics.paddingSmall
+            Repeater {
+                model: SystemTray.items
 
-                Repeater {
-                    model: SystemTray.items
+                Rectangle {
+                    required property SystemTrayItem modelData
+                    Layout.preferredWidth: 24
+                    Layout.preferredHeight: 24
+                    color: trayMouse.containsMouse ? Gruvbox.hoverBg : "transparent"
+                    radius: Metrics.radiusSmall
 
-                    Rectangle {
-                        required property SystemTrayItem modelData
-                        Layout.preferredWidth: 24
-                        Layout.preferredHeight: 24
-                        color: trayMouse.containsMouse ? Gruvbox.hoverBg : "transparent"
-                        radius: Metrics.radiusSmall
+                    Image {
+                        anchors.centerIn: parent
+                        width: 18
+                        height: 18
+                        source: modelData.icon ? Quickshell.iconPath(modelData.icon) : ""
+                        sourceSize: Qt.size(18, 18)
+                    }
 
-                        Image {
-                            anchors.centerIn: parent
-                            width: 18
-                            height: 18
-                            source: modelData.icon ? Quickshell.iconPath(modelData.icon) : ""
-                            sourceSize: Qt.size(18, 18)
-                        }
+                    MouseArea {
+                        id: trayMouse
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        acceptedButtons: Qt.LeftButton | Qt.RightButton
 
-                        MouseArea {
-                            id: trayMouse
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            acceptedButtons: Qt.LeftButton | Qt.RightButton
-
-                            onClicked: (mouse) => {
-                                if (mouse.button === Qt.LeftButton) {
-                                    modelData.activate()
-                                } else {
-                                    modelData.secondaryActivate()
-                                }
+                        onClicked: (mouse) => {
+                            if (mouse.button === Qt.LeftButton) {
+                                modelData.activate()
+                            } else {
+                                modelData.secondaryActivate()
                             }
                         }
                     }

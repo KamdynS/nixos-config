@@ -18,6 +18,7 @@ Item {
     // Sizing
     property int inactiveSize: 12
     property int activeSize: 18
+    property int activeWidth: 28  // Rectangle width for active workspace
     property int spacing: 6
     property int squircleRadius: 4
 
@@ -54,7 +55,7 @@ Item {
                 property bool isHovered: indicatorMouse.containsMouse
                 property int workspaceIdx: modelData.idx
 
-                Layout.preferredWidth: isActive ? root.activeSize : root.inactiveSize
+                Layout.preferredWidth: isActive ? root.activeWidth : root.inactiveSize
                 Layout.preferredHeight: isActive ? root.activeSize : root.inactiveSize
                 Layout.alignment: Qt.AlignVCenter
 
@@ -65,6 +66,20 @@ Item {
                 }
 
                 radius: root.squircleRadius
+
+                // Workspace number (only shown when active)
+                Text {
+                    anchors.centerIn: parent
+                    text: indicator.workspaceIdx
+                    color: Gruvbox.bg
+                    font.family: Metrics.fontFamily
+                    font.pixelSize: Metrics.fontSizeSmall
+                    font.bold: true
+                    opacity: indicator.isActive ? 1 : 0
+                    Behavior on opacity {
+                        NumberAnimation { duration: 150 }
+                    }
+                }
 
                 // Smooth size transition
                 Behavior on Layout.preferredWidth {
