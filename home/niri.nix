@@ -11,14 +11,8 @@
     # Gaps between windows
     layout.gaps = 8;
 
-    # Struts - reserved space at screen edges (matches screen border)
-    # This makes maximize-column respect the border
-    layout.struts = {
-      left = 6;
-      right = 6;
-      top = 6;
-      bottom = 6;
-    };
+    # Struts handled by quickshell panels via ExclusionMode.Normal
+    # No additional struts needed
 
     # Window borders
     layout.border = {
@@ -28,7 +22,7 @@
       inactive.color = "#928374"; # Gruvbox gray
     };
 
-    # Force borders on ALL windows (including fullscreen)
+    # Window rules for all windows
     window-rules = [
       {
         matches = [];  # empty = match all windows
@@ -38,6 +32,14 @@
           active.color = "#d79921";
           inactive.color = "#928374";
         };
+        # Rounded corners for windows (inner radius, border outer radius computed automatically)
+        geometry-corner-radius = let r = 8.0; in {
+          top-left = r;
+          top-right = r;
+          bottom-left = r;
+          bottom-right = r;
+        };
+        clip-to-geometry = true;  # Clip window contents to the corner radius
       }
     ];
     

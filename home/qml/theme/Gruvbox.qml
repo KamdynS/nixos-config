@@ -88,6 +88,8 @@ QtObject {
     // Screen border (always uses light bg for the frame effect)
     readonly property color screenBorder: lightBg
     readonly property int screenBorderWidth: 6
+    readonly property int barHeight: 32
+    readonly property int frameCornerRadius: 8  // Inverted corner radius for screen frame
 
     // Fonts
     readonly property string fontFamily: "JetBrainsMono Nerd Font"

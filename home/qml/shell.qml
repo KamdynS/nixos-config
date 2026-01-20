@@ -14,22 +14,11 @@ ShellRoot {
     property string wifiNetwork: "..."
     property bool wifiEnabled: true
 
-    // Screen border on each screen (bottom layer frame)
+    // Unified screen frame (border + bar) on each screen
     Variants {
         model: Quickshell.screens
 
-        ScreenBorder {
-            property var modelData
-            screen: modelData
-        }
-    }
-
-    // Create bar on each screen
-    Variants {
-        model: Quickshell.screens
-
-        Bar {
-            id: bar
+        ScreenFrame {
             property var modelData
             screen: modelData
 
