@@ -70,69 +70,38 @@ Item {
                     direction: PathArc.Counterclockwise
                 }
 
-                // Right edge down
+                // Right edge all the way down
                 PathLine { x: topBarShape.width; y: barHeight }
 
-                // Bottom edge
-                PathLine { x: 0; y: barHeight }
+                // Bottom edge - right border portion
+                PathLine { x: topBarShape.width - borderWidth + innerRadius; y: barHeight }
 
-                // Left edge back up
-                PathLine { x: 0; y: outerRadius }
-            }
-        }
-
-        // Inner corner fills (create rounded content area corners)
-        // Bottom-left inner corner
-        Shape {
-            x: borderWidth - innerRadius
-            y: barHeight - innerRadius
-            width: innerRadius
-            height: innerRadius
-            antialiasing: true
-
-            ShapePath {
-                fillColor: frameColor
-                strokeColor: "transparent"
-                startX: innerRadius
-                startY: 0
-
+                // Inner bottom-right corner (curves inward toward frame)
                 PathArc {
-                    x: 0
-                    y: innerRadius
-                    radiusX: innerRadius
-                    radiusY: innerRadius
-                    direction: PathArc.Clockwise
-                }
-
-                PathLine { x: innerRadius; y: innerRadius }
-                PathLine { x: innerRadius; y: 0 }
-            }
-        }
-
-        // Bottom-right inner corner
-        Shape {
-            x: topBarShape.width - borderWidth
-            y: barHeight - innerRadius
-            width: innerRadius
-            height: innerRadius
-            antialiasing: true
-
-            ShapePath {
-                fillColor: frameColor
-                strokeColor: "transparent"
-                startX: 0
-                startY: 0
-
-                PathArc {
-                    x: innerRadius
-                    y: innerRadius
+                    x: topBarShape.width - borderWidth
+                    y: barHeight - innerRadius
                     radiusX: innerRadius
                     radiusY: innerRadius
                     direction: PathArc.Counterclockwise
                 }
 
-                PathLine { x: 0; y: innerRadius }
-                PathLine { x: 0; y: 0 }
+                // Inner top edge (across content area)
+                PathLine { x: borderWidth; y: barHeight - innerRadius }
+
+                // Inner bottom-left corner (curves inward toward frame)
+                PathArc {
+                    x: borderWidth - innerRadius
+                    y: barHeight
+                    radiusX: innerRadius
+                    radiusY: innerRadius
+                    direction: PathArc.Counterclockwise
+                }
+
+                // Bottom edge - left border portion
+                PathLine { x: 0; y: barHeight }
+
+                // Left edge back up
+                PathLine { x: 0; y: outerRadius }
             }
         }
 
@@ -250,14 +219,38 @@ Item {
                 fillColor: frameColor
                 strokeColor: "transparent"
 
-                // Start at top-left
+                // Start at top-left corner of left border portion
                 startX: 0
                 startY: 0
 
-                // Top edge
+                // Top edge - left border portion
+                PathLine { x: borderWidth - innerRadius; y: 0 }
+
+                // Inner top-left corner (curves inward toward frame)
+                PathArc {
+                    x: borderWidth
+                    y: innerRadius
+                    radiusX: innerRadius
+                    radiusY: innerRadius
+                    direction: PathArc.Counterclockwise
+                }
+
+                // Inner bottom edge (across content area)
+                PathLine { x: bottomBarShape.width - borderWidth; y: innerRadius }
+
+                // Inner top-right corner (curves inward toward frame)
+                PathArc {
+                    x: bottomBarShape.width - borderWidth + innerRadius
+                    y: 0
+                    radiusX: innerRadius
+                    radiusY: innerRadius
+                    direction: PathArc.Counterclockwise
+                }
+
+                // Top edge - right border portion
                 PathLine { x: bottomBarShape.width; y: 0 }
 
-                // Right edge down to corner
+                // Right edge down to outer corner
                 PathLine { x: bottomBarShape.width; y: borderWidth - outerRadius }
 
                 // Outer bottom-right corner (rounded)
@@ -283,61 +276,6 @@ Item {
 
                 // Left edge back up
                 PathLine { x: 0; y: 0 }
-            }
-        }
-
-        // Inner corner fills (create rounded content area corners)
-        // Top-left inner corner
-        Shape {
-            x: borderWidth - innerRadius
-            y: 0
-            width: innerRadius
-            height: innerRadius
-            antialiasing: true
-
-            ShapePath {
-                fillColor: frameColor
-                strokeColor: "transparent"
-                startX: innerRadius
-                startY: innerRadius
-
-                PathArc {
-                    x: 0
-                    y: 0
-                    radiusX: innerRadius
-                    radiusY: innerRadius
-                    direction: PathArc.Counterclockwise
-                }
-
-                PathLine { x: innerRadius; y: 0 }
-                PathLine { x: innerRadius; y: innerRadius }
-            }
-        }
-
-        // Top-right inner corner
-        Shape {
-            x: bottomBarShape.width - borderWidth
-            y: 0
-            width: innerRadius
-            height: innerRadius
-            antialiasing: true
-
-            ShapePath {
-                fillColor: frameColor
-                strokeColor: "transparent"
-                startX: 0
-                startY: innerRadius
-
-                PathArc {
-                    x: innerRadius
-                    y: 0
-                    radiusX: innerRadius
-                    radiusY: innerRadius
-                    direction: PathArc.Clockwise
-                }
-
-                PathLine { x: 0; y: 0 }
-                PathLine { x: 0; y: innerRadius }
             }
         }
     }
