@@ -178,7 +178,6 @@ Item {
             anchors.centerIn: parent
             workspaces: root.workspaces
             activeWorkspace: root.activeWorkspace
-            screen: root.screen
 
             onWorkspaceClicked: (idx) => {
                 root.workspaceSwitchRequested(idx)
