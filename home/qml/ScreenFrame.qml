@@ -4,6 +4,7 @@ import Quickshell.Io
 import Quickshell.Services.SystemTray
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Shapes
 import "theme"
 
 Item {
@@ -11,12 +12,51 @@ Item {
     required property var screen
     signal controlCenterToggled()
 
-    property int borderWidth: Layout.totalBorderWidth  // Total reserved space (border + gap)
+    property int borderWidth: Layout.totalBorderWidth
     property int barHeight: Layout.barHeight
     property int cornerRadius: Layout.frameCornerRadius
     property color frameColor: Gruvbox.screenBorder
 
     property string currentTime: ""
+
+    // Reusable inverted corner component
+    component InvertedCorner: Shape {
+        id: cornerShape
+        required property int corner  // 0=topLeft, 1=topRight, 2=bottomLeft, 3=bottomRight
+        required property color fillColor
+        required property int radius
+
+        width: radius
+        height: radius
+        antialiasing: true
+
+        ShapePath {
+            fillColor: cornerShape.fillColor
+            strokeColor: "transparent"
+
+            // Start point depends on corner
+            startX: cornerShape.corner === 0 || cornerShape.corner === 2 ? cornerShape.radius : 0
+            startY: cornerShape.corner === 0 || cornerShape.corner === 1 ? cornerShape.radius : 0
+
+            PathArc {
+                x: cornerShape.corner === 0 || cornerShape.corner === 2 ? 0 : cornerShape.radius
+                y: cornerShape.corner === 0 || cornerShape.corner === 1 ? 0 : cornerShape.radius
+                radiusX: cornerShape.radius
+                radiusY: cornerShape.radius
+                direction: cornerShape.corner === 0 || cornerShape.corner === 3 ? PathArc.Counterclockwise : PathArc.Clockwise
+            }
+
+            PathLine {
+                x: cornerShape.corner === 1 || cornerShape.corner === 3 ? cornerShape.radius : 0
+                y: cornerShape.corner === 2 || cornerShape.corner === 3 ? cornerShape.radius : 0
+            }
+
+            PathLine {
+                x: cornerShape.corner === 0 || cornerShape.corner === 2 ? cornerShape.radius : 0
+                y: cornerShape.corner === 0 || cornerShape.corner === 1 ? cornerShape.radius : 0
+            }
+        }
+    }
 
     // ==================== TOP BAR ====================
     PanelWindow {
@@ -126,48 +166,24 @@ Item {
                 }
             }
 
-            // Inverted corner - bottom left
-            Canvas {
-                id: topLeftCorner
+            // Inverted corner - bottom left of top bar
+            InvertedCorner {
                 anchors.left: parent.left
                 anchors.bottom: parent.bottom
                 anchors.leftMargin: borderWidth - cornerRadius
-                width: cornerRadius
-                height: cornerRadius
-                onPaint: {
-                    var ctx = getContext("2d")
-                    ctx.reset()
-                    ctx.fillStyle = frameColor
-                    ctx.fillRect(0, 0, width, height)
-                    ctx.globalCompositeOperation = "destination-out"
-                    ctx.beginPath()
-                    ctx.arc(width, 0, cornerRadius, 0.5 * Math.PI, Math.PI)
-                    ctx.lineTo(width, height)
-                    ctx.lineTo(width, 0)
-                    ctx.fill()
-                }
+                corner: 2  // bottomLeft
+                fillColor: frameColor
+                radius: cornerRadius
             }
 
-            // Inverted corner - bottom right
-            Canvas {
-                id: topRightCorner
+            // Inverted corner - bottom right of top bar
+            InvertedCorner {
                 anchors.right: parent.right
                 anchors.bottom: parent.bottom
                 anchors.rightMargin: borderWidth - cornerRadius
-                width: cornerRadius
-                height: cornerRadius
-                onPaint: {
-                    var ctx = getContext("2d")
-                    ctx.reset()
-                    ctx.fillStyle = frameColor
-                    ctx.fillRect(0, 0, width, height)
-                    ctx.globalCompositeOperation = "destination-out"
-                    ctx.beginPath()
-                    ctx.arc(0, 0, cornerRadius, 0, 0.5 * Math.PI)
-                    ctx.lineTo(0, height)
-                    ctx.lineTo(0, 0)
-                    ctx.fill()
-                }
+                corner: 3  // bottomRight
+                fillColor: frameColor
+                radius: cornerRadius
             }
         }
     }
@@ -190,46 +206,24 @@ Item {
             anchors.fill: parent
             color: frameColor
 
-            // Inverted corner - top left
-            Canvas {
+            // Inverted corner - top left of bottom bar
+            InvertedCorner {
                 anchors.left: parent.left
                 anchors.top: parent.top
                 anchors.leftMargin: borderWidth - cornerRadius
-                width: cornerRadius
-                height: cornerRadius
-                onPaint: {
-                    var ctx = getContext("2d")
-                    ctx.reset()
-                    ctx.fillStyle = frameColor
-                    ctx.fillRect(0, 0, width, height)
-                    ctx.globalCompositeOperation = "destination-out"
-                    ctx.beginPath()
-                    ctx.arc(width, height, cornerRadius, Math.PI, 1.5 * Math.PI)
-                    ctx.lineTo(width, 0)
-                    ctx.lineTo(width, height)
-                    ctx.fill()
-                }
+                corner: 0  // topLeft
+                fillColor: frameColor
+                radius: cornerRadius
             }
 
-            // Inverted corner - top right
-            Canvas {
+            // Inverted corner - top right of bottom bar
+            InvertedCorner {
                 anchors.right: parent.right
                 anchors.top: parent.top
                 anchors.rightMargin: borderWidth - cornerRadius
-                width: cornerRadius
-                height: cornerRadius
-                onPaint: {
-                    var ctx = getContext("2d")
-                    ctx.reset()
-                    ctx.fillStyle = frameColor
-                    ctx.fillRect(0, 0, width, height)
-                    ctx.globalCompositeOperation = "destination-out"
-                    ctx.beginPath()
-                    ctx.arc(0, height, cornerRadius, 1.5 * Math.PI, 2 * Math.PI)
-                    ctx.lineTo(0, 0)
-                    ctx.lineTo(0, height)
-                    ctx.fill()
-                }
+                corner: 1  // topRight
+                fillColor: frameColor
+                radius: cornerRadius
             }
         }
     }
