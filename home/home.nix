@@ -12,6 +12,12 @@
 	home.homeDirectory = "/home/kamdyns";
 	home.stateVersion = "24.05";
 
+  # Session variables for Wayland/GTK apps
+  home.sessionVariables = {
+    # Tell Firefox to not draw its own titlebar (allows niri borders to show)
+    MOZ_GTK_TITLEBAR_DECORATION = "none";
+  };
+
 	programs.home-manager.enable = true;
 
   fonts.fontconfig.enable = true;
