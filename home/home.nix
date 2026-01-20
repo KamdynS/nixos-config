@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   imports = [
@@ -97,6 +97,54 @@
 	# Neovim dotfiles
 	xdg.configFile."nvim".source = config.lib.file.mkOutOfStoreSymlink "/home/kamdyns/nixos-config/dotfiles/nvim";
 
+  # Niri keybinding help script
+  xdg.configFile."niri/keybinds-help.sh" = {
+    executable = true;
+    text = ''
+      #!/bin/bash
+      yad --title="Niri Keybindings" \
+          --text-info \
+          --width=500 \
+          --height=600 \
+          --fontname="JetBrains Mono 11" \
+          --button="Close:0" \
+          --center \
+          <<EOF
+      ═══════════════════════════════════════
+               NIRI KEYBINDINGS
+      ═══════════════════════════════════════
+
+      GENERAL
+        Mod+Return        Terminal (Ghostty)
+        Mod+D             App Launcher (Wofi)
+        Mod+Q             Close Window
+        Mod+Shift+E       Exit Niri
+        Mod+X             Power Menu
+        Mod+Shift+?       This Help
+
+      WINDOWS
+        Mod+F             Maximize
+        Mod+Shift+F       Fullscreen
+        Mod+H/J/K/L       Focus Left/Down/Up/Right
+        Mod+Shift+H/J/K/L Move Window
+
+      WORKSPACES
+        Mod+1-9           Go to Workspace
+        Mod+Shift+1-9     Move Window to Workspace
+        Mod+Scroll        Scroll Workspaces
+
+      SCREENSHOTS
+        Print             Screenshot (save)
+        Alt+Print         Window Screenshot (save)
+        Ctrl+Print        Region to Clipboard
+        Ctrl+Alt+Print    Screen to Clipboard
+
+      OTHER
+        Mod+Shift+P       Power Off Monitors
+      EOF
+    '';
+  };
+
 	# Dev tools needed in PATH
 	home.packages = with pkgs; [
 		# language toolchains
@@ -129,7 +177,26 @@
     # Important for da 'puter
     networkmanagerapplet
     pavucontrol
-		
+
+    # File manager
+    xfce.thunar
+
+    # Clipboard support
+    wl-clipboard
+
+    # Screenshots
+    grim
+    slurp
+
+    # Screen locker
+    swaylock
+
+    # Keybinding help
+    yad
+
+    ] ++ [
+    # Zen browser
+    inputs.zen-browser.packages.${pkgs.system}.default
     ] ++ [
     pkgs.nerd-fonts.jetbrains-mono
 		pkgs.typescript-language-server

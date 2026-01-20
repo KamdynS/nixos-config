@@ -120,9 +120,16 @@
       "Mod+WheelScrollDown".action.focus-workspace-down = [];
       "Mod+WheelScrollUp".action.focus-workspace-up = [];
       
-      # Screenshots
+      # Screenshots (save to file)
       "Print".action.screenshot = [];
       "Alt+Print".action.screenshot-window = [];
+
+      # Screenshots to clipboard
+      "Ctrl+Print".action.spawn = [ "bash" "-c" "grim -g \"$(slurp)\" - | wl-copy" ];
+      "Ctrl+Alt+Print".action.spawn = [ "bash" "-c" "grim - | wl-copy" ];
+
+      # Keybinding help
+      "Mod+Shift+Slash".action.spawn = [ "bash" "-c" "~/.config/niri/keybinds-help.sh" ];
       
       # Exit
       "Mod+Shift+E".action.quit = [];

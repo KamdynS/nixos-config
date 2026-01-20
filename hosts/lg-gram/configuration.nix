@@ -95,8 +95,8 @@
     ];
   };
 
-  # Install firefox.
-  programs.firefox.enable = true;
+  # Browser disabled - using Zen via home-manager
+  programs.firefox.enable = false;
 
   # Zsh
   programs.zsh.enable = true;

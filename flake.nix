@@ -13,9 +13,14 @@ inputs = {
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+  zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 };
 
-outputs = { self, nixpkgs, home-manager, niri, ... }@inputs:
+outputs = { self, nixpkgs, home-manager, niri, zen-browser, ... }@inputs:
 	let
 		system = "x86_64-linux";
 	in
