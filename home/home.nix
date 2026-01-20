@@ -101,6 +101,7 @@
 		gnumake
 		unzip
     tree
+    claude-code
 
     # Fun stuff
     neofetch
