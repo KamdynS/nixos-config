@@ -1,0 +1,100 @@
+{ config, pkgs, ... }:
+
+{
+  imports =
+    [
+      ./hardware-configuration.nix
+    ];
+  
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+  # Bootloader - GRUB for dual boot with small EFI partition
+  boot.loader.systemd-boot.enable = false;
+  boot.loader.grub = {
+    enable = true;
+    device = "nodev";
+    efiSupport = true;
+    useOSProber = true;
+  };
+  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.efi.efiSysMountPoint = "/efi";
+
+  networking.hostName = "desktop";
+
+  # Enable networking
+  networking.networkmanager.enable = true;
+
+  # Set your time zone.
+  time.timeZone = "America/New_York";
+
+  # Select internationalisation properties.
+  i18n.defaultLocale = "en_US.UTF-8";
+
+  i18n.extraLocaleSettings = {
+    LC_ADDRESS = "en_US.UTF-8";
+    LC_IDENTIFICATION = "en_US.UTF-8";
+    LC_MEASUREMENT = "en_US.UTF-8";
+    LC_MONETARY = "en_US.UTF-8";
+    LC_NAME = "en_US.UTF-8";
+    LC_NUMERIC = "en_US.UTF-8";
+    LC_PAPER = "en_US.UTF-8";
+    LC_TELEPHONE = "en_US.UTF-8";
+    LC_TIME = "en_US.UTF-8";
+  };
+
+  # AMD GPU support
+  hardware.graphics.enable = true;
+
+  # Disable GNOME
+  services.desktopManager.gnome.enable = false;
+  
+  # Keep GDM for login
+  services.displayManager.gdm.enable = true;
+  services.displayManager.gdm.wayland = true;
+  
+  # Enable niri
+  programs.niri.enable = true;
+  programs.niri.package = pkgs.niri-unstable;
+
+  services.displayManager.sessionPackages = [ pkgs.niri-unstable ];
+  services.xserver.enable = true;
+  
+  # Needed for screen sharing, file dialogs
+  services.dbus.packages = [ pkgs.nautilus ];
+
+  # Enable CUPS to print documents.
+  services.printing.enable = true;
+
+  # Enable sound with pipewire.
+  services.pulseaudio.enable = false;
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+  };
+
+  # Define a user account.
+  users.users.kamdyns = {
+    isNormalUser = true;
+    description = "Kamdyn Shaeffer";
+    extraGroups = [ "networkmanager" "wheel" ];
+    packages = with pkgs; [];
+  };
+
+  programs.firefox.enable = false;
+
+  # Zsh
+  programs.zsh.enable = true;
+  users.users.kamdyns.shell = pkgs.zsh;
+
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
+
+  environment.systemPackages = with pkgs; [
+    git
+  ];
+
+  system.stateVersion = "24.11";
+}
