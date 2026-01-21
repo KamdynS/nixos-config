@@ -5,11 +5,19 @@
     quickshell
     brightnessctl  # For brightness control
     playerctl      # For media controls (MPRIS)
+
+    # Caelestia shell dependencies
+    ddcutil        # DDC monitor brightness control
+    lm_sensors     # System temperature/resource monitoring
+
+    # Fonts for caelestia
+    material-symbols
+    nerd-fonts.caskaydia-cove
   ];
 
-  # Quickshell config files
+  # Caelestia shell config files
   xdg.configFile."quickshell" = {
-    source = ./qml;
+    source = ./caelestia;
     recursive = true;
   };
 }

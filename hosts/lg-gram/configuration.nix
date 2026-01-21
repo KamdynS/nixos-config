@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, niri-shell-ipc, ... }:
 
 {
   imports =
@@ -89,11 +89,14 @@
   users.users.kamdyns = {
     isNormalUser = true;
     description = "Kamdyn Shaeffer";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "i2c" ];
     packages = with pkgs; [
     #  thunderbird
     ];
   };
+
+  # I2C support for DDC monitor brightness control (caelestia dependency)
+  hardware.i2c.enable = true;
 
   # Browser disabled - using Zen via home-manager
   programs.firefox.enable = false;
@@ -108,8 +111,14 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #  wget
+    # Caelestia shell dependencies
+    material-symbols              # Icon font
+    nerd-fonts.caskaydia-cove     # Font for shell
+    ddcutil                       # DDC monitor brightness control
+    swappy                        # Screenshot editor
+
+    # Niri shell IPC daemon
+    niri-shell-ipc
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

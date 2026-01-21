@@ -1,0 +1,28 @@
+[package]
+name = "niri-shell-ipc"
+version = "0.1.0"
+edition = "2021"
+description = "DBus daemon for niri IPC integration with Quickshell"
+license = "MIT"
+
+[dependencies]
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# DBus (pure Rust implementation)
+zbus = { version = "5", default-features = false, features = ["tokio"] }
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Error handling
+anyhow = "1"
+thiserror = "2"
+
+# Async utilities
+futures = "0.3"
