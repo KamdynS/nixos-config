@@ -144,21 +144,21 @@ impl NiriInterface {
         self.send_action("{\"PowerOffMonitors\":{}}").await
     }
 
-    // Signals for state changes
+    // Signals for state changes (named _updated to avoid conflict with property _changed methods)
     #[zbus(signal)]
-    async fn workspaces_changed(ctx: &SignalContext<'_>) -> zbus::Result<()>;
+    async fn workspaces_updated(ctx: &SignalContext<'_>) -> zbus::Result<()>;
 
     #[zbus(signal)]
-    async fn windows_changed(ctx: &SignalContext<'_>) -> zbus::Result<()>;
+    async fn windows_updated(ctx: &SignalContext<'_>) -> zbus::Result<()>;
 
     #[zbus(signal)]
-    async fn outputs_changed(ctx: &SignalContext<'_>) -> zbus::Result<()>;
+    async fn outputs_updated(ctx: &SignalContext<'_>) -> zbus::Result<()>;
 
     #[zbus(signal)]
-    async fn focus_changed(ctx: &SignalContext<'_>) -> zbus::Result<()>;
+    async fn focus_updated(ctx: &SignalContext<'_>) -> zbus::Result<()>;
 
     #[zbus(signal)]
-    async fn keyboard_layout_changed(ctx: &SignalContext<'_>) -> zbus::Result<()>;
+    async fn keyboard_layout_updated(ctx: &SignalContext<'_>) -> zbus::Result<()>;
 }
 
 impl NiriInterface {
@@ -198,36 +198,36 @@ pub async fn run_server(state: SharedState) -> Result<()> {
 
                 match event {
                     StateEvent::WorkspacesChanged => {
-                        if let Err(e) = NiriInterface::workspaces_changed(&ctx).await {
-                            error!("Failed to emit WorkspacesChanged signal: {}", e);
+                        if let Err(e) = NiriInterface::workspaces_updated(&ctx).await {
+                            error!("Failed to emit WorkspacesUpdated signal: {}", e);
                         }
                         // Also emit property changed
                         iface_ref.workspaces_changed(&ctx).await?;
                         iface_ref.focused_workspace_changed(&ctx).await?;
                     }
                     StateEvent::WindowsChanged => {
-                        if let Err(e) = NiriInterface::windows_changed(&ctx).await {
-                            error!("Failed to emit WindowsChanged signal: {}", e);
+                        if let Err(e) = NiriInterface::windows_updated(&ctx).await {
+                            error!("Failed to emit WindowsUpdated signal: {}", e);
                         }
                         iface_ref.windows_changed(&ctx).await?;
                     }
                     StateEvent::OutputsChanged => {
-                        if let Err(e) = NiriInterface::outputs_changed(&ctx).await {
-                            error!("Failed to emit OutputsChanged signal: {}", e);
+                        if let Err(e) = NiriInterface::outputs_updated(&ctx).await {
+                            error!("Failed to emit OutputsUpdated signal: {}", e);
                         }
                         iface_ref.outputs_changed(&ctx).await?;
                         iface_ref.focused_output_changed(&ctx).await?;
                     }
                     StateEvent::FocusChanged => {
-                        if let Err(e) = NiriInterface::focus_changed(&ctx).await {
-                            error!("Failed to emit FocusChanged signal: {}", e);
+                        if let Err(e) = NiriInterface::focus_updated(&ctx).await {
+                            error!("Failed to emit FocusUpdated signal: {}", e);
                         }
                         iface_ref.focused_workspace_changed(&ctx).await?;
                         iface_ref.focused_window_changed(&ctx).await?;
                     }
                     StateEvent::KeyboardLayoutChanged => {
-                        if let Err(e) = NiriInterface::keyboard_layout_changed(&ctx).await {
-                            error!("Failed to emit KeyboardLayoutChanged signal: {}", e);
+                        if let Err(e) = NiriInterface::keyboard_layout_updated(&ctx).await {
+                            error!("Failed to emit KeyboardLayoutUpdated signal: {}", e);
                         }
                         iface_ref.keyboard_layouts_changed(&ctx).await?;
                     }

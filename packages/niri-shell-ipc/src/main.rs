@@ -23,7 +23,7 @@ async fn main() -> Result<()> {
     info!("Connecting to niri socket: {}", socket_path);
 
     // Create shared state
-    let state = state::SharedState::new();
+    let state = state::State::new();
 
     // Start niri client (event stream listener)
     let niri_state = state.clone();
