@@ -1,4 +1,5 @@
 module Stubs
 singleton Theme 1.0 Theme.qml
 singleton Toaster 1.0 Toaster.qml
+singleton CUtils 1.0 CUtils.qml
 Toast 1.0 Toast.qml

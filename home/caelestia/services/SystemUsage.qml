@@ -21,10 +21,13 @@ Singleton {
     property real storageTotal
     property real storagePerc: storageTotal > 0 ? storageUsed / storageTotal : 0
 
-    property real lastCpuIdle
-    property real lastCpuTotal
-
     property int refCount
+
+    // Internal parsed data from daemon
+    property var cpuData: ({})
+    property var memoryData: ({})
+    property var diskData: []
+    property var tempData: []
 
     function formatKib(kib: real): var {
         const mib = 1024;
@@ -52,97 +55,37 @@ Singleton {
         };
     }
 
+    // Parse busctl property output (format: s "json_string")
+    function parseProperty(data: string): var {
+        const match = data.match(/^s "(.*)"/);
+        if (match) {
+            try {
+                const json = match[1].replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+                return JSON.parse(json);
+            } catch (e) {
+                console.error("SystemUsage: Failed to parse:", e);
+            }
+        }
+        return null;
+    }
+
     Timer {
         running: root.refCount > 0
-        interval: 3000
+        interval: 2000
         repeat: true
         triggeredOnStart: true
         onTriggered: {
-            stat.reload();
-            meminfo.reload();
-            storage.running = true;
+            cpuProcess.running = true;
+            memoryProcess.running = true;
+            diskProcess.running = true;
+            tempProcess.running = true;
             gpuUsage.running = true;
-            sensors.running = true;
         }
     }
 
-    FileView {
-        id: stat
-
-        path: "/proc/stat"
-        onLoaded: {
-            const data = text().match(/^cpu\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/);
-            if (data) {
-                const stats = data.slice(1).map(n => parseInt(n, 10));
-                const total = stats.reduce((a, b) => a + b, 0);
-                const idle = stats[3] + (stats[4] ?? 0);
-
-                const totalDiff = total - root.lastCpuTotal;
-                const idleDiff = idle - root.lastCpuIdle;
-                root.cpuPerc = totalDiff > 0 ? (1 - idleDiff / totalDiff) : 0;
-
-                root.lastCpuTotal = total;
-                root.lastCpuIdle = idle;
-            }
-        }
-    }
-
-    FileView {
-        id: meminfo
-
-        path: "/proc/meminfo"
-        onLoaded: {
-            const data = text();
-            root.memTotal = parseInt(data.match(/MemTotal: *(\d+)/)[1], 10) || 1;
-            root.memUsed = (root.memTotal - parseInt(data.match(/MemAvailable: *(\d+)/)[1], 10)) || 0;
-        }
-    }
-
-    Process {
-        id: storage
-
-        command: ["sh", "-c", "df | grep '^/dev/' | awk '{print $1, $3, $4}'"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                const deviceMap = new Map();
-
-                for (const line of text.trim().split("\n")) {
-                    if (line.trim() === "")
-                        continue;
-
-                    const parts = line.trim().split(/\s+/);
-                    if (parts.length >= 3) {
-                        const device = parts[0];
-                        const used = parseInt(parts[1], 10) || 0;
-                        const avail = parseInt(parts[2], 10) || 0;
-
-                        // Only keep the entry with the largest total space for each device
-                        if (!deviceMap.has(device) || (used + avail) > (deviceMap.get(device).used + deviceMap.get(device).avail)) {
-                            deviceMap.set(device, {
-                                used: used,
-                                avail: avail
-                            });
-                        }
-                    }
-                }
-
-                let totalUsed = 0;
-                let totalAvail = 0;
-
-                for (const [device, stats] of deviceMap) {
-                    totalUsed += stats.used;
-                    totalAvail += stats.avail;
-                }
-
-                root.storageUsed = totalUsed;
-                root.storageTotal = totalUsed + totalAvail;
-            }
-        }
-    }
-
+    // GPU type detection (still needed as daemon doesn't track GPU)
     Process {
         id: gpuTypeCheck
-
         running: !Config.services.gpuType
         command: ["sh", "-c", "if command -v nvidia-smi &>/dev/null && nvidia-smi -L &>/dev/null; then echo NVIDIA; elif ls /sys/class/drm/card*/device/gpu_busy_percent 2>/dev/null | grep -q .; then echo GENERIC; else echo NONE; fi"]
         stdout: StdioCollector {
@@ -150,9 +93,9 @@ Singleton {
         }
     }
 
+    // GPU usage (still external - daemon doesn't track GPU)
     Process {
         id: gpuUsage
-
         command: root.gpuType === "GENERIC" ? ["sh", "-c", "cat /sys/class/drm/card*/device/gpu_busy_percent"] : root.gpuType === "NVIDIA" ? ["nvidia-smi", "--query-gpu=utilization.gpu,temperature.gpu", "--format=csv,noheader,nounits"] : ["echo"]
         stdout: StdioCollector {
             onStreamFinished: {
@@ -172,50 +115,113 @@ Singleton {
         }
     }
 
+    // CPU stats from daemon
     Process {
-        id: sensors
+        id: cpuProcess
+        command: ["busctl", "--user", "get-property", "org.caelestia.Niri",
+                  "/org/caelestia/System", "org.caelestia.System", "Cpu"]
+        stdout: SplitParser {
+            onRead: data => {
+                const parsed = root.parseProperty(data);
+                if (parsed) {
+                    root.cpuData = parsed;
+                    root.cpuPerc = (parsed.usage_percent ?? 0) / 100;
+                }
+            }
+        }
+    }
 
-        command: ["sensors"]
-        environment: ({
-                LANG: "C.UTF-8",
-                LC_ALL: "C.UTF-8"
-            })
-        stdout: StdioCollector {
-            onStreamFinished: {
-                let cpuTemp = text.match(/(?:Package id [0-9]+|Tdie):\s+((\+|-)[0-9.]+)(°| )C/);
-                if (!cpuTemp)
-                    // If AMD Tdie pattern failed, try fallback on Tctl
-                    cpuTemp = text.match(/Tctl:\s+((\+|-)[0-9.]+)(°| )C/);
+    // Memory stats from daemon
+    Process {
+        id: memoryProcess
+        command: ["busctl", "--user", "get-property", "org.caelestia.Niri",
+                  "/org/caelestia/System", "org.caelestia.System", "Memory"]
+        stdout: SplitParser {
+            onRead: data => {
+                const parsed = root.parseProperty(data);
+                if (parsed) {
+                    root.memoryData = parsed;
+                    // Convert bytes to KiB to match original API
+                    root.memTotal = (parsed.total_bytes ?? 0) / 1024;
+                    root.memUsed = (parsed.used_bytes ?? 0) / 1024;
+                }
+            }
+        }
+    }
 
-                if (cpuTemp)
-                    root.cpuTemp = parseFloat(cpuTemp[1]);
+    // Disk stats from daemon
+    Process {
+        id: diskProcess
+        command: ["busctl", "--user", "get-property", "org.caelestia.Niri",
+                  "/org/caelestia/System", "org.caelestia.System", "Disk"]
+        stdout: SplitParser {
+            onRead: data => {
+                const parsed = root.parseProperty(data);
+                if (parsed && Array.isArray(parsed)) {
+                    root.diskData = parsed;
+                    // Sum up all disk usage (convert bytes to KiB)
+                    let totalUsed = 0;
+                    let totalSpace = 0;
+                    for (const disk of parsed) {
+                        totalUsed += disk.used_bytes ?? 0;
+                        totalSpace += disk.total_bytes ?? 0;
+                    }
+                    root.storageUsed = totalUsed / 1024;
+                    root.storageTotal = totalSpace / 1024;
+                }
+            }
+        }
+    }
 
-                if (root.gpuType !== "GENERIC")
-                    return;
+    // Temperature from daemon
+    Process {
+        id: tempProcess
+        command: ["busctl", "--user", "get-property", "org.caelestia.Niri",
+                  "/org/caelestia/System", "org.caelestia.System", "Temperatures"]
+        stdout: SplitParser {
+            onRead: data => {
+                const parsed = root.parseProperty(data);
+                if (parsed && Array.isArray(parsed)) {
+                    root.tempData = parsed;
+                    // Find CPU temperature (Package id 0, Tdie, or Tctl)
+                    const cpuTemp = parsed.find(t =>
+                        t.label.includes("Package id") ||
+                        t.label === "Tdie" ||
+                        t.label === "Tctl"
+                    );
+                    if (cpuTemp) {
+                        root.cpuTemp = cpuTemp.temperature_celsius ?? 0;
+                    }
 
-                let eligible = false;
-                let sum = 0;
-                let count = 0;
-
-                for (const line of text.trim().split("\n")) {
-                    if (line === "Adapter: PCI adapter")
-                        eligible = true;
-                    else if (line === "")
-                        eligible = false;
-                    else if (eligible) {
-                        let match = line.match(/^(temp[0-9]+|GPU core|edge)+:\s+\+([0-9]+\.[0-9]+)(°| )C/);
-                        if (!match)
-                            // Fall back to junction/mem if GPU doesn't have edge temp (for AMD GPUs)
-                            match = line.match(/^(junction|mem)+:\s+\+([0-9]+\.[0-9]+)(°| )C/);
-
-                        if (match) {
-                            sum += parseFloat(match[2]);
-                            count++;
+                    // For generic GPU, find GPU temp if not using NVIDIA
+                    if (root.gpuType === "GENERIC") {
+                        const gpuTemp = parsed.find(t =>
+                            t.label.includes("edge") ||
+                            t.label.includes("GPU") ||
+                            t.label.includes("junction")
+                        );
+                        if (gpuTemp) {
+                            root.gpuTemp = gpuTemp.temperature_celsius ?? 0;
                         }
                     }
                 }
+            }
+        }
+    }
 
-                root.gpuTemp = count > 0 ? sum / count : 0;
+    // Monitor daemon signals for updates
+    Process {
+        id: signalMonitor
+        running: root.refCount > 0
+        command: ["busctl", "--user", "monitor", "org.caelestia.Niri"]
+        stdout: SplitParser {
+            onRead: data => {
+                if (data.includes("StatsUpdated")) {
+                    cpuProcess.running = true;
+                    memoryProcess.running = true;
+                    diskProcess.running = true;
+                    tempProcess.running = true;
+                }
             }
         }
     }

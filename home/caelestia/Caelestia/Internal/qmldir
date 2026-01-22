@@ -1,0 +1,7 @@
+module Caelestia.Internal
+
+HyprExtras 1.0 HyprExtras.qml
+CachingImageManager 1.0 CachingImageManager.qml
+CircularIndicatorManager 1.0 CircularIndicatorManager.qml
+LogindManager 1.0 LogindManager.qml
+IdleMonitor 1.0 IdleMonitor.qml

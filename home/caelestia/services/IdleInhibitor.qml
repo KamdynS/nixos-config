@@ -2,7 +2,6 @@ pragma Singleton
 
 import Quickshell
 import Quickshell.Io
-import Quickshell.Wayland
 
 Singleton {
     id: root
@@ -11,8 +10,13 @@ Singleton {
     readonly property alias enabledSince: props.enabledSince
 
     onEnabledChanged: {
-        if (enabled)
+        if (enabled) {
             props.enabledSince = new Date();
+            // Use systemd-inhibit for niri
+            inhibitProc.running = true;
+        } else {
+            inhibitProc.running = false;
+        }
     }
 
     PersistentProperties {
@@ -24,14 +28,10 @@ Singleton {
         reloadableId: "idleInhibitor"
     }
 
-    IdleInhibitor {
-        enabled: props.enabled
-        window: PanelWindow {
-            implicitWidth: 0
-            implicitHeight: 0
-            color: "transparent"
-            mask: Region {}
-        }
+    // Use systemd-inhibit for niri instead of Wayland protocol
+    Process {
+        id: inhibitProc
+        command: ["systemd-inhibit", "--what=idle", "--who=caelestia-shell", "--why=User requested", "sleep", "infinity"]
     }
 
     IpcHandler {

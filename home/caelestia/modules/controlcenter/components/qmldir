@@ -1,0 +1,8 @@
+DeviceDetails 1.0 DeviceDetails.qml
+DeviceList 1.0 DeviceList.qml
+PaneTransition 1.0 PaneTransition.qml
+SettingsHeader 1.0 SettingsHeader.qml
+SliderInput 1.0 SliderInput.qml
+SplitPaneLayout 1.0 SplitPaneLayout.qml
+SplitPaneWithDetails 1.0 SplitPaneWithDetails.qml
+WallpaperGrid 1.0 WallpaperGrid.qml

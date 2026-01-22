@@ -40,7 +40,14 @@ Singleton {
 
     // Active/focused items
     readonly property var activeToplevel: windowList.find(w => w.is_focused) ?? null
-    readonly property var focusedWorkspace: workspaceList.find(ws => ws.is_focused) ?? null
+    readonly property var focusedWorkspace: {
+        const ws = workspaceList.find(ws => ws.is_focused);
+        if (!ws) return null;
+        // Add toplevels property - filter windows by workspace
+        const wsWindows = windowList.filter(w => w.workspace_id === ws.id);
+        ws.toplevels = { values: wsWindows };
+        return ws;
+    }
     readonly property var focusedMonitor: outputList.find(out => out.is_focused) ?? null
     readonly property int activeWsId: focusedWorkspace?.id ?? 1
     readonly property int focusedWorkspaceIdx: focusedWorkspace?.idx ?? 1
@@ -131,7 +138,18 @@ Singleton {
 
     // Get monitor for a shell screen (by matching output name)
     function monitorFor(screen: ShellScreen): var {
-        return outputList.find(out => out.name === screen.name) ?? null;
+        const out = outputList.find(out => out.name === screen.name);
+        if (!out) return null;
+
+        // Find the active workspace for this output
+        const ws = workspaceList.find(ws => ws.output === out.name && ws.is_active);
+        const wsWindows = ws ? windowList.filter(w => w.workspace_id === ws?.id) : [];
+
+        if (ws) {
+            ws.toplevels = { values: wsWindows };
+        }
+        out.activeWorkspace = ws ?? null;
+        return out;
     }
 
     // Internal helper for DBus calls
@@ -191,23 +209,32 @@ Singleton {
         }
     }
 
+    // Helper to parse busctl property output
+    function parseBusctlOutput(data: string): var {
+        // Output format: s "json_string" with escaped characters
+        // Match from 's "' to the last '"'
+        if (!data.startsWith('s "') || !data.endsWith('"')) return null;
+        let json = data.slice(3, -1);  // Remove 's "' and final '"'
+        // Unescape: \" -> ", \\ -> \, and handle octal escapes
+        json = json.replace(/\\"/g, '"');
+        json = json.replace(/\\\\/g, '\\');
+        // Handle octal escapes (e.g. \302\267 for UTF-8)
+        json = json.replace(/\\([0-7]{3})/g, function(m, oct) { return String.fromCharCode(parseInt(oct, 8)); });
+        return JSON.parse(json);
+    }
+
     // DBus property readers using busctl
     Process {
         id: workspacesProcess
         command: ["busctl", "--user", "get-property", "org.caelestia.Niri",
                   "/org/caelestia/Niri", "org.caelestia.Niri", "Workspaces"]
-        stdout: SplitParser {
-            onRead: data => {
-                // Output format: s "json_string"
-                const match = data.match(/^s "(.*)"/);
-                if (match) {
-                    try {
-                        // Unescape the JSON string
-                        const json = match[1].replace(/\\"/g, '"').replace(/\\\\/g, '\\');
-                        internal.workspaces = JSON.parse(json);
-                    } catch (e) {
-                        console.error("Failed to parse workspaces:", e);
-                    }
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const result = root.parseBusctlOutput(text.trim());
+                    if (result) internal.workspaces = result;
+                } catch (e) {
+                    console.error("Failed to parse workspaces:", e);
                 }
             }
         }
@@ -217,16 +244,13 @@ Singleton {
         id: windowsProcess
         command: ["busctl", "--user", "get-property", "org.caelestia.Niri",
                   "/org/caelestia/Niri", "org.caelestia.Niri", "Windows"]
-        stdout: SplitParser {
-            onRead: data => {
-                const match = data.match(/^s "(.*)"/);
-                if (match) {
-                    try {
-                        const json = match[1].replace(/\\"/g, '"').replace(/\\\\/g, '\\');
-                        internal.windows = JSON.parse(json);
-                    } catch (e) {
-                        console.error("Failed to parse windows:", e);
-                    }
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const result = root.parseBusctlOutput(text.trim());
+                    if (result) internal.windows = result;
+                } catch (e) {
+                    console.error("Failed to parse windows:", e);
                 }
             }
         }
@@ -236,16 +260,13 @@ Singleton {
         id: outputsProcess
         command: ["busctl", "--user", "get-property", "org.caelestia.Niri",
                   "/org/caelestia/Niri", "org.caelestia.Niri", "Outputs"]
-        stdout: SplitParser {
-            onRead: data => {
-                const match = data.match(/^s "(.*)"/);
-                if (match) {
-                    try {
-                        const json = match[1].replace(/\\"/g, '"').replace(/\\\\/g, '\\');
-                        internal.outputs = JSON.parse(json);
-                    } catch (e) {
-                        console.error("Failed to parse outputs:", e);
-                    }
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const result = root.parseBusctlOutput(text.trim());
+                    if (result) internal.outputs = result;
+                } catch (e) {
+                    console.error("Failed to parse outputs:", e);
                 }
             }
         }
@@ -255,16 +276,13 @@ Singleton {
         id: keyboardProcess
         command: ["busctl", "--user", "get-property", "org.caelestia.Niri",
                   "/org/caelestia/Niri", "org.caelestia.Niri", "KeyboardLayouts"]
-        stdout: SplitParser {
-            onRead: data => {
-                const match = data.match(/^s "(.*)"/);
-                if (match) {
-                    try {
-                        const json = match[1].replace(/\\"/g, '"').replace(/\\\\/g, '\\');
-                        internal.keyboardLayouts = JSON.parse(json);
-                    } catch (e) {
-                        console.error("Failed to parse keyboard layouts:", e);
-                    }
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const result = root.parseBusctlOutput(text.trim());
+                    if (result) internal.keyboardLayouts = result;
+                } catch (e) {
+                    console.error("Failed to parse keyboard layouts:", e);
                 }
             }
         }

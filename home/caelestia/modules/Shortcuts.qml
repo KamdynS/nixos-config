@@ -9,7 +9,7 @@ Scope {
     id: root
 
     property bool launcherInterrupted
-    readonly property bool hasFullscreen: Niri.focusedWorkspace?.toplevels.values.some(t => t.lastIpcObject.fullscreen === 2) ?? false
+    readonly property bool hasFullscreen: Niri.focusedWorkspace?.toplevels?.values?.some(t => t.lastIpcObject?.fullscreen === 2) ?? false
 
     CustomShortcut {
         name: "controlCenter"

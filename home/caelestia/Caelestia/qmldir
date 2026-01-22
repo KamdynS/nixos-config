@@ -1,0 +1,9 @@
+module Caelestia
+
+singleton Toaster 1.0 Toaster.qml
+singleton CUtils 1.0 CUtils.qml
+singleton Requests 1.0 Requests.qml
+Toast 1.0 Toast.qml
+ImageAnalyser 1.0 ImageAnalyser.qml
+AppDb 1.0 AppDb.qml
+AppEntry 1.0 AppEntry.qml
