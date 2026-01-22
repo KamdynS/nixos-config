@@ -132,8 +132,8 @@
       "Ctrl+Print".action.spawn = [ "bash" "-c" "grim -g \"$(slurp)\" - | wl-copy" ];
       "Ctrl+Alt+Print".action.spawn = [ "bash" "-c" "grim - | wl-copy" ];
 
-      # Keybinding help
-      "Mod+Shift+QuestionMark".action.spawn = [ "qs" "ipc" "call" "keybinds" "toggle" ];
+      # Keybinding help (Mod+F1)
+      "Mod+F1".action.spawn = [ "qs" "ipc" "call" "keybinds" "toggle" ];
       
       # Exit
       "Mod+Shift+E".action.quit = [];

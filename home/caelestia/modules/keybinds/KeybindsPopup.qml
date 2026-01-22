@@ -166,7 +166,7 @@ Scope {
                                 keybinds: [
                                     { key: "Mod + X", desc: "Open session menu (power)" },
                                     { key: "Mod + T", desc: "Open theme picker" },
-                                    { key: "Mod + Shift + /", desc: "Show this help" }
+                                    { key: "Mod + F1", desc: "Show this help" }
                                 ]
                             }
 
