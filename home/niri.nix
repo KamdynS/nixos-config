@@ -73,12 +73,13 @@
       # Theme picker
       "Mod+T".action.spawn = [ "qs" "ipc" "call" "themePicker" "toggle" ];
 
-      # Power menu
-      "Mod+X".action.spawn = [ "bash" "-c" "~/.config/wofi/power-menu.sh" ];
+      # Caelestia drawers
+      "Mod+D".action.spawn = [ "qs" "ipc" "call" "drawers" "toggle" "launcher" ];
+      "Mod+X".action.spawn = [ "qs" "ipc" "call" "drawers" "toggle" "session" ];
+      "Mod+A".action.spawn = [ "qs" "ipc" "call" "drawers" "toggle" "dashboard" ];
 
       # App launchers
       "Mod+Return".action.spawn = [ "ghostty" ];
-      "Mod+D".action.spawn = [ "wofi" "--show" "drun" ];
       
       # Window management
       "Mod+Q".action.close-window = [];
@@ -132,7 +133,7 @@
       "Ctrl+Alt+Print".action.spawn = [ "bash" "-c" "grim - | wl-copy" ];
 
       # Keybinding help
-      "Mod+Shift+Slash".action.spawn = [ "bash" "-c" "~/.config/niri/keybinds-help.sh" ];
+      "Mod+Shift+Slash".action.spawn = [ "qs" "ipc" "call" "keybinds" "toggle" ];
       
       # Exit
       "Mod+Shift+E".action.quit = [];

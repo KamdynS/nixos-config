@@ -118,6 +118,18 @@ Scope {
     }
 
     IpcHandler {
+        target: "keybinds"
+
+        function toggle(): void {
+            Visibilities.keybinds.showOnActive();
+        }
+
+        function show(): void {
+            Visibilities.keybinds.showOnActive();
+        }
+    }
+
+    IpcHandler {
         target: "toaster"
 
         function info(title: string, message: string, icon: string): void {
