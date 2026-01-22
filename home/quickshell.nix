@@ -5,6 +5,7 @@
     quickshell
     brightnessctl  # For brightness control
     playerctl      # For media controls (MPRIS)
+    app2unit       # Launch apps as systemd units
 
     # Caelestia shell dependencies
     ddcutil        # DDC monitor brightness control
