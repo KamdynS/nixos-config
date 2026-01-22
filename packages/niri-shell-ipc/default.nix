@@ -2,6 +2,7 @@
 , rustPlatform
 , pkg-config
 , dbus
+, libpulseaudio
 }:
 
 rustPlatform.buildRustPackage rec {
@@ -20,6 +21,7 @@ rustPlatform.buildRustPackage rec {
 
   buildInputs = [
     dbus
+    libpulseaudio
   ];
 
   meta = with lib; {

@@ -1,0 +1,14 @@
+/home/kamdyns/nixos-config/packages/niri-shell-ipc/target/release/deps/serde-7d09d179a48db2de.d: /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /home/kamdyns/nixos-config/packages/niri-shell-ipc/target/release/build/serde-9d08b465ff0b51b1/out/private.rs
+
+/home/kamdyns/nixos-config/packages/niri-shell-ipc/target/release/deps/libserde-7d09d179a48db2de.rlib: /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /home/kamdyns/nixos-config/packages/niri-shell-ipc/target/release/build/serde-9d08b465ff0b51b1/out/private.rs
+
+/home/kamdyns/nixos-config/packages/niri-shell-ipc/target/release/deps/libserde-7d09d179a48db2de.rmeta: /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /home/kamdyns/nixos-config/packages/niri-shell-ipc/target/release/build/serde-9d08b465ff0b51b1/out/private.rs
+
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs:
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs:
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs:
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs:
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs:
+/home/kamdyns/nixos-config/packages/niri-shell-ipc/target/release/build/serde-9d08b465ff0b51b1/out/private.rs:
+
+# env-dep:OUT_DIR=/home/kamdyns/nixos-config/packages/niri-shell-ipc/target/release/build/serde-9d08b465ff0b51b1/out

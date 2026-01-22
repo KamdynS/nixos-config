@@ -1,0 +1,10 @@
+/home/kamdyns/nixos-config/packages/niri-shell-ipc/target/release/deps/zbus_macros-ea4c22c970d0b0d6.d: /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zbus_macros-5.13.2/src/lib.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zbus_macros-5.13.2/src/error.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zbus_macros-5.13.2/src/iface.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zbus_macros-5.13.2/src/proxy.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zbus_macros-5.13.2/src/utils.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zbus_macros-5.13.2/src/../README.md
+
+/home/kamdyns/nixos-config/packages/niri-shell-ipc/target/release/deps/libzbus_macros-ea4c22c970d0b0d6.so: /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zbus_macros-5.13.2/src/lib.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zbus_macros-5.13.2/src/error.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zbus_macros-5.13.2/src/iface.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zbus_macros-5.13.2/src/proxy.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zbus_macros-5.13.2/src/utils.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zbus_macros-5.13.2/src/../README.md
+
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zbus_macros-5.13.2/src/lib.rs:
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zbus_macros-5.13.2/src/error.rs:
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zbus_macros-5.13.2/src/iface.rs:
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zbus_macros-5.13.2/src/proxy.rs:
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zbus_macros-5.13.2/src/utils.rs:
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zbus_macros-5.13.2/src/../README.md:

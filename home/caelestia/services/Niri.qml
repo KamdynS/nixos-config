@@ -1,9 +1,6 @@
 pragma Singleton
 
-import qs.components.misc
-import qs.config
 import Quickshell
-import Quickshell.DBusMenu
 import Quickshell.Io
 import QtQuick
 
@@ -306,7 +303,7 @@ Singleton {
 
     // Fallback polling timer in case signals are missed
     Timer {
-        interval: 2000
+        interval: 100
         running: true
         repeat: true
         onTriggered: internal.refreshAll()

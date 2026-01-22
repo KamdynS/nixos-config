@@ -2,7 +2,7 @@ use crate::state::{SharedState, StateEvent};
 use anyhow::Result;
 use std::collections::HashMap;
 use tracing::{error, info};
-use zbus::{connection, interface, SignalContext};
+use zbus::{connection, interface, object_server::SignalContext};
 
 /// DBus interface for niri shell IPC
 pub struct NiriInterface {
@@ -170,8 +170,8 @@ impl NiriInterface {
     }
 }
 
-/// Run the DBus server
-pub async fn run_server(state: SharedState) -> Result<()> {
+/// Create the DBus connection with the Niri interface
+pub async fn create_connection(state: SharedState) -> Result<connection::Connection> {
     let interface = NiriInterface::new(state.clone());
 
     let conn = connection::Builder::session()?
@@ -181,6 +181,11 @@ pub async fn run_server(state: SharedState) -> Result<()> {
         .await?;
 
     info!("DBus server running at org.caelestia.Niri");
+    Ok(conn)
+}
+
+/// Run the DBus event loop (emitting signals on state changes)
+pub async fn run_server(conn: connection::Connection, state: SharedState) -> Result<()> {
 
     // Get the object server to emit signals
     let object_server = conn.object_server();
@@ -201,35 +206,26 @@ pub async fn run_server(state: SharedState) -> Result<()> {
                         if let Err(e) = NiriInterface::workspaces_updated(&ctx).await {
                             error!("Failed to emit WorkspacesUpdated signal: {}", e);
                         }
-                        // Also emit property changed
-                        iface_ref.workspaces_changed(&ctx).await?;
-                        iface_ref.focused_workspace_changed(&ctx).await?;
                     }
                     StateEvent::WindowsChanged => {
                         if let Err(e) = NiriInterface::windows_updated(&ctx).await {
                             error!("Failed to emit WindowsUpdated signal: {}", e);
                         }
-                        iface_ref.windows_changed(&ctx).await?;
                     }
                     StateEvent::OutputsChanged => {
                         if let Err(e) = NiriInterface::outputs_updated(&ctx).await {
                             error!("Failed to emit OutputsUpdated signal: {}", e);
                         }
-                        iface_ref.outputs_changed(&ctx).await?;
-                        iface_ref.focused_output_changed(&ctx).await?;
                     }
                     StateEvent::FocusChanged => {
                         if let Err(e) = NiriInterface::focus_updated(&ctx).await {
                             error!("Failed to emit FocusUpdated signal: {}", e);
                         }
-                        iface_ref.focused_workspace_changed(&ctx).await?;
-                        iface_ref.focused_window_changed(&ctx).await?;
                     }
                     StateEvent::KeyboardLayoutChanged => {
                         if let Err(e) = NiriInterface::keyboard_layout_updated(&ctx).await {
                             error!("Failed to emit KeyboardLayoutUpdated signal: {}", e);
                         }
-                        iface_ref.keyboard_layouts_changed(&ctx).await?;
                     }
                 }
             }

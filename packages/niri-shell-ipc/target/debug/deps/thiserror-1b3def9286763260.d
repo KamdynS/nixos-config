@@ -1,0 +1,14 @@
+/home/kamdyns/nixos-config/packages/niri-shell-ipc/target/debug/deps/thiserror-1b3def9286763260.d: /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/lib.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/aserror.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/display.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/var.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/private.rs /home/kamdyns/nixos-config/packages/niri-shell-ipc/target/debug/build/thiserror-f120952bacb12ece/out/private.rs
+
+/home/kamdyns/nixos-config/packages/niri-shell-ipc/target/debug/deps/libthiserror-1b3def9286763260.rlib: /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/lib.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/aserror.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/display.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/var.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/private.rs /home/kamdyns/nixos-config/packages/niri-shell-ipc/target/debug/build/thiserror-f120952bacb12ece/out/private.rs
+
+/home/kamdyns/nixos-config/packages/niri-shell-ipc/target/debug/deps/libthiserror-1b3def9286763260.rmeta: /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/lib.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/aserror.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/display.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/var.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/private.rs /home/kamdyns/nixos-config/packages/niri-shell-ipc/target/debug/build/thiserror-f120952bacb12ece/out/private.rs
+
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/lib.rs:
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/aserror.rs:
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/display.rs:
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/var.rs:
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.18/src/private.rs:
+/home/kamdyns/nixos-config/packages/niri-shell-ipc/target/debug/build/thiserror-f120952bacb12ece/out/private.rs:
+
+# env-dep:OUT_DIR=/home/kamdyns/nixos-config/packages/niri-shell-ipc/target/debug/build/thiserror-f120952bacb12ece/out

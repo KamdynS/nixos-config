@@ -26,3 +26,26 @@ thiserror = "2"
 
 # Async utilities
 futures = "0.3"
+
+# Desktop entries
+freedesktop-desktop-entry = "0.7"
+freedesktop-icons = "0.2"
+
+# Fuzzy matching
+nucleo-matcher = "0.3"
+
+# File watching
+notify = { version = "7", default-features = false, features = ["macos_kqueue"] }
+notify-debouncer-mini = "0.5"
+
+# Directories
+dirs = "5"
+
+# Directory walking
+walkdir = "2"
+
+# Audio (PulseAudio/PipeWire)
+libpulse-binding = "2"
+
+# System stats
+sysinfo = "0.32"

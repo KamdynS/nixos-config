@@ -210,18 +210,19 @@ async fn process_keyboard_layouts_response(json: &str, state: &SharedState) -> R
 async fn process_event(line: &str, state: &SharedState) -> Result<()> {
     let event: Value = serde_json::from_str(line)?;
 
-    // Events are wrapped in Ok/Err
-    let event = match event.get("Ok") {
-        Some(ok) => ok,
-        None => {
-            if let Some(err) = event.get("Err") {
-                error!("Niri error event: {:?}", err);
-            }
-            return Ok(());
-        }
-    };
+    // Skip the initial "Ok":"Handled" response
+    if event.get("Ok").is_some() {
+        debug!("Received Ok response, skipping");
+        return Ok(());
+    }
 
-    // Process different event types
+    // Check for errors
+    if let Some(err) = event.get("Err") {
+        error!("Niri error event: {:?}", err);
+        return Ok(());
+    }
+
+    // Process different event types (events come directly, not wrapped in Ok)
     if let Some(workspaces) = event.get("WorkspacesChanged") {
         debug!("WorkspacesChanged event");
         if let Some(arr) = workspaces.get("workspaces").and_then(|v| v.as_array()) {
