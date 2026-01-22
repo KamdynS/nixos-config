@@ -98,8 +98,8 @@
   # I2C support for DDC monitor brightness control (caelestia dependency)
   hardware.i2c.enable = true;
 
-  # Browser disabled - using Zen via home-manager
-  programs.firefox.enable = false;
+  # Firefox enabled as backup browser
+  programs.firefox.enable = true;
 
   # Zsh
   programs.zsh.enable = true;
