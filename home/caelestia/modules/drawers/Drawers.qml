@@ -75,7 +75,11 @@ Variants {
             WlrLayershell.exclusionMode: ExclusionMode.Ignore
             WlrLayershell.keyboardFocus: visibilities.launcher || visibilities.session ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
-            mask: Region {
+            // Only apply input mask when panels are visible or drag gestures needed
+            // Otherwise use barOnlyMask to let clicks through everywhere except the bar
+            mask: win.focusGrabActive || win.dragMaskPadding > 0 ? fullMask : barOnlyMask
+
+            property var fullMask: Region {
                 x: bar.implicitWidth + win.dragMaskPadding
                 y: Config.border.thickness + win.dragMaskPadding
                 width: win.width - bar.implicitWidth - Config.border.thickness - win.dragMaskPadding * 2
@@ -83,6 +87,12 @@ Variants {
                 intersection: Intersection.Xor
 
                 regions: regions.instances
+            }
+
+            property var barOnlyMask: Region {
+                // Only the bar area receives input, everything else is click-through
+                width: bar.implicitWidth
+                height: win.height
             }
 
             anchors.top: true
@@ -102,7 +112,7 @@ Variants {
                     y: modelData.y + Config.border.thickness
                     width: modelData.width
                     height: modelData.height
-                    intersection: Intersection.Combine
+                    intersection: Intersection.Subtract
                 }
             }
 
