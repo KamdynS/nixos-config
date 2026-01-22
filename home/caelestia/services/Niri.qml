@@ -295,16 +295,16 @@ Singleton {
         command: ["busctl", "--user", "monitor", "org.caelestia.Niri"]
         stdout: SplitParser {
             onRead: data => {
-                if (data.includes("WorkspacesChanged")) {
+                if (data.includes("WorkspacesUpdated")) {
                     internal.refreshWorkspaces();
-                } else if (data.includes("WindowsChanged")) {
+                } else if (data.includes("WindowsUpdated")) {
                     internal.refreshWindows();
-                } else if (data.includes("OutputsChanged")) {
+                } else if (data.includes("OutputsUpdated")) {
                     internal.refreshOutputs();
-                } else if (data.includes("FocusChanged")) {
+                } else if (data.includes("FocusUpdated")) {
                     internal.refreshWorkspaces();
                     internal.refreshWindows();
-                } else if (data.includes("KeyboardLayoutChanged")) {
+                } else if (data.includes("KeyboardLayoutUpdated")) {
                     internal.refreshKeyboardLayouts();
                 }
             }
