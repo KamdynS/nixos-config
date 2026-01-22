@@ -47,6 +47,11 @@
         };
         clip-to-geometry = true;  # Clip window contents to the corner radius
       }
+      # Zen browser - disable clipping so popups work correctly
+      {
+        matches = [{ app-id = "zen-beta"; }];
+        clip-to-geometry = false;
+      }
     ];
     
     # Screenshot path
