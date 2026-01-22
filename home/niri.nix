@@ -69,14 +69,14 @@
     };
     
     # Keybindings
-    binds = {
+    binds = let qs = "${pkgs.quickshell}/bin/qs"; in {
       # Theme picker
-      "Mod+T".action.spawn = [ "qs" "ipc" "call" "themePicker" "toggle" ];
+      "Mod+T".action.spawn = [ qs "ipc" "call" "themePicker" "toggle" ];
 
       # Caelestia drawers
-      "Mod+D".action.spawn = [ "qs" "ipc" "call" "drawers" "toggle" "launcher" ];
-      "Mod+X".action.spawn = [ "qs" "ipc" "call" "drawers" "toggle" "session" ];
-      "Mod+A".action.spawn = [ "qs" "ipc" "call" "drawers" "toggle" "dashboard" ];
+      "Mod+D".action.spawn = [ qs "ipc" "call" "drawers" "toggle" "launcher" ];
+      "Mod+X".action.spawn = [ qs "ipc" "call" "drawers" "toggle" "session" ];
+      "Mod+A".action.spawn = [ qs "ipc" "call" "drawers" "toggle" "dashboard" ];
 
       # App launchers
       "Mod+Return".action.spawn = [ "ghostty" ];
@@ -133,7 +133,7 @@
       "Ctrl+Alt+Print".action.spawn = [ "bash" "-c" "grim - | wl-copy" ];
 
       # Keybinding help (Mod+F1)
-      "Mod+F1".action.spawn = [ "qs" "ipc" "call" "keybinds" "toggle" ];
+      "Mod+F1".action.spawn = [ qs "ipc" "call" "keybinds" "toggle" ];
       
       # Exit
       "Mod+Shift+E".action.quit = [];
