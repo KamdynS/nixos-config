@@ -102,7 +102,7 @@ Variants {
                     y: modelData.y + Config.border.thickness
                     width: modelData.width
                     height: modelData.height
-                    intersection: Intersection.Subtract
+                    intersection: Intersection.Combine
                 }
             }
 
