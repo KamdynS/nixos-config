@@ -9,6 +9,7 @@ import "modules/drawers"
 import "modules/background"
 import "modules/areapicker"
 import "modules/lock"
+import "modules/themepicker"
 import Quickshell
 import QtQuick
 
@@ -22,6 +23,7 @@ ShellRoot {
     Background {}
     Drawers {}
     AreaPicker {}
+    ThemePicker {}
     Lock {
         id: lock
     }

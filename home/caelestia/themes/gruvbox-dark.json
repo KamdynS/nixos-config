@@ -1,0 +1,99 @@
+{
+  "name": "Gruvbox Dark",
+  "id": "gruvbox-dark",
+  "isDark": true,
+  "wallpapers": [
+    "~/Pictures/wallpapers/gruvbox/dark-1.jpg",
+    "~/Pictures/wallpapers/gruvbox/dark-2.jpg",
+    "~/Pictures/wallpapers/gruvbox/dark-3.jpg"
+  ],
+  "colors": {
+    "primary": "#d79921",
+    "onPrimary": "#1d2021",
+    "primaryContainer": "#504945",
+    "onPrimaryContainer": "#fabd2f",
+
+    "secondary": "#689d6a",
+    "onSecondary": "#1d2021",
+    "secondaryContainer": "#3c3836",
+    "onSecondaryContainer": "#8ec07c",
+
+    "tertiary": "#b16286",
+    "onTertiary": "#1d2021",
+    "tertiaryContainer": "#3c3836",
+    "onTertiaryContainer": "#d3869b",
+
+    "error": "#cc241d",
+    "onError": "#ebdbb2",
+    "errorContainer": "#3c3836",
+    "onErrorContainer": "#fb4934",
+
+    "background": "#1d2021",
+    "onBackground": "#ebdbb2",
+
+    "surface": "#1d2021",
+    "onSurface": "#ebdbb2",
+    "surfaceVariant": "#3c3836",
+    "onSurfaceVariant": "#d5c4a1",
+    "surfaceDim": "#1d2021",
+    "surfaceBright": "#504945",
+    "surfaceContainerLowest": "#1d2021",
+    "surfaceContainerLow": "#282828",
+    "surfaceContainer": "#32302f",
+    "surfaceContainerHigh": "#3c3836",
+    "surfaceContainerHighest": "#504945",
+
+    "outline": "#665c54",
+    "outlineVariant": "#504945",
+    "shadow": "#000000",
+    "scrim": "#000000",
+
+    "inverseSurface": "#ebdbb2",
+    "inverseOnSurface": "#1d2021",
+    "inversePrimary": "#b57614",
+
+    "m3primary": "#d79921",
+    "m3onPrimary": "#1d2021",
+    "m3primaryContainer": "#504945",
+    "m3onPrimaryContainer": "#fabd2f",
+    "m3inversePrimary": "#b57614",
+
+    "m3secondary": "#689d6a",
+    "m3onSecondary": "#1d2021",
+    "m3secondaryContainer": "#3c3836",
+    "m3onSecondaryContainer": "#8ec07c",
+
+    "m3tertiary": "#b16286",
+    "m3onTertiary": "#1d2021",
+    "m3tertiaryContainer": "#3c3836",
+    "m3onTertiaryContainer": "#d3869b",
+
+    "m3error": "#cc241d",
+    "m3onError": "#ebdbb2",
+    "m3errorContainer": "#3c3836",
+    "m3onErrorContainer": "#fb4934",
+
+    "m3background": "#1d2021",
+    "m3onBackground": "#ebdbb2",
+
+    "m3surface": "#1d2021",
+    "m3onSurface": "#ebdbb2",
+    "m3surfaceVariant": "#3c3836",
+    "m3onSurfaceVariant": "#d5c4a1",
+    "m3surfaceDim": "#1d2021",
+    "m3surfaceBright": "#504945",
+    "m3surfaceContainerLowest": "#1d2021",
+    "m3surfaceContainerLow": "#282828",
+    "m3surfaceContainer": "#32302f",
+    "m3surfaceContainerHigh": "#3c3836",
+    "m3surfaceContainerHighest": "#504945",
+
+    "m3outline": "#665c54",
+    "m3outlineVariant": "#504945",
+    "m3shadow": "#000000",
+    "m3scrim": "#000000",
+
+    "m3inverseSurface": "#ebdbb2",
+    "m3inverseOnSurface": "#1d2021"
+  }
+}

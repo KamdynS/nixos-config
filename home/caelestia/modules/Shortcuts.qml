@@ -51,6 +51,14 @@ Scope {
     }
 
     CustomShortcut {
+        name: "themePicker"
+        description: "Toggle theme picker"
+        onPressed: {
+            Visibilities.themePicker.showOnActive();
+        }
+    }
+
+    CustomShortcut {
         name: "launcher"
         description: "Toggle launcher"
         onPressed: root.launcherInterrupted = false
@@ -94,6 +102,18 @@ Scope {
 
         function open(): void {
             WindowFactory.create();
+        }
+    }
+
+    IpcHandler {
+        target: "themePicker"
+
+        function toggle(): void {
+            Visibilities.themePicker.showOnActive();
+        }
+
+        function show(): void {
+            Visibilities.themePicker.showOnActive();
         }
     }
 

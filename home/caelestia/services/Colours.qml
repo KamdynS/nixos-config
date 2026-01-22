@@ -78,6 +78,23 @@ Singleton {
         Quickshell.execDetached(["caelestia", "scheme", "set", "--notify", "-m", mode]);
     }
 
+    // Load colors from a Theme object
+    function loadFromTheme(theme): void {
+        if (!theme?.colors) return;
+
+        currentLight = !theme.isDark;
+        scheme = theme.name ?? "custom";
+
+        const colors = theme.colors;
+        for (const [name, value] of Object.entries(colors)) {
+            if (current.hasOwnProperty(name)) {
+                current[name] = value;
+            }
+        }
+
+        console.log("Colors loaded from theme:", theme.name, "isDark:", theme.isDark);
+    }
+
     FileView {
         path: `${Paths.state}/scheme.json`
         watchChanges: true

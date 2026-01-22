@@ -70,6 +70,9 @@
     
     # Keybindings
     binds = {
+      # Theme picker
+      "Mod+T".action.spawn = [ "qs" "ipc" "call" "themePicker" "toggle" ];
+
       # Power menu
       "Mod+X".action.spawn = [ "bash" "-c" "~/.config/wofi/power-menu.sh" ];
 
