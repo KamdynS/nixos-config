@@ -133,7 +133,9 @@ Item {
                 target: root.visibilities
 
                 function onLauncherChanged(): void {
-                    if (!root.visibilities.launcher)
+                    if (root.visibilities.launcher)
+                        search.forceActiveFocus();
+                    else
                         search.text = "";
                 }
 

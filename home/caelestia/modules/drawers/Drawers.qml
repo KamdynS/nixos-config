@@ -73,7 +73,7 @@ Variants {
             screen: scope.modelData
             name: "drawers"
             WlrLayershell.exclusionMode: ExclusionMode.Ignore
-            WlrLayershell.keyboardFocus: visibilities.launcher || visibilities.session ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+            WlrLayershell.keyboardFocus: visibilities.launcher || visibilities.session ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
             mask: Region {
                 x: bar.implicitWidth + win.dragMaskPadding
@@ -102,7 +102,7 @@ Variants {
                     y: modelData.y + Config.border.thickness
                     width: modelData.width
                     height: modelData.height
-                    intersection: Intersection.Combine
+                    intersection: Intersection.Subtract
                 }
             }
 
