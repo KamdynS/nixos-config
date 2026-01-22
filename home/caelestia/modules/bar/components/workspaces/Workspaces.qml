@@ -15,7 +15,7 @@ StyledClippingRect {
 
     // Niri doesn't have special workspaces
     readonly property bool onSpecial: false
-    readonly property int activeWsId: Config.bar.workspaces.perMonitorWorkspaces ? (Niri.monitorFor(screen)?.active_workspace_id ?? 1) : Niri.activeWsId
+    readonly property int activeWsId: Config.bar.workspaces.perMonitorWorkspaces ? (Niri.monitorFor(screen)?.activeWorkspace?.id ?? 1) : Niri.activeWsId
 
     readonly property var occupied: Niri.workspaces.values.reduce((acc, curr) => {
         // Niri doesn't provide window count per workspace directly, check if any windows are on this workspace
