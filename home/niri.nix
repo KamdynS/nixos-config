@@ -107,6 +107,10 @@
       "Mod+Shift+J".action.move-window-down = [];
       "Mod+Shift+K".action.move-window-up = [];
       "Mod+Shift+L".action.move-column-right = [];
+
+      # Move windows between monitors
+      "Mod+Shift+Period".action.move-column-to-monitor-right = [];
+      "Mod+Shift+Comma".action.move-column-to-monitor-left = [];
       
       # Workspace switching (instant - animation disabled above)
       "Mod+1".action.focus-workspace = [ 1 ];
