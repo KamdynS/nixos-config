@@ -2,6 +2,16 @@
 
 {
   programs.niri.settings = {
+    # Monitor configuration
+    outputs = {
+      "HDMI-A-1" = {
+        position = { x = 0; y = 0; };
+      };
+      "DP-3" = {
+        position = { x = 1920; y = 0; };
+      };
+    };
+
     # Disable client-side decorations
     prefer-no-csd = true;
     
