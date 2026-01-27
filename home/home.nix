@@ -37,7 +37,7 @@
       "github.com" = {
         host = "github.com";
         user = "git";
-        identityFile = "~/.ssh/github";
+        identityFile = "~/.ssh/id_ed25519";
       };
     };
   };
@@ -193,6 +193,9 @@
 
     # Keybinding help
     yad
+
+    # Discord (with Wayland screen sharing)
+    vesktop
 
     ] ++ [
     # Zen browser

@@ -59,7 +59,12 @@
   services.displayManager.sessionPackages = [ pkgs.niri-unstable ];
   services.xserver.enable = true;
   
-  # Needed for screen sharing, file dialogs
+  # Portal for screen sharing, file dialogs
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
+    config.common.default = [ "gnome" ];
+  };
   services.dbus.packages = [ pkgs.nautilus ];
 
   # Enable CUPS to print documents.
