@@ -1,0 +1,4 @@
+module qs.components.images
+
+CachingIconImage 1.0 CachingIconImage.qml
+CachingImage 1.0 CachingImage.qml

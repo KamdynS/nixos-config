@@ -1,0 +1,12 @@
+/home/kamdyns/nixos-config/packages/niri-shell-ipc/target/release/deps/notify-42588a803b23bd26.d: /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/notify-7.0.0/src/lib.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/notify-7.0.0/src/inotify.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/notify-7.0.0/src/null.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/notify-7.0.0/src/poll.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/notify-7.0.0/src/config.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/notify-7.0.0/src/error.rs
+
+/home/kamdyns/nixos-config/packages/niri-shell-ipc/target/release/deps/libnotify-42588a803b23bd26.rlib: /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/notify-7.0.0/src/lib.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/notify-7.0.0/src/inotify.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/notify-7.0.0/src/null.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/notify-7.0.0/src/poll.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/notify-7.0.0/src/config.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/notify-7.0.0/src/error.rs
+
+/home/kamdyns/nixos-config/packages/niri-shell-ipc/target/release/deps/libnotify-42588a803b23bd26.rmeta: /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/notify-7.0.0/src/lib.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/notify-7.0.0/src/inotify.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/notify-7.0.0/src/null.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/notify-7.0.0/src/poll.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/notify-7.0.0/src/config.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/notify-7.0.0/src/error.rs
+
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/notify-7.0.0/src/lib.rs:
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/notify-7.0.0/src/inotify.rs:
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/notify-7.0.0/src/null.rs:
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/notify-7.0.0/src/poll.rs:
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/notify-7.0.0/src/config.rs:
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/notify-7.0.0/src/error.rs:

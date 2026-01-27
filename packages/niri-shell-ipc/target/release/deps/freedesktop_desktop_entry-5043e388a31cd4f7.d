@@ -1,0 +1,10 @@
+/home/kamdyns/nixos-config/packages/niri-shell-ipc/target/release/deps/freedesktop_desktop_entry-5043e388a31cd4f7.d: /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/freedesktop-desktop-entry-0.7.19/src/lib.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/freedesktop-desktop-entry-0.7.19/src/decoder.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/freedesktop-desktop-entry-0.7.19/src/exec.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/freedesktop-desktop-entry-0.7.19/src/iter.rs
+
+/home/kamdyns/nixos-config/packages/niri-shell-ipc/target/release/deps/libfreedesktop_desktop_entry-5043e388a31cd4f7.rlib: /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/freedesktop-desktop-entry-0.7.19/src/lib.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/freedesktop-desktop-entry-0.7.19/src/decoder.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/freedesktop-desktop-entry-0.7.19/src/exec.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/freedesktop-desktop-entry-0.7.19/src/iter.rs
+
+/home/kamdyns/nixos-config/packages/niri-shell-ipc/target/release/deps/libfreedesktop_desktop_entry-5043e388a31cd4f7.rmeta: /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/freedesktop-desktop-entry-0.7.19/src/lib.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/freedesktop-desktop-entry-0.7.19/src/decoder.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/freedesktop-desktop-entry-0.7.19/src/exec.rs /home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/freedesktop-desktop-entry-0.7.19/src/iter.rs
+
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/freedesktop-desktop-entry-0.7.19/src/lib.rs:
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/freedesktop-desktop-entry-0.7.19/src/decoder.rs:
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/freedesktop-desktop-entry-0.7.19/src/exec.rs:
+/home/kamdyns/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/freedesktop-desktop-entry-0.7.19/src/iter.rs:

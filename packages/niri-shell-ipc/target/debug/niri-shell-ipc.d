@@ -1,0 +1,1 @@
+/home/kamdyns/nixos-config/packages/niri-shell-ipc/target/debug/niri-shell-ipc: /home/kamdyns/nixos-config/packages/niri-shell-ipc/src/dbus.rs /home/kamdyns/nixos-config/packages/niri-shell-ipc/src/main.rs /home/kamdyns/nixos-config/packages/niri-shell-ipc/src/niri.rs /home/kamdyns/nixos-config/packages/niri-shell-ipc/src/state.rs

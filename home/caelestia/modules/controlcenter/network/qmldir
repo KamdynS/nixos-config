@@ -1,0 +1,14 @@
+EthernetDetails 1.0 EthernetDetails.qml
+EthernetList 1.0 EthernetList.qml
+EthernetPane 1.0 EthernetPane.qml
+EthernetSettings 1.0 EthernetSettings.qml
+NetworkingPane 1.0 NetworkingPane.qml
+NetworkSettings 1.0 NetworkSettings.qml
+VpnDetails 1.0 VpnDetails.qml
+VpnList 1.0 VpnList.qml
+VpnSettings 1.0 VpnSettings.qml
+WirelessDetails 1.0 WirelessDetails.qml
+WirelessList 1.0 WirelessList.qml
+WirelessPane 1.0 WirelessPane.qml
+WirelessPasswordDialog 1.0 WirelessPasswordDialog.qml
+WirelessSettings 1.0 WirelessSettings.qml

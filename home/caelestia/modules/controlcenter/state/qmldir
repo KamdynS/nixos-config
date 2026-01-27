@@ -1,0 +1,5 @@
+BluetoothState 1.0 BluetoothState.qml
+EthernetState 1.0 EthernetState.qml
+LauncherState 1.0 LauncherState.qml
+NetworkState 1.0 NetworkState.qml
+VpnState 1.0 VpnState.qml

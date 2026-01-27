@@ -1,6 +1,5 @@
 {
   description = "NixOS config for LG Gram and Desktop";
-
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager = {
@@ -16,15 +15,17 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-
   outputs = { self, nixpkgs, home-manager, niri, zen-browser, ... }@inputs:
     let
       system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
+      # Local package for niri IPC daemon (from caelestia)
+      niri-shell-ipc = pkgs.callPackage ./packages/niri-shell-ipc {};
     in
     {
       nixosConfigurations.lg-gram = nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = { inherit inputs; };
+        specialArgs = { inherit inputs niri-shell-ipc; };
         modules = [
           { nixpkgs.overlays = [ niri.overlays.niri ]; }
           ./hosts/lg-gram/configuration.nix
@@ -34,14 +35,13 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.kamdyns = import ./home/home.nix;
-            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.extraSpecialArgs = { inherit inputs niri-shell-ipc; };
           }
         ];
       };
-
       nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = { inherit inputs; };
+        specialArgs = { inherit inputs niri-shell-ipc; };
         modules = [
           { nixpkgs.overlays = [ niri.overlays.niri ]; }
           ./hosts/desktop/configuration.nix
@@ -51,7 +51,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.kamdyns = import ./home/home.nix;
-            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.extraSpecialArgs = { inherit inputs niri-shell-ipc; };
           }
         ];
       };

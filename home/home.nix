@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, inputs, niri-shell-ipc, ... }:
 
 {
   imports = [
@@ -203,4 +203,23 @@
 		pkgs.clang-tools
 		pkgs.nodePackages.vscode-langservers-extracted
 	];
+
+  # Niri Shell IPC daemon service
+  # This daemon connects to niri and exposes state via DBus for the caelestia shell
+  systemd.user.services.niri-shell-ipc = {
+    Unit = {
+      Description = "Niri Shell IPC Daemon";
+      After = [ "graphical-session.target" ];
+      PartOf = [ "graphical-session.target" ];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${niri-shell-ipc}/bin/niri-shell-ipc";
+      Restart = "on-failure";
+      RestartSec = 5;
+    };
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
+    };
+  };
 }
