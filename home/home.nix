@@ -90,7 +90,7 @@
       fi
       
       # Load p10k config
-      [[ -f /home/kamdyns/nixos-config/dotfiles/zsh/p10k.zsh ]] && source /home/kamdyns/nixos-config/dotfiles/zsh/p10k.zsh
+      [[ -f /home/kamdyns/nixos-config/dotfiles/zsh/.p10k.zsh ]] && source /home/kamdyns/nixos-config/dotfiles/zsh/.p10k.zsh
     '';
   };
 

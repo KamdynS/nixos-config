@@ -91,10 +91,13 @@ StyledClippingRect {
         MouseArea {
             anchors.fill: layout
             onClicked: event => {
-                const ws = layout.childAt(event.x, event.y).ws;
-                if (Niri.activeWsId !== ws)
-                    Niri.focusWorkspace(ws);
-                // Niri doesn't have special workspaces, clicking active workspace does nothing
+                // Find which workspace was clicked by checking y position
+                const child = layout.childAt(event.x, event.y);
+                if (child && child.isWorkspace) {
+                    const ws = child.ws;
+                    if (root.activeWsId !== ws)
+                        Niri.focusWorkspace(ws);
+                }
             }
         }
 

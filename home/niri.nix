@@ -96,17 +96,21 @@
       "Mod+F".action.maximize-column = [];        # Respects struts/border
       "Mod+Shift+F".action.fullscreen-window = []; # True fullscreen (covers border)
       
-      # Focus
+      # Focus columns
       "Mod+H".action.focus-column-left = [];
-      "Mod+J".action.focus-window-down = [];
-      "Mod+K".action.focus-window-up = [];
       "Mod+L".action.focus-column-right = [];
-      
-      # Move windows
+
+      # Move columns
       "Mod+Shift+H".action.move-column-left = [];
-      "Mod+Shift+J".action.move-window-down = [];
-      "Mod+Shift+K".action.move-window-up = [];
       "Mod+Shift+L".action.move-column-right = [];
+
+      # Workspace navigation (creates new workspace if navigating past the last one)
+      "Mod+J".action.focus-workspace-down = [];
+      "Mod+K".action.focus-workspace-up = [];
+
+      # Move window to workspace
+      "Mod+Shift+J".action.move-column-to-workspace-down = [];
+      "Mod+Shift+K".action.move-column-to-workspace-up = [];
 
       # Move windows between monitors
       "Mod+Shift+Period".action.move-column-to-monitor-right = [];

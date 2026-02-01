@@ -245,9 +245,16 @@ async fn process_event(line: &str, state: &SharedState) -> Result<()> {
 
         if let Some(id) = ws_id {
             let mut ws_map = state.workspaces.write().await;
-            // Update active status
+
+            // Find the output of the activated workspace
+            let activated_output = ws_map.get(&id).and_then(|w| w.output.clone());
+
+            // Update active status only for workspaces on the same output
             for workspace in ws_map.values_mut() {
-                workspace.is_active = workspace.id == id;
+                // Only update is_active for workspaces on the same output
+                if workspace.output == activated_output {
+                    workspace.is_active = workspace.id == id;
+                }
                 if is_focused {
                     workspace.is_focused = workspace.id == id;
                 }

@@ -168,7 +168,7 @@ Singleton {
 
     function getSignature(args: list<var>): string {
         return args.map(a => {
-            if (typeof a === "number") return Number.isInteger(a) ? "i" : "d";
+            if (typeof a === "number") return Number.isInteger(a) ? "u" : "d";
             if (typeof a === "string") return "s";
             if (typeof a === "boolean") return "b";
             return "v";

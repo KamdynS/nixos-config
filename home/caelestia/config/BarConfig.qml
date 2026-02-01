@@ -60,7 +60,7 @@ JsonObject {
     }
 
     component Popouts: JsonObject {
-        property bool activeWindow: true
+        property bool activeWindow: false
         property bool tray: true
         property bool statusIcons: true
     }
