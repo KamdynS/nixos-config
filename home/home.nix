@@ -32,8 +32,10 @@
 
   programs.ssh = {
     enable = true;  # This installs openssh and creates ~/.ssh/config
-    addKeysToAgent = "yes";
     matchBlocks = {
+      "*" = {
+        addKeysToAgent = "yes";
+      };
       "github.com" = {
         host = "github.com";
         user = "git";
@@ -179,7 +181,7 @@
     pavucontrol
 
     # File manager
-    xfce.thunar
+    thunar
 
     # Clipboard support
     wl-clipboard
@@ -199,7 +201,7 @@
 
     ] ++ [
     # Zen browser
-    inputs.zen-browser.packages.${pkgs.system}.default
+    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     ] ++ [
     pkgs.nerd-fonts.jetbrains-mono
 		pkgs.typescript-language-server
