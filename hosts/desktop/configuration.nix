@@ -8,6 +8,13 @@
   
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  # Automatic garbage collection
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 14d";
+  };
+
   # Bootloader - GRUB for dual boot with small EFI partition
   boot.loader.systemd-boot.enable = false;
   boot.loader.grub = {
@@ -15,6 +22,7 @@
     device = "nodev";
     efiSupport = true;
     useOSProber = true;
+    configurationLimit = 10;
   };
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/efi";
