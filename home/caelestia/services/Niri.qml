@@ -215,11 +215,25 @@ Singleton {
         // Match from 's "' to the last '"'
         if (!data.startsWith('s "') || !data.endsWith('"')) return null;
         let json = data.slice(3, -1);  // Remove 's "' and final '"'
-        // Unescape: \" -> ", \\ -> \, and handle octal escapes
+        // Unescape: \" -> ", \\ -> \
         json = json.replace(/\\"/g, '"');
         json = json.replace(/\\\\/g, '\\');
-        // Handle octal escapes (e.g. \302\267 for UTF-8)
-        json = json.replace(/\\([0-7]{3})/g, function(m, oct) { return String.fromCharCode(parseInt(oct, 8)); });
+        // Handle octal escapes for UTF-8 (e.g. \342\200\224 for em dash)
+        // Collect consecutive octal escapes and decode as UTF-8 bytes
+        json = json.replace(/(\\[0-7]{3})+/g, function(match) {
+            const bytes = [];
+            const octals = match.match(/\\([0-7]{3})/g);
+            for (const oct of octals) {
+                bytes.push(parseInt(oct.slice(1), 8));
+            }
+            // Decode UTF-8 bytes to string
+            try {
+                return decodeURIComponent(bytes.map(b => '%' + b.toString(16).padStart(2, '0')).join(''));
+            } catch (e) {
+                // Fallback: return bytes as individual chars
+                return bytes.map(b => String.fromCharCode(b)).join('');
+            }
+        });
         return JSON.parse(json);
     }
 
