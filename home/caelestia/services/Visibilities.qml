@@ -36,9 +36,16 @@ Singleton {
         }
 
         function showOnActive() {
-            const activeScreen = Quickshell.screens.find(
-                s => Niri.monitorFor(s) === Niri.focusedMonitor
-            );
+            const focusedName = Niri.focusedMonitor?.name;
+            if (!focusedName) {
+                // Fallback: show on first screen if no focused monitor yet
+                const screens = Quickshell.screens;
+                if (screens.length > 0) {
+                    get(screens[0]).visible = true;
+                }
+                return;
+            }
+            const activeScreen = Quickshell.screens.find(s => s.name === focusedName);
             if (activeScreen) {
                 get(activeScreen).visible = true;
             }
@@ -70,9 +77,16 @@ Singleton {
         }
 
         function showOnActive() {
-            const activeScreen = Quickshell.screens.find(
-                s => Niri.monitorFor(s) === Niri.focusedMonitor
-            );
+            const focusedName = Niri.focusedMonitor?.name;
+            if (!focusedName) {
+                // Fallback: show on first screen if no focused monitor yet
+                const screens = Quickshell.screens;
+                if (screens.length > 0) {
+                    get(screens[0]).visible = true;
+                }
+                return;
+            }
+            const activeScreen = Quickshell.screens.find(s => s.name === focusedName);
             if (activeScreen) {
                 get(activeScreen).visible = true;
             }
