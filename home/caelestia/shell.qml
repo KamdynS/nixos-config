@@ -5,6 +5,7 @@
 import "stubs" as Stubs
 import "services"
 import "modules"
+import qs.services
 import "modules/drawers"
 import "modules/background"
 import "modules/areapicker"
@@ -20,6 +21,9 @@ ShellRoot {
     // Initialize stubs for theme and toaster
     readonly property var theme: Stubs.Theme
     readonly property var toaster: Stubs.Toaster
+
+    // Ensure ThemePropagator is instantiated (for theme propagation to apps)
+    readonly property var _themePropagator: ThemePropagator
 
     Background {}
     Drawers {}

@@ -36,9 +36,18 @@ Singleton {
         }
 
         function showOnActive() {
+            const activeScreen = Quickshell.screens.find(
+                s => Niri.monitorFor(s) === Niri.focusedMonitor
+            );
+            if (activeScreen) {
+                get(activeScreen).visible = true;
+            }
+        }
+
+        function hideAll() {
             const screens = Quickshell.screens;
             for (let i = 0; i < screens.length; i++) {
-                get(screens[i]).visible = true;
+                get(screens[i]).visible = false;
             }
         }
     }
@@ -61,9 +70,18 @@ Singleton {
         }
 
         function showOnActive() {
+            const activeScreen = Quickshell.screens.find(
+                s => Niri.monitorFor(s) === Niri.focusedMonitor
+            );
+            if (activeScreen) {
+                get(activeScreen).visible = true;
+            }
+        }
+
+        function hideAll() {
             const screens = Quickshell.screens;
             for (let i = 0; i < screens.length; i++) {
-                get(screens[i]).visible = true;
+                get(screens[i]).visible = false;
             }
         }
     }

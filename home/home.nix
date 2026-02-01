@@ -16,6 +16,8 @@
   home.sessionVariables = {
     # Tell Firefox to not draw its own titlebar (allows niri borders to show)
     MOZ_GTK_TITLEBAR_DECORATION = "none";
+    # Use Caelestia-generated niri config (for dynamic theme colors)
+    NIRI_CONFIG = "$HOME/.config/niri/caelestia-config.kdl";
   };
 
 	programs.home-manager.enable = true;
@@ -61,7 +63,9 @@
     settings = {
       font-family = "JetBrains Mono";
       font-size = 14;
-      theme = "Gruvbox Light";
+      # Theme is managed dynamically by Caelestia ThemePropagator
+      # via ~/.config/ghostty/theme.conf (send SIGUSR1 to reload)
+      config-file = "~/.config/ghostty/theme.conf";
       window-padding-x = 8;
       window-padding-y = 8;
     };

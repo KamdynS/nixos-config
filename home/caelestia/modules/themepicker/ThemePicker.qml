@@ -22,6 +22,13 @@ Scope {
             visible: Visibilities.themePicker.get(modelData).visible
             color: "transparent"
 
+            // Escape key to close
+            Shortcut {
+                sequence: "Escape"
+                enabled: window.visible
+                onActivated: Visibilities.themePicker.get(window.modelData).visible = false
+            }
+
             anchors {
                 top: true
                 left: true

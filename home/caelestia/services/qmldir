@@ -18,3 +18,4 @@ singleton VPN 1.0 VPN.qml
 singleton Wallpapers 1.0 Wallpapers.qml
 singleton Weather 1.0 Weather.qml
 singleton Theme 1.0 Theme.qml
+singleton ThemePropagator 1.0 ThemePropagator.qml
