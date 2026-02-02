@@ -30,6 +30,20 @@
       enable = true;
   };
 
+  programs.git = {
+    enable = true;
+    userName = "Kamdyn Shaeffer";
+    userEmail = "kamdynshaefferbusiness@gmail.com";
+    extraConfig = {
+      # Automatically use SSH instead of HTTPS for GitHub
+      url."git@github.com:".insteadOf = "https://github.com/";
+    };
+  };
+
+  programs.lazygit = {
+    enable = true;
+  };
+
   programs.ssh = {
     enable = true;  # This installs openssh and creates ~/.ssh/config
     matchBlocks = {
@@ -170,7 +184,6 @@
 		ripgrep
 		fd
 		git
-		lazygit
 		gcc
 		gnumake
 		unzip
