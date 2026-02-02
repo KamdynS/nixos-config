@@ -259,8 +259,20 @@ async fn process_event(line: &str, state: &SharedState) -> Result<()> {
                     workspace.is_focused = workspace.id == id;
                 }
             }
+            drop(ws_map);
             if is_focused {
                 *state.focused_workspace_id.write().await = Some(id);
+                // Update focused_output when workspace focus changes
+                if let Some(output_name) = activated_output {
+                    *state.focused_output.write().await = Some(output_name.clone());
+
+                    // Update is_focused on all outputs
+                    let mut outputs = state.outputs.write().await;
+                    for output in outputs.values_mut() {
+                        output.is_focused = output.name == output_name;
+                    }
+                    state.notify(StateEvent::OutputsChanged);
+                }
             }
         }
         state.notify(StateEvent::WorkspacesChanged);
@@ -293,14 +305,53 @@ async fn process_event(line: &str, state: &SharedState) -> Result<()> {
         let id = focus.get("id").and_then(|v| v.as_u64());
         *state.focused_window_id.write().await = id;
 
-        // Update focus status in windows
+        // Update focus status in windows and derive focused output
         let mut windows = state.windows.write().await;
+        let mut focused_workspace_id = None;
         for window in windows.values_mut() {
             window.is_focused = Some(window.id) == id;
+            if window.is_focused {
+                focused_workspace_id = window.workspace_id;
+            }
+        }
+        drop(windows);
+
+        // Update focused_output based on the focused window's workspace
+        if let Some(ws_id) = focused_workspace_id {
+            let workspaces = state.workspaces.read().await;
+            if let Some(workspace) = workspaces.get(&ws_id) {
+                if let Some(output_name) = &workspace.output {
+                    let output_name = output_name.clone();
+                    drop(workspaces);
+                    *state.focused_output.write().await = Some(output_name.clone());
+
+                    // Update is_focused on all outputs
+                    let mut outputs = state.outputs.write().await;
+                    for output in outputs.values_mut() {
+                        output.is_focused = output.name == output_name;
+                    }
+                    state.notify(StateEvent::OutputsChanged);
+                }
+            }
         }
 
         state.notify(StateEvent::FocusChanged);
         state.notify(StateEvent::WindowsChanged);
+    } else if let Some(outputs) = event.get("OutputsChanged") {
+        debug!("OutputsChanged event");
+        if let Some(arr) = outputs.get("outputs").and_then(|v| v.as_array()) {
+            let mut out_map = state.outputs.write().await;
+            out_map.clear();
+            for out in arr {
+                if let Some(output) = parse_output(out) {
+                    if output.is_focused {
+                        *state.focused_output.write().await = Some(output.name.clone());
+                    }
+                    out_map.insert(output.name.clone(), output);
+                }
+            }
+        }
+        state.notify(StateEvent::OutputsChanged);
     } else if let Some(kb) = event.get("KeyboardLayoutsChanged") {
         debug!("KeyboardLayoutsChanged event");
         if let Some(layouts) = kb.get("keyboard_layouts") {
