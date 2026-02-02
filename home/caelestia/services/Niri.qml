@@ -50,7 +50,8 @@ Singleton {
         if (!ws) return null;
         // Add toplevels property - filter windows by workspace
         const wsWindows = windowList.filter(w => w.workspace_id === ws.id);
-        return { ...ws, toplevels: { values: wsWindows } };
+        // QML doesn't support spread, use Object.assign
+        return Object.assign({}, ws, { toplevels: { values: wsWindows } });
     }
     // Return a simple object with the name - stable reference since it's derived from string
     readonly property var focusedMonitor: focusedOutputName ? { name: focusedOutputName } : null
@@ -148,15 +149,17 @@ Singleton {
         const ws = workspaceList.find(ws => ws.output === out.name && ws.is_active);
         const wsWindows = ws ? windowList.filter(w => w.workspace_id === ws?.id) : [];
 
+        // Build workspace with toplevels (QML doesn't support spread)
+        const activeWorkspace = ws ? Object.assign({}, ws, { toplevels: { values: wsWindows } }) : null;
+
         // Return enriched output info with compatibility aliases
-        return {
-            ...out,
+        return Object.assign({}, out, {
             // Alias for compatibility (struct has is_focused, code expects focused)
             focused: out.is_focused,
             // Alias id to name for code that expects numeric id
             id: out.name,
-            activeWorkspace: ws ? { ...ws, toplevels: { values: wsWindows } } : null
-        };
+            activeWorkspace: activeWorkspace
+        });
     }
 
     // Helper for DBus method calls
