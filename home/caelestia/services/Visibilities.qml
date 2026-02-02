@@ -11,11 +11,17 @@ Singleton {
     property var bars: new Map()
 
     function load(screen: ShellScreen, visibilities: var): void {
-        screens.set(Niri.monitorFor(screen), visibilities);
+        // Use screen name directly - stable string key
+        screens.set(screen.name, visibilities);
     }
 
     function getForActive(): PersistentProperties {
-        return screens.get(Niri.focusedMonitor);
+        // Use the focusedOutputName string directly from daemon
+        const focusedName = Niri.focusedOutputName;
+        if (focusedName) {
+            return screens.get(focusedName);
+        }
+        return null;
     }
 
     // Theme picker visibility - simple object with get/toggle methods
@@ -36,7 +42,7 @@ Singleton {
         }
 
         function showOnActive() {
-            const focusedName = Niri.focusedMonitor?.name;
+            const focusedName = Niri.focusedOutputName;
             if (!focusedName) {
                 // Fallback: show on first screen if no focused monitor yet
                 const screens = Quickshell.screens;
@@ -77,7 +83,7 @@ Singleton {
         }
 
         function showOnActive() {
-            const focusedName = Niri.focusedMonitor?.name;
+            const focusedName = Niri.focusedOutputName;
             if (!focusedName) {
                 // Fallback: show on first screen if no focused monitor yet
                 const screens = Quickshell.screens;

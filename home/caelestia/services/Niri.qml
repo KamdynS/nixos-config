@@ -7,11 +7,16 @@ import QtQuick
 Singleton {
     id: root
 
-    // Parsed workspace/window/output data from DBus
-    readonly property var workspaceList: internal.workspaces
-    readonly property var windowList: internal.windows
-    readonly property var outputList: internal.outputs
-    readonly property var keyboardLayouts: internal.keyboardLayouts
+    // Stable data stores - these get updated in-place, not replaced
+    property var workspaceList: []
+    property var windowList: []
+    property var outputList: []
+    property var keyboardLayouts: ({ names: [], current_idx: 0 })
+
+    // Focused state - read directly from daemon's scalar properties
+    property string focusedOutputName: ""
+    property int focusedWorkspaceId: 0
+    property int focusedWindowId: 0
 
     // Convenience getters matching Hyprland API style
     readonly property var toplevels: {
@@ -38,21 +43,21 @@ Singleton {
         return { values: outputList };
     }
 
-    // Active/focused items
-    readonly property var activeToplevel: windowList.find(w => w.is_focused) ?? null
+    // Active/focused items derived from the scalar properties
+    readonly property var activeToplevel: windowList.find(w => w.id === focusedWindowId) ?? null
     readonly property var focusedWorkspace: {
-        const ws = workspaceList.find(ws => ws.is_focused);
+        const ws = workspaceList.find(ws => ws.id === focusedWorkspaceId);
         if (!ws) return null;
         // Add toplevels property - filter windows by workspace
         const wsWindows = windowList.filter(w => w.workspace_id === ws.id);
-        ws.toplevels = { values: wsWindows };
-        return ws;
+        return { ...ws, toplevels: { values: wsWindows } };
     }
-    readonly property var focusedMonitor: outputList.find(out => out.is_focused) ?? null
-    readonly property int activeWsId: focusedWorkspace?.id ?? 1
+    // Return a simple object with the name - stable reference since it's derived from string
+    readonly property var focusedMonitor: focusedOutputName ? { name: focusedOutputName } : null
+    readonly property int activeWsId: focusedWorkspaceId
     readonly property int focusedWorkspaceIdx: focusedWorkspace?.idx ?? 1
 
-    // Keyboard layout (simplified for niri)
+    // Keyboard layout
     readonly property string kbLayout: {
         const layouts = keyboardLayouts;
         if (layouts.names && layouts.names.length > 0) {
@@ -69,7 +74,6 @@ Singleton {
 
     // Dispatch actions to niri
     function dispatch(request: string): void {
-        // Parse hyprland-style requests and convert to niri actions
         const parts = request.split(" ");
         const cmd = parts[0];
 
@@ -84,7 +88,6 @@ Singleton {
                 moveWindowToWorkspace(wsNum);
             }
         } else if (cmd === "togglespecialworkspace") {
-            // Niri doesn't have special workspaces, ignore
             console.log("Niri: special workspaces not supported");
         } else {
             console.log("Niri: unknown dispatch command:", request);
@@ -93,50 +96,50 @@ Singleton {
 
     // Focus workspace by index (1-based)
     function focusWorkspace(index: int): void {
-        dbusCall("FocusWorkspace", [index]);
+        dbusCall.call("FocusWorkspace", "u", [index]);
     }
 
     // Focus workspace relatively
     function focusWorkspaceRelative(delta: int): void {
-        dbusCall("FocusWorkspaceRelative", [delta]);
+        dbusCall.call("FocusWorkspaceRelative", "i", [delta]);
     }
 
     // Move window to workspace
     function moveWindowToWorkspace(index: int): void {
-        dbusCall("MoveWindowToWorkspace", [index]);
+        dbusCall.call("MoveWindowToWorkspace", "u", [index]);
     }
 
     // Close focused window
     function closeWindow(): void {
-        dbusCall("CloseWindow", []);
+        dbusCall.call("CloseWindow", "", []);
     }
 
     // Focus a specific window
     function focusWindow(id: int): void {
-        dbusCall("FocusWindow", [id]);
+        dbusCall.call("FocusWindow", "t", [id]);
     }
 
     // Send raw action
     function action(actionJson: string): void {
-        dbusCall("Action", [actionJson]);
+        dbusCall.call("Action", "s", [actionJson]);
     }
 
     // Switch keyboard layout
     function switchKeyboardLayout(direction: string): void {
-        dbusCall("SwitchKeyboardLayout", [direction]);
+        dbusCall.call("SwitchKeyboardLayout", "s", [direction]);
     }
 
     // Quit niri
     function quit(): void {
-        dbusCall("Quit", []);
+        dbusCall.call("Quit", "", []);
     }
 
     // Power off monitors
     function powerOffMonitors(): void {
-        dbusCall("PowerOffMonitors", []);
+        dbusCall.call("PowerOffMonitors", "", []);
     }
 
-    // Get monitor for a shell screen (by matching output name)
+    // Get monitor info for a shell screen (by matching output name)
     function monitorFor(screen: ShellScreen): var {
         const out = outputList.find(out => out.name === screen.name);
         if (!out) return null;
@@ -145,164 +148,163 @@ Singleton {
         const ws = workspaceList.find(ws => ws.output === out.name && ws.is_active);
         const wsWindows = ws ? windowList.filter(w => w.workspace_id === ws?.id) : [];
 
-        if (ws) {
-            ws.toplevels = { values: wsWindows };
-        }
-        out.activeWorkspace = ws ?? null;
-        return out;
+        // Return enriched output info with compatibility aliases
+        return {
+            ...out,
+            // Alias for compatibility (struct has is_focused, code expects focused)
+            focused: out.is_focused,
+            // Alias id to name for code that expects numeric id
+            id: out.name,
+            activeWorkspace: ws ? { ...ws, toplevels: { values: wsWindows } } : null
+        };
     }
 
-    // Internal helper for DBus calls
-    function dbusCall(method: string, args: list<var>): void {
-        const process = Qt.createQmlObject(`
-            import Quickshell.Io
-            Process {
-                command: ["busctl", "--user", "call", "org.caelestia.Niri",
-                         "/org/caelestia/Niri", "org.caelestia.Niri",
-                         "${method}", ${args.length > 0 ? '"' + getSignature(args) + '"' : '""'}${args.map(a => ', "' + a + '"').join('')}]
-                running: true
-                onExited: destroy()
-            }
-        `, root, "dbusCall");
-    }
-
-    function getSignature(args: list<var>): string {
-        return args.map(a => {
-            if (typeof a === "number") return Number.isInteger(a) ? "u" : "d";
-            if (typeof a === "string") return "s";
-            if (typeof a === "boolean") return "b";
-            return "v";
-        }).join("");
-    }
-
-    // Internal state management
+    // Helper for DBus method calls
     QtObject {
-        id: internal
+        id: dbusCall
 
-        property var workspaces: []
-        property var windows: []
-        property var outputs: []
-        property var keyboardLayouts: ({ names: [], current_idx: 0 })
+        function call(method: string, signature: string, args: list<var>): void {
+            const cmd = ["busctl", "--user", "call", "org.caelestia.Niri",
+                        "/org/caelestia/Niri", "org.caelestia.Niri", method];
+            if (signature) {
+                cmd.push(signature);
+                for (const arg of args) {
+                    cmd.push(String(arg));
+                }
+            }
 
-        // Poll state from DBus (we'll improve this with property monitoring later)
-        function refreshWorkspaces(): void {
-            workspacesProcess.running = true;
-        }
-
-        function refreshWindows(): void {
-            windowsProcess.running = true;
-        }
-
-        function refreshOutputs(): void {
-            outputsProcess.running = true;
-        }
-
-        function refreshKeyboardLayouts(): void {
-            keyboardProcess.running = true;
-        }
-
-        function refreshAll(): void {
-            refreshWorkspaces();
-            refreshWindows();
-            refreshOutputs();
-            refreshKeyboardLayouts();
+            const process = Qt.createQmlObject(`
+                import Quickshell.Io
+                Process {
+                    command: ${JSON.stringify(cmd)}
+                    running: true
+                    onExited: destroy()
+                }
+            `, root, "dbusCall");
         }
     }
 
-    // Helper to parse busctl property output
-    function parseBusctlOutput(data: string): var {
-        // Output format: s "json_string" with escaped characters
-        // Match from 's "' to the last '"'
-        if (!data.startsWith('s "') || !data.endsWith('"')) return null;
-        let json = data.slice(3, -1);  // Remove 's "' and final '"'
-        // Unescape: \" -> ", \\ -> \
-        json = json.replace(/\\"/g, '"');
-        json = json.replace(/\\\\/g, '\\');
-        // Handle octal escapes for UTF-8 (e.g. \342\200\224 for em dash)
-        // Collect consecutive octal escapes and decode as UTF-8 bytes
-        json = json.replace(/(\\[0-7]{3})+/g, function(match) {
-            const bytes = [];
-            const octals = match.match(/\\([0-7]{3})/g);
-            for (const oct of octals) {
-                bytes.push(parseInt(oct.slice(1), 8));
-            }
-            // Decode UTF-8 bytes to string
-            try {
-                return decodeURIComponent(bytes.map(b => '%' + b.toString(16).padStart(2, '0')).join(''));
-            } catch (e) {
-                // Fallback: return bytes as individual chars
-                return bytes.map(b => String.fromCharCode(b)).join('');
-            }
-        });
-        return JSON.parse(json);
+    // Parse busctl property output (format: s "json_string" or t 123 etc)
+    function parseStringProperty(data: string): string {
+        if (!data.startsWith('s "') || !data.endsWith('"')) return "";
+        let str = data.slice(3, -1);
+        str = str.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+        return str;
     }
 
-    // DBus property readers using busctl
+    function parseIntProperty(data: string): int {
+        const match = data.match(/^[tu]\s+(\d+)/);
+        return match ? parseInt(match[1]) : 0;
+    }
+
+    function parseJsonProperty(data: string): var {
+        const str = parseStringProperty(data);
+        if (!str) return null;
+        try {
+            // Handle octal escapes for UTF-8
+            const decoded = str.replace(/(\\[0-7]{3})+/g, function(match) {
+                const bytes = [];
+                const octals = match.match(/\\([0-7]{3})/g);
+                for (const oct of octals) {
+                    bytes.push(parseInt(oct.slice(1), 8));
+                }
+                try {
+                    return decodeURIComponent(bytes.map(b => '%' + b.toString(16).padStart(2, '0')).join(''));
+                } catch (e) {
+                    return bytes.map(b => String.fromCharCode(b)).join('');
+                }
+            });
+            return JSON.parse(decoded);
+        } catch (e) {
+            console.error("Niri: Failed to parse JSON:", e);
+            return null;
+        }
+    }
+
+    // Property readers - only run when triggered by signals or on startup
     Process {
-        id: workspacesProcess
+        id: workspacesReader
         command: ["busctl", "--user", "get-property", "org.caelestia.Niri",
                   "/org/caelestia/Niri", "org.caelestia.Niri", "Workspaces"]
         stdout: StdioCollector {
             onStreamFinished: {
-                try {
-                    const result = root.parseBusctlOutput(text.trim());
-                    if (result) internal.workspaces = result;
-                } catch (e) {
-                    console.error("Failed to parse workspaces:", e);
-                }
+                const result = root.parseJsonProperty(text.trim());
+                if (result) root.workspaceList = result;
             }
         }
     }
 
     Process {
-        id: windowsProcess
+        id: windowsReader
         command: ["busctl", "--user", "get-property", "org.caelestia.Niri",
                   "/org/caelestia/Niri", "org.caelestia.Niri", "Windows"]
         stdout: StdioCollector {
             onStreamFinished: {
-                try {
-                    const result = root.parseBusctlOutput(text.trim());
-                    if (result) internal.windows = result;
-                } catch (e) {
-                    console.error("Failed to parse windows:", e);
-                }
+                const result = root.parseJsonProperty(text.trim());
+                if (result) root.windowList = result;
             }
         }
     }
 
     Process {
-        id: outputsProcess
+        id: outputsReader
         command: ["busctl", "--user", "get-property", "org.caelestia.Niri",
                   "/org/caelestia/Niri", "org.caelestia.Niri", "Outputs"]
         stdout: StdioCollector {
             onStreamFinished: {
-                try {
-                    const result = root.parseBusctlOutput(text.trim());
-                    if (result) internal.outputs = result;
-                } catch (e) {
-                    console.error("Failed to parse outputs:", e);
-                }
+                const result = root.parseJsonProperty(text.trim());
+                if (result) root.outputList = result;
             }
         }
     }
 
     Process {
-        id: keyboardProcess
+        id: keyboardReader
         command: ["busctl", "--user", "get-property", "org.caelestia.Niri",
                   "/org/caelestia/Niri", "org.caelestia.Niri", "KeyboardLayouts"]
         stdout: StdioCollector {
             onStreamFinished: {
-                try {
-                    const result = root.parseBusctlOutput(text.trim());
-                    if (result) internal.keyboardLayouts = result;
-                } catch (e) {
-                    console.error("Failed to parse keyboard layouts:", e);
-                }
+                const result = root.parseJsonProperty(text.trim());
+                if (result) root.keyboardLayouts = result;
             }
         }
     }
 
-    // Monitor DBus signals for state changes
+    // Scalar property readers - lightweight, just read simple values
+    Process {
+        id: focusedOutputReader
+        command: ["busctl", "--user", "get-property", "org.caelestia.Niri",
+                  "/org/caelestia/Niri", "org.caelestia.Niri", "FocusedOutput"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                root.focusedOutputName = root.parseStringProperty(text.trim());
+            }
+        }
+    }
+
+    Process {
+        id: focusedWorkspaceReader
+        command: ["busctl", "--user", "get-property", "org.caelestia.Niri",
+                  "/org/caelestia/Niri", "org.caelestia.Niri", "FocusedWorkspace"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                root.focusedWorkspaceId = root.parseIntProperty(text.trim());
+            }
+        }
+    }
+
+    Process {
+        id: focusedWindowReader
+        command: ["busctl", "--user", "get-property", "org.caelestia.Niri",
+                  "/org/caelestia/Niri", "org.caelestia.Niri", "FocusedWindow"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                root.focusedWindowId = root.parseIntProperty(text.trim());
+            }
+        }
+    }
+
+    // Signal monitor - listens for daemon signals and triggers appropriate refreshes
     Process {
         id: signalMonitor
         running: true
@@ -310,34 +312,33 @@ Singleton {
         stdout: SplitParser {
             onRead: data => {
                 if (data.includes("WorkspacesUpdated")) {
-                    internal.refreshWorkspaces();
+                    workspacesReader.running = true;
                 } else if (data.includes("WindowsUpdated")) {
-                    internal.refreshWindows();
+                    windowsReader.running = true;
                 } else if (data.includes("OutputsUpdated")) {
-                    internal.refreshOutputs();
+                    outputsReader.running = true;
                 } else if (data.includes("FocusUpdated")) {
-                    internal.refreshWorkspaces();
-                    internal.refreshWindows();
+                    // Only refresh the lightweight scalar properties
+                    focusedOutputReader.running = true;
+                    focusedWorkspaceReader.running = true;
+                    focusedWindowReader.running = true;
                 } else if (data.includes("KeyboardLayoutUpdated")) {
-                    internal.refreshKeyboardLayouts();
+                    keyboardReader.running = true;
                 }
             }
         }
     }
 
-    // Initial state fetch
+    // Initial state fetch on startup
     Component.onCompleted: {
-        // Small delay to ensure DBus daemon is ready
         Qt.callLater(() => {
-            internal.refreshAll();
+            workspacesReader.running = true;
+            windowsReader.running = true;
+            outputsReader.running = true;
+            keyboardReader.running = true;
+            focusedOutputReader.running = true;
+            focusedWorkspaceReader.running = true;
+            focusedWindowReader.running = true;
         });
-    }
-
-    // Fallback polling timer in case signals are missed
-    Timer {
-        interval: 100
-        running: true
-        repeat: true
-        onTriggered: internal.refreshAll()
     }
 }
