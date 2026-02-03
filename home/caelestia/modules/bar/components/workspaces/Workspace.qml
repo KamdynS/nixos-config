@@ -36,23 +36,25 @@ ColumnLayout {
         readonly property bool isActive: root.activeWsId === root.wsId
         readonly property int circleSize: Config.bar.sizes.innerWidth - Appearance.padding.small * 2
 
-        // Normal state colors
-        readonly property color normalBgColor: "transparent"
-        readonly property color normalTextColor: root.isOccupied ? Colours.palette.m3onSurface : Colours.palette.m3outlineVariant
-        readonly property color normalBorderColor: root.isOccupied ? Colours.palette.m3onSurface : Colours.palette.m3outlineVariant
+        // Normal state colors - beige background with grey text
+        readonly property color normalBgColor: Colours.palette.m3onSurface  // beige background
+        readonly property color normalTextColor: Colours.palette.m3outline  // grey text
 
-        // Hovered state: invert (text color becomes background, background becomes text)
-        readonly property color hoveredBgColor: normalTextColor
-        readonly property color hoveredTextColor: Colours.palette.m3surface
+        // Active state colors - orange background with dark text for contrast
+        readonly property color activeBgColor: Colours.palette.m3primary    // orange
+        readonly property color activeTextColor: Colours.palette.m3onPrimary // dark for contrast
+
+        // Hovered state: slightly darker background
+        readonly property color hoveredBgColor: Colours.palette.m3surfaceBright
+        readonly property color hoveredTextColor: Colours.palette.m3onSurface
 
         Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
         Layout.preferredWidth: circleSize
         Layout.preferredHeight: circleSize
 
         radius: circleSize / 2
-        color: isActive ? Colours.palette.m3primary : (hoverArea.containsMouse ? hoveredBgColor : normalBgColor)
-        border.width: isActive || hoverArea.containsMouse ? 0 : 2
-        border.color: normalBorderColor
+        color: isActive ? activeBgColor : (hoverArea.containsMouse ? hoveredBgColor : normalBgColor)
+        border.width: 0
 
         Text {
             anchors.centerIn: parent
@@ -61,7 +63,7 @@ ColumnLayout {
             font.family: Appearance.font.family.sans
             font.pixelSize: parent.circleSize * 0.55
             font.weight: Font.Medium
-            color: hoverArea.containsMouse ? indicator.hoveredTextColor : indicator.normalTextColor
+            color: indicator.isActive ? indicator.activeTextColor : (hoverArea.containsMouse ? indicator.hoveredTextColor : indicator.normalTextColor)
         }
 
         MouseArea {
