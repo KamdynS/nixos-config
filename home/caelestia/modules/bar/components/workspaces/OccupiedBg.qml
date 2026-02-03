@@ -11,30 +11,37 @@ Item {
 
     required property Repeater workspaces
     required property var occupied
-    required property int groupOffset
+    required property var monitorWorkspaces
 
     property list<var> pills: []
 
     onOccupiedChanged: {
-        if (!occupied) return;
+        if (!occupied || !monitorWorkspaces) return;
         let count = 0;
-        const start = groupOffset;
-        const end = start + Config.bar.workspaces.shown;
-        for (const [ws, occ] of Object.entries(occupied)) {
-            if (ws > start && ws <= end && occ) {
-                const isFirstInGroup = Number(ws) === start + 1;
-                const isLastInGroup = Number(ws) === end;
-                if (isFirstInGroup || !occupied[ws - 1]) {
+
+        // Iterate through monitor workspaces by index to find contiguous occupied groups
+        for (let i = 0; i < monitorWorkspaces.length; i++) {
+            const ws = monitorWorkspaces[i];
+            const wsId = ws.id;
+            const isOccupied = occupied[wsId] ?? false;
+
+            if (isOccupied) {
+                const prevWs = i > 0 ? monitorWorkspaces[i - 1] : null;
+                const nextWs = i < monitorWorkspaces.length - 1 ? monitorWorkspaces[i + 1] : null;
+                const prevOccupied = prevWs ? (occupied[prevWs.id] ?? false) : false;
+                const nextOccupied = nextWs ? (occupied[nextWs.id] ?? false) : false;
+
+                // Start of a new contiguous group
+                if (!prevOccupied) {
                     if (pills[count])
-                        pills[count].start = ws;
+                        pills[count].start = i;
                     else
-                        pills.push(pillComp.createObject(root, {
-                            start: ws
-                        }));
+                        pills.push(pillComp.createObject(root, { start: i }));
                     count++;
                 }
-                if ((isLastInGroup || !occupied[ws + 1]) && pills[count - 1])
-                    pills[count - 1].end = ws;
+                // End of contiguous group
+                if (!nextOccupied && pills[count - 1])
+                    pills[count - 1].end = i;
             }
         }
         if (pills.length > count)
@@ -51,15 +58,9 @@ Item {
 
             required property var modelData
 
-            readonly property Workspace start: root.workspaces.count > 0 ? root.workspaces.itemAt(getWsIdx(modelData.start)) ?? null : null
-            readonly property Workspace end: root.workspaces.count > 0 ? root.workspaces.itemAt(getWsIdx(modelData.end)) ?? null : null
-
-            function getWsIdx(ws: int): int {
-                let i = ws - 1;
-                while (i < 0)
-                    i += Config.bar.workspaces.shown;
-                return i % Config.bar.workspaces.shown;
-            }
+            // modelData.start and modelData.end are now indices into the Repeater
+            readonly property Workspace start: root.workspaces.count > 0 ? root.workspaces.itemAt(modelData.start) ?? null : null
+            readonly property Workspace end: root.workspaces.count > 0 ? root.workspaces.itemAt(modelData.end) ?? null : null
 
             anchors.horizontalCenter: root.horizontalCenter
 

@@ -9,13 +9,14 @@ StyledRect {
 
     required property int activeWsId
     required property Repeater workspaces
+    required property var monitorWorkspaces
     required property Item mask
 
+    // Find index of active workspace in the filtered monitor workspaces
     readonly property int currentWsIdx: {
-        let i = activeWsId - 1;
-        while (i < 0)
-            i += Config.bar.workspaces.shown;
-        return i % Config.bar.workspaces.shown;
+        if (!monitorWorkspaces) return 0;
+        const idx = monitorWorkspaces.findIndex(ws => ws.id === activeWsId);
+        return idx >= 0 ? idx : 0;
     }
 
     property real leading: workspaces.count > 0 ? workspaces.itemAt(currentWsIdx)?.y ?? 0 : 0

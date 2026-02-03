@@ -9,17 +9,17 @@ import QtQuick.Layouts
 ColumnLayout {
     id: root
 
-    required property int index
+    required property var workspace
     required property int activeWsId
     required property var occupied
-    required property int groupOffset
 
     readonly property bool isWorkspace: true // Flag for finding workspace children
     // Unanimated prop for others to use as reference
     readonly property int size: implicitHeight + (hasWindows ? Appearance.padding.small : 0)
 
-    readonly property int ws: groupOffset + index + 1
-    readonly property bool isOccupied: occupied[ws] ?? false
+    // Use the workspace's global ID for display and navigation
+    readonly property int wsId: workspace?.id ?? 1
+    readonly property bool isOccupied: occupied[wsId] ?? false
     readonly property bool hasWindows: isOccupied && Config.bar.workspaces.showWindows
 
     Layout.alignment: Qt.AlignHCenter
@@ -35,9 +35,10 @@ ColumnLayout {
 
         animate: true
         text: {
-            const ws = Niri.workspaces.values.find(w => w.id === root.ws);
-            const wsName = !ws || ws.name == root.ws ? root.ws : (ws.name ? ws.name[0] : root.ws);
-            let displayName = wsName.toString();
+            // Use workspace name if available, otherwise show global ID
+            const wsName = root.workspace?.name ?? root.wsId;
+            const displayId = wsName == root.wsId ? root.wsId : (wsName ? wsName[0] : root.wsId);
+            let displayName = displayId.toString();
             if (Config.bar.workspaces.capitalisation.toLowerCase() === "upper") {
                 displayName = displayName.toUpperCase();
             } else if (Config.bar.workspaces.capitalisation.toLowerCase() === "lower") {
@@ -46,9 +47,9 @@ ColumnLayout {
             const label = Config.bar.workspaces.label || displayName;
             const occupiedLabel = Config.bar.workspaces.occupiedLabel || label;
             const activeLabel = Config.bar.workspaces.activeLabel || (root.isOccupied ? occupiedLabel : label);
-            return root.activeWsId === root.ws ? activeLabel : root.isOccupied ? occupiedLabel : label;
+            return root.activeWsId === root.wsId ? activeLabel : root.isOccupied ? occupiedLabel : label;
         }
-        color: Config.bar.workspaces.occupiedBg || root.isOccupied || root.activeWsId === root.ws ? Colours.palette.m3onSurface : Colours.layer(Colours.palette.m3outlineVariant, 2)
+        color: Config.bar.workspaces.occupiedBg || root.isOccupied || root.activeWsId === root.wsId ? Colours.palette.m3onSurface : Colours.layer(Colours.palette.m3outlineVariant, 2)
         verticalAlignment: Qt.AlignVCenter
     }
 
@@ -87,7 +88,7 @@ ColumnLayout {
 
             Repeater {
                 model: ScriptModel {
-                    values: Niri.toplevels.values.filter(c => c.workspace_id === root.ws)
+                    values: Niri.toplevels.values.filter(c => c.workspace_id === root.wsId)
                 }
 
                 MaterialIcon {

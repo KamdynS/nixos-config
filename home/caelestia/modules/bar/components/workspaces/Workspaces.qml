@@ -17,13 +17,21 @@ StyledClippingRect {
     readonly property bool onSpecial: false
     readonly property int activeWsId: Config.bar.workspaces.perMonitorWorkspaces ? (Niri.monitorFor(screen)?.activeWorkspace?.id ?? 1) : Niri.activeWsId
 
-    readonly property var occupied: Niri.workspaces.values.reduce((acc, curr) => {
-        // Niri doesn't provide window count per workspace directly, check if any windows are on this workspace
-        const hasWindows = Niri.windowList.some(w => w.workspace_id === curr.id);
-        acc[curr.id] = hasWindows;
+    // Filter workspaces to only this monitor's workspaces, sorted by global ID
+    readonly property var monitorWorkspaces: {
+        const screenName = screen?.name ?? "";
+        if (!screenName) return [];
+        return Niri.workspaceList
+            .filter(ws => ws.output === screenName)
+            .sort((a, b) => a.id - b.id);
+    }
+
+    // Build occupied map for this monitor's workspaces
+    readonly property var occupied: monitorWorkspaces.reduce((acc, ws) => {
+        const hasWindows = Niri.windowList.some(w => w.workspace_id === ws.id);
+        acc[ws.id] = hasWindows;
         return acc;
     }, {})
-    readonly property int groupOffset: Math.floor((activeWsId - 1) / Config.bar.workspaces.shown) * Config.bar.workspaces.shown
 
     property real blur: onSpecial ? 1 : 0
 
@@ -54,7 +62,7 @@ StyledClippingRect {
             sourceComponent: OccupiedBg {
                 workspaces: workspaces
                 occupied: root.occupied
-                groupOffset: root.groupOffset
+                monitorWorkspaces: root.monitorWorkspaces
             }
         }
 
@@ -67,12 +75,15 @@ StyledClippingRect {
             Repeater {
                 id: workspaces
 
-                model: Config.bar.workspaces.shown
+                model: root.monitorWorkspaces
 
                 Workspace {
+                    required property var modelData
+                    required property int index
+
+                    workspace: modelData
                     activeWsId: root.activeWsId
                     occupied: root.occupied
-                    groupOffset: root.groupOffset
                 }
             }
         }
@@ -84,6 +95,7 @@ StyledClippingRect {
             sourceComponent: ActiveIndicator {
                 activeWsId: root.activeWsId
                 workspaces: workspaces
+                monitorWorkspaces: root.monitorWorkspaces
                 mask: layout
             }
         }
@@ -94,9 +106,9 @@ StyledClippingRect {
                 // Find which workspace was clicked by checking y position
                 const child = layout.childAt(event.x, event.y);
                 if (child && child.isWorkspace) {
-                    const ws = child.ws;
-                    if (root.activeWsId !== ws)
-                        Niri.focusWorkspace(ws);
+                    const wsId = child.wsId;
+                    if (root.activeWsId !== wsId)
+                        Niri.focusWorkspace(wsId);
                 }
             }
         }
