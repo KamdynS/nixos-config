@@ -77,17 +77,17 @@ Theme state is persisted at `~/.config/niri-shell/config.json`:
 - [x] Theme.qml calls `Colours.loadFromTheme()` to propagate colors
 
 ### To Verify
-- [ ] Restart quickshell and confirm workspace colors update correctly
+- [x] Restart quickshell and confirm workspace colors update correctly
 - [ ] Test theme switching between light and dark modes
 - [ ] Verify colors look correct in both themes
 
 ### Potential Issues
-- The `services/Theme.qml` (not stubs) exists but isn't used - shell.qml uses `Stubs.Theme`
-- ThemePropagator connects to `services/Theme.qml`, not `stubs/Theme.qml` - may need unification
+- Both `services/Theme.qml` and `stubs/Theme.qml` exist as singletons in different modules (`qs.services` vs `Caelestia`)
+- ThemePropagator connects to `qs.services.Theme`
 - If workspace colors still don't appear, check:
-  1. Is `~/.config/niri-shell/config.json` set to correct theme?
-  2. Check quickshell logs: `journalctl --user -fu quickshell`
-  3. Verify theme file loads: look for "Loaded theme:" and "Colors loaded from theme:" in logs
+  1. Check quickshell logs: `journalctl --user -fu quickshell`
+  2. Verify theme file loads: look for "Colors loaded from theme:" with actual color values
+  3. Confirm colors show m3primary and m3surfaceContainerHigh values from theme JSON
 
 ## Debugging
 
@@ -102,7 +102,31 @@ cat ~/.config/niri-shell/config.json
 systemctl --user restart quickshell
 ```
 
-## Recent Changes (2026-02-02)
+## Recent Changes
+
+### 2026-02-02 (Part 2) - QML Property Assignment Fix
+
+**Problem**: Workspace indicator colors still showing pink defaults despite logs showing correct theme colors loaded.
+
+**Root Cause**: In `Colours.loadFromTheme()`, the code used JavaScript bracket notation:
+```javascript
+current[name] = value;  // Creates JS shadow property, not QML property!
+```
+This creates a JavaScript shadow property instead of setting the actual QML `property color` declaration. The console.log reads the shadow property (showing correct value), but QML bindings read the original QML property (still pink defaults).
+
+**Fix Applied**: Changed to explicit direct property assignment for each M3 color:
+```javascript
+if (c.m3primary) current.m3primary = c.m3primary;  // Properly sets QML property
+```
+
+**Files Modified**:
+- `home/caelestia/services/Colours.qml` - explicit property assignment in `loadFromTheme()`
+
+**Key Lesson**: When setting QML object properties from JavaScript, always use direct property access (`obj.prop = value`), never bracket notation (`obj[name] = value`).
+
+---
+
+### 2026-02-02 (Part 1) - Theme Loading Path Fix
 
 **Problem**: Workspace indicator colors were not showing - they appeared washed out/invisible because the `Colours.qml` M3Palette had hardcoded pink theme defaults instead of loading from theme files.
 
