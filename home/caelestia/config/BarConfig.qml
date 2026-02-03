@@ -72,7 +72,7 @@ JsonObject {
         property bool showWindows: true
         property bool showWindowsOnSpecialWorkspaces: showWindows
         property bool activeTrail: false
-        property bool perMonitorWorkspaces: false
+        property bool perMonitorWorkspaces: true
         property string label: "  " // if empty, will show workspace name's first letter
         property string occupiedLabel: "󰮯"
         property string activeLabel: "󰮯"

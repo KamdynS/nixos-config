@@ -115,6 +115,64 @@ impl NiriInterface {
         self.send_action(&action).await
     }
 
+    /// Focus workspace by global index (1-based, across all outputs)
+    /// Workspaces are sorted by output name, then by per-output index
+    async fn focus_workspace_by_global_index(&self, global_index: u32) -> String {
+        let workspaces = self.state.workspaces.read().await;
+        let mut ws_vec: Vec<_> = workspaces.values().collect();
+
+        // Sort by output name, then by idx (per-output index)
+        ws_vec.sort_by(|a, b| {
+            let output_cmp = a.output.cmp(&b.output);
+            if output_cmp != std::cmp::Ordering::Equal {
+                output_cmp
+            } else {
+                a.idx.cmp(&b.idx)
+            }
+        });
+
+        // Find workspace at global_index (1-based)
+        if global_index == 0 || global_index as usize > ws_vec.len() {
+            return format!("Error: global index {} out of range (1-{})", global_index, ws_vec.len());
+        }
+
+        let ws_id = ws_vec[(global_index - 1) as usize].id;
+        drop(workspaces);
+
+        // Focus by ID (works across outputs)
+        self.focus_workspace_by_id(ws_id).await
+    }
+
+    /// Move window to workspace by global index (1-based, across all outputs)
+    async fn move_window_to_workspace_by_global_index(&self, global_index: u32) -> String {
+        let workspaces = self.state.workspaces.read().await;
+        let mut ws_vec: Vec<_> = workspaces.values().collect();
+
+        // Sort by output name, then by idx
+        ws_vec.sort_by(|a, b| {
+            let output_cmp = a.output.cmp(&b.output);
+            if output_cmp != std::cmp::Ordering::Equal {
+                output_cmp
+            } else {
+                a.idx.cmp(&b.idx)
+            }
+        });
+
+        if global_index == 0 || global_index as usize > ws_vec.len() {
+            return format!("Error: global index {} out of range (1-{})", global_index, ws_vec.len());
+        }
+
+        let ws_id = ws_vec[(global_index - 1) as usize].id;
+        drop(workspaces);
+
+        // Move to workspace by ID
+        let action = format!(
+            "{{\"MoveWindowToWorkspace\":{{\"reference\":{{\"Id\":{}}}}}}}",
+            ws_id
+        );
+        self.send_action(&action).await
+    }
+
     /// Close focused window
     async fn close_window(&self) -> String {
         self.send_action("{\"CloseWindow\":{}}").await

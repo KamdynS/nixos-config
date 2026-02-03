@@ -115,6 +115,16 @@ Singleton {
         dbusCall.call("MoveWindowToWorkspace", "u", [index]);
     }
 
+    // Focus workspace by global index (1-based, across all outputs)
+    function focusWorkspaceByGlobalIndex(globalIndex: int): void {
+        dbusCall.call("FocusWorkspaceByGlobalIndex", "u", [globalIndex]);
+    }
+
+    // Move window to workspace by global index (1-based, across all outputs)
+    function moveWindowToWorkspaceByGlobalIndex(globalIndex: int): void {
+        dbusCall.call("MoveWindowToWorkspaceByGlobalIndex", "u", [globalIndex]);
+    }
+
     // Close focused window
     function closeWindow(): void {
         dbusCall.call("CloseWindow", "", []);
