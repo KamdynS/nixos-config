@@ -3,6 +3,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import qs.services
 
 // Static theme loader - replaces dynamic Caelestia color extraction
 Singleton {
@@ -20,7 +21,8 @@ Singleton {
         ? wallpapers[wallpaperIndex % wallpapers.length].replace("~", homeDir)
         : ""
 
-    readonly property string themesDir: homeDir + "/.config/niri-shell/themes"
+    // Use themes from the shell's themes directory (relative path resolved at runtime)
+    readonly property string themesDir: Qt.resolvedUrl("../themes").toString().replace("file://", "")
     readonly property string configPath: homeDir + "/.config/niri-shell/config.json"
 
     // M3 color accessors with defaults
@@ -116,6 +118,9 @@ Singleton {
                 root.colors = theme.colors ?? {};
                 root.wallpapers = theme.wallpapers ?? [];
                 console.log("Loaded theme:", theme.name);
+
+                // Propagate colors to the Colours service so all UI components get updated
+                Colours.loadFromTheme(theme);
             } catch (e) {
                 console.warn("Failed to parse theme:", e);
             }
