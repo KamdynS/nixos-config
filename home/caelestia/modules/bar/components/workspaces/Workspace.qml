@@ -12,6 +12,7 @@ ColumnLayout {
     required property var workspace
     required property int activeWsId
     required property var occupied
+    property int globalIdx: workspace?.idx ?? 1  // Global sequential number for display
 
     readonly property bool isWorkspace: true // Flag for finding workspace children
     // Unanimated prop for others to use as reference
@@ -19,7 +20,7 @@ ColumnLayout {
 
     // Use the workspace's global ID for identification and navigation
     readonly property int wsId: workspace?.id ?? 1
-    // Use the workspace's idx for display (the number you press mod+N for)
+    // Use the workspace's idx (per-monitor index, kept for compatibility)
     readonly property int wsIdx: workspace?.idx ?? 1
     readonly property bool isOccupied: occupied[wsId] ?? false
     readonly property bool hasWindows: isOccupied && Config.bar.workspaces.showWindows
@@ -46,7 +47,9 @@ ColumnLayout {
 
         Text {
             anchors.centerIn: parent
-            text: root.wsIdx.toString()
+            text: root.globalIdx.toString()
+            renderType: Text.NativeRendering
+            font.family: Appearance.font.family.sans
             font.pixelSize: parent.circleSize * 0.55
             font.weight: Font.Medium
             color: indicator.isActive ? Colours.palette.m3onPrimary : (root.isOccupied ? Colours.palette.m3onSurface : Colours.palette.m3outlineVariant)

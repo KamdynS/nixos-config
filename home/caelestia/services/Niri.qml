@@ -95,9 +95,14 @@ Singleton {
         }
     }
 
-    // Focus workspace by index (1-based)
+    // Focus workspace by index (1-based, on current output only)
     function focusWorkspace(index: int): void {
         dbusCall.call("FocusWorkspace", "u", [index]);
+    }
+
+    // Focus workspace by global ID (works across outputs)
+    function focusWorkspaceById(id: int): void {
+        dbusCall.call("FocusWorkspaceById", "t", [id]);
     }
 
     // Focus workspace relatively

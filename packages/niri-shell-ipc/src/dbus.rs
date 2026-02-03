@@ -78,11 +78,20 @@ impl NiriInterface {
         serde_json::to_string(&*layouts).unwrap_or_else(|_| "{}".to_string())
     }
 
-    /// Focus a workspace by index (1-based)
+    /// Focus a workspace by index (1-based, on current output)
     async fn focus_workspace(&self, index: u32) -> String {
         let action = format!(
             "{{\"FocusWorkspace\":{{\"reference\":{{\"Index\":{}}}}}}}",
             index
+        );
+        self.send_action(&action).await
+    }
+
+    /// Focus a workspace by its global ID (works across outputs)
+    async fn focus_workspace_by_id(&self, id: u64) -> String {
+        let action = format!(
+            "{{\"FocusWorkspace\":{{\"reference\":{{\"Id\":{}}}}}}}",
+            id
         );
         self.send_action(&action).await
     }

@@ -71,7 +71,8 @@ Window manager state and control. Already working.
 | Property | FocusedWindow | `t` | Window ID (0 if none) |
 | Property | FocusedOutput | `s` | Output name |
 | Property | KeyboardLayouts | `s` (JSON) | Layout names + current index |
-| Method | FocusWorkspace | `u` → `s` | Focus workspace by index |
+| Method | FocusWorkspace | `u` → `s` | Focus workspace by index (current output) |
+| Method | FocusWorkspaceById | `t` → `s` | Focus workspace by global ID (cross-output) |
 | Method | FocusWorkspaceRelative | `i` → `s` | Focus relative (+1/-1) |
 | Method | MoveWindowToWorkspace | `u` → `s` | Move window to workspace |
 | Method | CloseWindow | → `s` | Close focused window |
@@ -81,6 +82,16 @@ Window manager state and control. Already working.
 | Signal | WindowsUpdated | | Windows changed |
 | Signal | FocusUpdated | | Focus changed |
 | Signal | KeyboardLayoutUpdated | | Layout changed |
+
+**Workspace Numbering:**
+
+Niri uses per-output workspace indexing (`idx`), but the shell supports global sequential numbering for cross-monitor navigation:
+
+- `id`: Globally unique workspace ID (assigned dynamically by niri)
+- `idx`: Per-output workspace index (1, 2, 3... per monitor)
+- Global numbering: Workspaces sorted by output name then idx, numbered 1, 2, 3, 4...
+
+Use `FocusWorkspace` for same-output navigation (by `idx`), `FocusWorkspaceById` for cross-output (by `id`).
 
 ---
 

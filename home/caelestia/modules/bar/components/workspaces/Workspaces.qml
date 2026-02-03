@@ -16,26 +16,40 @@ StyledClippingRect {
     // Niri doesn't have special workspaces
     readonly property bool onSpecial: false
 
-    // Filter workspaces to only this monitor's workspaces, sorted by idx (workspace number)
-    readonly property var monitorWorkspaces: {
-        const screenName = screen?.name ?? "";
-        if (!screenName) return [];
+    // All workspaces sorted globally: by output name, then by idx
+    // This gives consistent ordering like: DP-3:1, DP-3:2, HDMI-A-1:1, HDMI-A-1:2
+    readonly property var globalWorkspaces: {
         return Niri.workspaceList
-            .filter(ws => ws.output === screenName)
-            .sort((a, b) => a.idx - b.idx);
+            .slice() // copy to avoid mutating original
+            .sort((a, b) => {
+                if (a.output !== b.output) return a.output.localeCompare(b.output);
+                return a.idx - b.idx;
+            });
     }
 
-    // Active workspace ID for this monitor - directly reference workspaceList for reactivity
-    readonly property int activeWsId: {
+    // Map workspace id -> global index (1-based)
+    readonly property var globalIndexMap: {
+        const map = {};
+        globalWorkspaces.forEach((ws, i) => {
+            map[ws.id] = i + 1; // 1-based indexing
+        });
+        return map;
+    }
+
+    // For per-monitor mode, filter to this screen only
+    readonly property var monitorWorkspaces: {
         if (!Config.bar.workspaces.perMonitorWorkspaces) {
-            return Niri.activeWsId;
+            return globalWorkspaces;
         }
         const screenName = screen?.name ?? "";
-        const activeWs = Niri.workspaceList.find(ws => ws.output === screenName && ws.is_active);
-        return activeWs?.id ?? 1;
+        if (!screenName) return [];
+        return globalWorkspaces.filter(ws => ws.output === screenName);
     }
 
-    // Build occupied map for this monitor's workspaces
+    // Active workspace ID - always use the globally focused one
+    readonly property int activeWsId: Niri.activeWsId
+
+    // Build occupied map for displayed workspaces
     readonly property var occupied: monitorWorkspaces.reduce((acc, ws) => {
         const hasWindows = Niri.windowList.some(w => w.workspace_id === ws.id);
         acc[ws.id] = hasWindows;
@@ -93,6 +107,7 @@ StyledClippingRect {
                     workspace: modelData
                     activeWsId: root.activeWsId
                     occupied: root.occupied
+                    globalIdx: root.globalIndexMap[modelData.id] ?? (index + 1)
                 }
             }
         }
@@ -115,9 +130,9 @@ StyledClippingRect {
                 // Find which workspace was clicked by checking y position
                 const child = layout.childAt(event.x, event.y);
                 if (child && child.isWorkspace) {
-                    // Use wsId for comparison, wsIdx for focus (niri expects index)
+                    // Use focusWorkspaceById to support cross-monitor navigation
                     if (root.activeWsId !== child.wsId)
-                        Niri.focusWorkspace(child.wsIdx);
+                        Niri.focusWorkspaceById(child.wsId);
                 }
             }
         }
