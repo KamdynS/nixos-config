@@ -153,7 +153,7 @@
       "Ctrl+Alt+Print".action.spawn = [ "bash" "-c" "grim - | wl-copy" ];
 
       # Keybinding help (Mod+F1)
-      "Mod+;".action.spawn = [ qs "ipc" "call" "keybinds" "toggle" ];
+      "Mod+W".action.spawn = [ qs "ipc" "call" "keybinds" "toggle" ];
       
       # Exit
       "Mod+Shift+E".action.quit = [];
