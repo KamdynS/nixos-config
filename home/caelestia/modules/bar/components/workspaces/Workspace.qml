@@ -36,16 +36,16 @@ ColumnLayout {
         readonly property bool isActive: root.activeWsId === root.wsId
         readonly property int circleSize: Config.bar.sizes.innerWidth - Appearance.padding.small * 2
 
-        // Normal state colors - beige background with grey text
-        readonly property color normalBgColor: Colours.palette.m3onSurface  // beige background
-        readonly property color normalTextColor: Colours.palette.m3outline  // grey text
+        // Normal state colors - subtle surface for inactive workspaces
+        readonly property color normalBgColor: Colours.palette.m3surfaceContainerHigh
+        readonly property color normalTextColor: Colours.palette.m3onSurfaceVariant
 
-        // Active state colors - orange background with dark text for contrast
-        readonly property color activeBgColor: Colours.palette.m3primary    // orange
-        readonly property color activeTextColor: Colours.palette.m3onPrimary // dark for contrast
+        // Active state colors - primary accent for current workspace
+        readonly property color activeBgColor: Colours.palette.m3primary
+        readonly property color activeTextColor: Colours.palette.m3onPrimary
 
-        // Hovered state: slightly darker background
-        readonly property color hoveredBgColor: Colours.palette.m3surfaceBright
+        // Hovered state: slightly more prominent surface
+        readonly property color hoveredBgColor: Colours.palette.m3surfaceContainerHighest
         readonly property color hoveredTextColor: Colours.palette.m3onSurface
 
         Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
