@@ -17,8 +17,10 @@ ColumnLayout {
     // Unanimated prop for others to use as reference
     readonly property int size: implicitHeight + (hasWindows ? Appearance.padding.small : 0)
 
-    // Use the workspace's global ID for display and navigation
+    // Use the workspace's global ID for identification and navigation
     readonly property int wsId: workspace?.id ?? 1
+    // Use the workspace's idx for display (the number you press mod+N for)
+    readonly property int wsIdx: workspace?.idx ?? 1
     readonly property bool isOccupied: occupied[wsId] ?? false
     readonly property bool hasWindows: isOccupied && Config.bar.workspaces.showWindows
 
@@ -35,9 +37,9 @@ ColumnLayout {
 
         animate: true
         text: {
-            // Use workspace name if available, otherwise show global ID
-            const wsName = root.workspace?.name ?? root.wsId;
-            const displayId = wsName == root.wsId ? root.wsId : (wsName ? wsName[0] : root.wsId);
+            // Use workspace name if available, otherwise show workspace number (idx)
+            const wsName = root.workspace?.name;
+            const displayId = wsName ? wsName[0] : root.wsIdx;
             let displayName = displayId.toString();
             if (Config.bar.workspaces.capitalisation.toLowerCase() === "upper") {
                 displayName = displayName.toUpperCase();

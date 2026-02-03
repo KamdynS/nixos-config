@@ -15,15 +15,24 @@ StyledClippingRect {
 
     // Niri doesn't have special workspaces
     readonly property bool onSpecial: false
-    readonly property int activeWsId: Config.bar.workspaces.perMonitorWorkspaces ? (Niri.monitorFor(screen)?.activeWorkspace?.id ?? 1) : Niri.activeWsId
 
-    // Filter workspaces to only this monitor's workspaces, sorted by global ID
+    // Filter workspaces to only this monitor's workspaces, sorted by idx (workspace number)
     readonly property var monitorWorkspaces: {
         const screenName = screen?.name ?? "";
         if (!screenName) return [];
         return Niri.workspaceList
             .filter(ws => ws.output === screenName)
-            .sort((a, b) => a.id - b.id);
+            .sort((a, b) => a.idx - b.idx);
+    }
+
+    // Active workspace ID for this monitor - directly reference workspaceList for reactivity
+    readonly property int activeWsId: {
+        if (!Config.bar.workspaces.perMonitorWorkspaces) {
+            return Niri.activeWsId;
+        }
+        const screenName = screen?.name ?? "";
+        const activeWs = Niri.workspaceList.find(ws => ws.output === screenName && ws.is_active);
+        return activeWs?.id ?? 1;
     }
 
     // Build occupied map for this monitor's workspaces
@@ -106,9 +115,9 @@ StyledClippingRect {
                 // Find which workspace was clicked by checking y position
                 const child = layout.childAt(event.x, event.y);
                 if (child && child.isWorkspace) {
-                    const wsId = child.wsId;
-                    if (root.activeWsId !== wsId)
-                        Niri.focusWorkspace(wsId);
+                    // Use wsId for comparison, wsIdx for focus (niri expects index)
+                    if (root.activeWsId !== child.wsId)
+                        Niri.focusWorkspace(child.wsIdx);
                 }
             }
         }
