@@ -29,30 +29,35 @@ ColumnLayout {
 
     spacing: 0
 
-    StyledText {
+    Rectangle {
         id: indicator
 
-        Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-        Layout.preferredHeight: Config.bar.sizes.innerWidth - Appearance.padding.small * 2
+        readonly property bool isActive: root.activeWsId === root.wsId
+        readonly property int circleSize: Config.bar.sizes.innerWidth - Appearance.padding.small * 2
 
-        animate: true
-        text: {
-            // Use workspace name if available, otherwise show workspace number (idx)
-            const wsName = root.workspace?.name;
-            const displayId = wsName ? wsName[0] : root.wsIdx;
-            let displayName = displayId.toString();
-            if (Config.bar.workspaces.capitalisation.toLowerCase() === "upper") {
-                displayName = displayName.toUpperCase();
-            } else if (Config.bar.workspaces.capitalisation.toLowerCase() === "lower") {
-                displayName = displayName.toLowerCase();
-            }
-            const label = Config.bar.workspaces.label || displayName;
-            const occupiedLabel = Config.bar.workspaces.occupiedLabel || label;
-            const activeLabel = Config.bar.workspaces.activeLabel || (root.isOccupied ? occupiedLabel : label);
-            return root.activeWsId === root.wsId ? activeLabel : root.isOccupied ? occupiedLabel : label;
+        Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+        Layout.preferredWidth: circleSize
+        Layout.preferredHeight: circleSize
+
+        radius: circleSize / 2
+        color: isActive ? Colours.palette.m3primary : "transparent"
+        border.width: isActive ? 0 : 2
+        border.color: root.isOccupied ? Colours.palette.m3onSurface : Colours.palette.m3outlineVariant
+
+        Text {
+            anchors.centerIn: parent
+            text: root.wsIdx.toString()
+            font.pixelSize: parent.circleSize * 0.55
+            font.weight: Font.Medium
+            color: indicator.isActive ? Colours.palette.m3onPrimary : (root.isOccupied ? Colours.palette.m3onSurface : Colours.palette.m3outlineVariant)
         }
-        color: Config.bar.workspaces.occupiedBg || root.isOccupied || root.activeWsId === root.wsId ? Colours.palette.m3onSurface : Colours.layer(Colours.palette.m3outlineVariant, 2)
-        verticalAlignment: Qt.AlignVCenter
+
+        Behavior on color {
+            ColorAnimation { duration: Appearance.anim.durations.normal }
+        }
+        Behavior on border.color {
+            ColorAnimation { duration: Appearance.anim.durations.normal }
+        }
     }
 
     Loader {
