@@ -79,22 +79,90 @@ Singleton {
     }
 
     // Load colors from a Theme object
+    // Note: Must use direct property assignment, not bracket notation, for QML properties
     function loadFromTheme(theme): void {
         if (!theme?.colors) return;
 
         currentLight = !theme.isDark;
         scheme = theme.name ?? "custom";
 
-        const colors = theme.colors;
-        for (const [name, value] of Object.entries(colors)) {
-            // Use 'in' operator instead of hasOwnProperty - QML properties are not JS properties
-            if (name in current) {
-                current[name] = value;
-            }
-        }
+        const c = theme.colors;
+
+        // M3 palette colors - explicit assignment required for QML property binding updates
+        if (c.m3primary) current.m3primary = c.m3primary;
+        if (c.m3onPrimary) current.m3onPrimary = c.m3onPrimary;
+        if (c.m3primaryContainer) current.m3primaryContainer = c.m3primaryContainer;
+        if (c.m3onPrimaryContainer) current.m3onPrimaryContainer = c.m3onPrimaryContainer;
+        if (c.m3inversePrimary) current.m3inversePrimary = c.m3inversePrimary;
+
+        if (c.m3secondary) current.m3secondary = c.m3secondary;
+        if (c.m3onSecondary) current.m3onSecondary = c.m3onSecondary;
+        if (c.m3secondaryContainer) current.m3secondaryContainer = c.m3secondaryContainer;
+        if (c.m3onSecondaryContainer) current.m3onSecondaryContainer = c.m3onSecondaryContainer;
+
+        if (c.m3tertiary) current.m3tertiary = c.m3tertiary;
+        if (c.m3onTertiary) current.m3onTertiary = c.m3onTertiary;
+        if (c.m3tertiaryContainer) current.m3tertiaryContainer = c.m3tertiaryContainer;
+        if (c.m3onTertiaryContainer) current.m3onTertiaryContainer = c.m3onTertiaryContainer;
+
+        if (c.m3error) current.m3error = c.m3error;
+        if (c.m3onError) current.m3onError = c.m3onError;
+        if (c.m3errorContainer) current.m3errorContainer = c.m3errorContainer;
+        if (c.m3onErrorContainer) current.m3onErrorContainer = c.m3onErrorContainer;
+
+        if (c.m3background) current.m3background = c.m3background;
+        if (c.m3onBackground) current.m3onBackground = c.m3onBackground;
+
+        if (c.m3surface) current.m3surface = c.m3surface;
+        if (c.m3onSurface) current.m3onSurface = c.m3onSurface;
+        if (c.m3surfaceVariant) current.m3surfaceVariant = c.m3surfaceVariant;
+        if (c.m3onSurfaceVariant) current.m3onSurfaceVariant = c.m3onSurfaceVariant;
+        if (c.m3surfaceDim) current.m3surfaceDim = c.m3surfaceDim;
+        if (c.m3surfaceBright) current.m3surfaceBright = c.m3surfaceBright;
+        if (c.m3surfaceContainerLowest) current.m3surfaceContainerLowest = c.m3surfaceContainerLowest;
+        if (c.m3surfaceContainerLow) current.m3surfaceContainerLow = c.m3surfaceContainerLow;
+        if (c.m3surfaceContainer) current.m3surfaceContainer = c.m3surfaceContainer;
+        if (c.m3surfaceContainerHigh) current.m3surfaceContainerHigh = c.m3surfaceContainerHigh;
+        if (c.m3surfaceContainerHighest) current.m3surfaceContainerHighest = c.m3surfaceContainerHighest;
+
+        if (c.m3inverseSurface) current.m3inverseSurface = c.m3inverseSurface;
+        if (c.m3inverseOnSurface) current.m3inverseOnSurface = c.m3inverseOnSurface;
+
+        if (c.m3outline) current.m3outline = c.m3outline;
+        if (c.m3outlineVariant) current.m3outlineVariant = c.m3outlineVariant;
+        if (c.m3shadow) current.m3shadow = c.m3shadow;
+        if (c.m3scrim) current.m3scrim = c.m3scrim;
+        if (c.m3surfaceTint) current.m3surfaceTint = c.m3surfaceTint;
+
+        // Palette key colors
+        if (c.m3primary_paletteKeyColor) current.m3primary_paletteKeyColor = c.m3primary_paletteKeyColor;
+        if (c.m3secondary_paletteKeyColor) current.m3secondary_paletteKeyColor = c.m3secondary_paletteKeyColor;
+        if (c.m3tertiary_paletteKeyColor) current.m3tertiary_paletteKeyColor = c.m3tertiary_paletteKeyColor;
+        if (c.m3neutral_paletteKeyColor) current.m3neutral_paletteKeyColor = c.m3neutral_paletteKeyColor;
+        if (c.m3neutral_variant_paletteKeyColor) current.m3neutral_variant_paletteKeyColor = c.m3neutral_variant_paletteKeyColor;
+
+        // Fixed colors
+        if (c.m3primaryFixed) current.m3primaryFixed = c.m3primaryFixed;
+        if (c.m3primaryFixedDim) current.m3primaryFixedDim = c.m3primaryFixedDim;
+        if (c.m3onPrimaryFixed) current.m3onPrimaryFixed = c.m3onPrimaryFixed;
+        if (c.m3onPrimaryFixedVariant) current.m3onPrimaryFixedVariant = c.m3onPrimaryFixedVariant;
+        if (c.m3secondaryFixed) current.m3secondaryFixed = c.m3secondaryFixed;
+        if (c.m3secondaryFixedDim) current.m3secondaryFixedDim = c.m3secondaryFixedDim;
+        if (c.m3onSecondaryFixed) current.m3onSecondaryFixed = c.m3onSecondaryFixed;
+        if (c.m3onSecondaryFixedVariant) current.m3onSecondaryFixedVariant = c.m3onSecondaryFixedVariant;
+        if (c.m3tertiaryFixed) current.m3tertiaryFixed = c.m3tertiaryFixed;
+        if (c.m3tertiaryFixedDim) current.m3tertiaryFixedDim = c.m3tertiaryFixedDim;
+        if (c.m3onTertiaryFixed) current.m3onTertiaryFixed = c.m3onTertiaryFixed;
+        if (c.m3onTertiaryFixedVariant) current.m3onTertiaryFixedVariant = c.m3onTertiaryFixedVariant;
+
+        // Success colors
+        if (c.m3success) current.m3success = c.m3success;
+        if (c.m3onSuccess) current.m3onSuccess = c.m3onSuccess;
+        if (c.m3successContainer) current.m3successContainer = c.m3successContainer;
+        if (c.m3onSuccessContainer) current.m3onSuccessContainer = c.m3onSuccessContainer;
 
         console.log("Colors loaded from theme:", theme.name, "isDark:", theme.isDark,
-                    "sample m3primary:", current.m3primary);
+                    "m3primary:", current.m3primary, "m3surfaceContainerHigh:", current.m3surfaceContainerHigh);
     }
 
     FileView {
