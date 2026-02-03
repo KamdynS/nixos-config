@@ -13,15 +13,18 @@ StyledRect {
     required property Item mask
 
     // Find index of active workspace in the filtered monitor workspaces
+    // Returns -1 if the active workspace is not on this monitor
     readonly property int currentWsIdx: {
-        if (!monitorWorkspaces) return 0;
-        const idx = monitorWorkspaces.findIndex(ws => ws.id === activeWsId);
-        return idx >= 0 ? idx : 0;
+        if (!monitorWorkspaces) return -1;
+        return monitorWorkspaces.findIndex(ws => ws.id === activeWsId);
     }
 
-    property real leading: workspaces.count > 0 ? workspaces.itemAt(currentWsIdx)?.y ?? 0 : 0
-    property real trailing: workspaces.count > 0 ? workspaces.itemAt(currentWsIdx)?.y ?? 0 : 0
-    property real currentSize: workspaces.count > 0 ? workspaces.itemAt(currentWsIdx)?.size ?? 0 : 0
+    // Only show the indicator if the active workspace is on this monitor
+    readonly property bool isActiveOnThisMonitor: currentWsIdx >= 0
+
+    property real leading: workspaces.count > 0 && isActiveOnThisMonitor ? workspaces.itemAt(currentWsIdx)?.y ?? 0 : 0
+    property real trailing: workspaces.count > 0 && isActiveOnThisMonitor ? workspaces.itemAt(currentWsIdx)?.y ?? 0 : 0
+    property real currentSize: workspaces.count > 0 && isActiveOnThisMonitor ? workspaces.itemAt(currentWsIdx)?.size ?? 0 : 0
     property real offset: Math.min(leading, trailing)
     property real size: {
         const s = Math.abs(leading - trailing) + currentSize;
@@ -42,6 +45,7 @@ StyledRect {
     }
 
     clip: true
+    visible: isActiveOnThisMonitor
     y: offset + mask.y
     implicitWidth: Config.bar.sizes.innerWidth - Appearance.padding.small * 2
     implicitHeight: size
