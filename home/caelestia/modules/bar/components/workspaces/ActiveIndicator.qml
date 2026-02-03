@@ -52,18 +52,6 @@ StyledRect {
     radius: Appearance.rounding.full
     color: Colours.palette.m3primary
 
-    Colouriser {
-        source: root.mask
-        sourceColor: Colours.palette.m3onSurface
-        colorizationColor: Colours.palette.m3onPrimary
-
-        x: 0
-        y: -parent.offset
-        implicitWidth: root.mask.implicitWidth
-        implicitHeight: root.mask.implicitHeight
-
-        anchors.horizontalCenter: parent.horizontalCenter
-    }
 
     Behavior on leading {
         enabled: Config.bar.workspaces.activeTrail

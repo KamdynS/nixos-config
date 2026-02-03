@@ -61,7 +61,7 @@ ColumnLayout {
             font.family: Appearance.font.family.sans
             font.pixelSize: parent.circleSize * 0.55
             font.weight: Font.Medium
-            color: indicator.isActive ? Colours.palette.m3onPrimary : (hoverArea.containsMouse ? indicator.hoveredTextColor : indicator.normalTextColor)
+            color: hoverArea.containsMouse ? indicator.hoveredTextColor : indicator.normalTextColor
         }
 
         MouseArea {
