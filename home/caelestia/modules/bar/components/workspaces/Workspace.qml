@@ -36,14 +36,23 @@ ColumnLayout {
         readonly property bool isActive: root.activeWsId === root.wsId
         readonly property int circleSize: Config.bar.sizes.innerWidth - Appearance.padding.small * 2
 
+        // Normal state colors
+        readonly property color normalBgColor: "transparent"
+        readonly property color normalTextColor: root.isOccupied ? Colours.palette.m3onSurface : Colours.palette.m3outlineVariant
+        readonly property color normalBorderColor: root.isOccupied ? Colours.palette.m3onSurface : Colours.palette.m3outlineVariant
+
+        // Hovered state: invert (text color becomes background, background becomes text)
+        readonly property color hoveredBgColor: normalTextColor
+        readonly property color hoveredTextColor: Colours.palette.m3surface
+
         Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
         Layout.preferredWidth: circleSize
         Layout.preferredHeight: circleSize
 
         radius: circleSize / 2
-        color: isActive ? Colours.palette.m3primary : "transparent"
-        border.width: isActive ? 0 : 2
-        border.color: root.isOccupied ? Colours.palette.m3onSurface : Colours.palette.m3outlineVariant
+        color: isActive ? Colours.palette.m3primary : (hoverArea.containsMouse ? hoveredBgColor : normalBgColor)
+        border.width: isActive || hoverArea.containsMouse ? 0 : 2
+        border.color: normalBorderColor
 
         Text {
             anchors.centerIn: parent
@@ -52,7 +61,14 @@ ColumnLayout {
             font.family: Appearance.font.family.sans
             font.pixelSize: parent.circleSize * 0.55
             font.weight: Font.Medium
-            color: indicator.isActive ? Colours.palette.m3onPrimary : (root.isOccupied ? Colours.palette.m3onSurface : Colours.palette.m3outlineVariant)
+            color: indicator.isActive ? Colours.palette.m3onPrimary : (hoverArea.containsMouse ? indicator.hoveredTextColor : indicator.normalTextColor)
+        }
+
+        MouseArea {
+            id: hoverArea
+            anchors.fill: parent
+            hoverEnabled: true
+            acceptedButtons: Qt.NoButton  // Let clicks pass through to parent MouseArea
         }
 
         Behavior on color {

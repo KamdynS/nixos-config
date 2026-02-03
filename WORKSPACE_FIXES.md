@@ -155,3 +155,34 @@ The exact mapping depends on your output names. Check with:
 ```bash
 busctl --user get-property org.caelestia.Niri /org/caelestia/Niri org.caelestia.Niri Outputs
 ```
+
+---
+
+# Workspace Hover Effect (2026-02-02)
+
+## Problem
+
+The workspace indicators had no hover feedback, or potentially a third color was appearing.
+
+## Solution
+
+Added hover handling to `Workspace.qml` that inverts the colors:
+
+| State | Background | Text | Border |
+|-------|------------|------|--------|
+| Normal | transparent | greyish (`m3onSurface`/`m3outlineVariant`) | greyish |
+| Hovered | greyish (inverted) | surface color (inverted) | hidden |
+| Active | primary | onPrimary | hidden |
+
+## File Changed
+
+`home/caelestia/modules/bar/components/workspaces/Workspace.qml`
+- Added `MouseArea` with `hoverEnabled: true`
+- Defined `normalBgColor`, `normalTextColor`, `hoveredBgColor`, `hoveredTextColor`
+- Color logic now checks `hoverArea.containsMouse`
+
+## Test
+
+```bash
+systemctl --user restart quickshell
+```
