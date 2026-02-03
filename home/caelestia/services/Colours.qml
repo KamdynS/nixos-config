@@ -87,12 +87,14 @@ Singleton {
 
         const colors = theme.colors;
         for (const [name, value] of Object.entries(colors)) {
-            if (current.hasOwnProperty(name)) {
+            // Use 'in' operator instead of hasOwnProperty - QML properties are not JS properties
+            if (name in current) {
                 current[name] = value;
             }
         }
 
-        console.log("Colors loaded from theme:", theme.name, "isDark:", theme.isDark);
+        console.log("Colors loaded from theme:", theme.name, "isDark:", theme.isDark,
+                    "sample m3primary:", current.m3primary);
     }
 
     FileView {

@@ -71,11 +71,17 @@ Located in `packages/niri-shell-ipc/`, this Rust daemon bridges Niri's IPC socke
 
 See `docs/niri-shell-daemon-spec.md` for complete interface specifications.
 
+### Theming
+Dynamic theming with Gruvbox light/dark support. Theme colors flow from JSON files through `stubs/Theme.qml` to `services/Colours.qml` to UI components. User config at `~/.config/niri-shell/config.json`. See `docs/theming.md` for architecture and troubleshooting.
+
 ### Caelestia Shell (QML)
 Located in `home/caelestia/`, this is a Quickshell-based desktop shell forked from caelestia-dots/shell. Components:
 - `modules/` - UI components (bar, dashboard, launcher, session menu, OSD, lock screen)
 - `services/` - QML singletons for system state (Niri.qml, Colours.qml, Theme.qml)
+- `stubs/` - Simplified service implementations (Theme.qml is the active theme loader)
 - `themes/` - Color theme definitions (JSON files, Gruvbox theme)
+
+**Important**: The shell uses `stubs/Theme.qml` (not `services/Theme.qml`) for theme loading. See `docs/theming.md` for the full theming architecture.
 
 ### Host Differences
 | | lg-gram | desktop |
