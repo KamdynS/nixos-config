@@ -152,8 +152,8 @@
       "Mod+Shift+L".action.move-column-right = [];
 
       # Resize columns (cycle through 1/3 → 1/2 → 2/3 → full)
-      "Mod+O".action.spawn = [ cycleColumnWidth "grow" ];
-      "Mod+Y".action.spawn = [ cycleColumnWidth "shrink" ];
+      "Mod+O".action.spawn = [ "${cycleColumnWidth}" "grow" ];
+      "Mod+Y".action.spawn = [ "${cycleColumnWidth}" "shrink" ];
 
       # Workspace navigation (creates new workspace if navigating past the last one)
       "Mod+J".action.focus-workspace-down = [];
