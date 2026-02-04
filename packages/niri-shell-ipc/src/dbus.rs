@@ -211,6 +211,102 @@ impl NiriInterface {
         self.send_action("{\"PowerOffMonitors\":{}}").await
     }
 
+    /// Cycle column width through presets without wrapping
+    /// direction: "next" (wider) or "prev" (narrower)
+    async fn cycle_column_width(&self, direction: String) -> String {
+        const PRESETS: [f64; 4] = [0.33333, 0.5, 0.66667, 1.0];
+        const STRUTS_AND_GAPS: u32 = 52 + 16; // left+right struts (26*2) + gaps (8*2)
+
+        // Query niri for focused window (includes size)
+        let focused_json = match crate::niri::send_request(&self.socket_path, "\"FocusedWindow\"").await {
+            Ok(json) => json,
+            Err(e) => return format!("Error querying focused window: {}", e),
+        };
+
+        let response: serde_json::Value = match serde_json::from_str(&focused_json) {
+            Ok(v) => v,
+            Err(e) => return format!("Error parsing response: {}", e),
+        };
+
+        // Get window info
+        let window = match response.get("Ok").and_then(|ok| ok.get("FocusedWindow")) {
+            Some(w) if !w.is_null() => w,
+            _ => return "No focused window".to_string(),
+        };
+
+        let window_width = match window.get("size").and_then(|s| s.get("width")).and_then(|w| w.as_u64()) {
+            Some(w) => w as u32,
+            None => return "Could not get window width".to_string(),
+        };
+
+        let workspace_id = match window.get("workspace_id").and_then(|w| w.as_u64()) {
+            Some(id) => id,
+            None => return "Could not get workspace ID".to_string(),
+        };
+
+        // Get output name from workspace
+        let output_name = {
+            let workspaces = self.state.workspaces.read().await;
+            match workspaces.get(&workspace_id).and_then(|ws| ws.output.clone()) {
+                Some(name) => name,
+                None => return "Could not find workspace output".to_string(),
+            }
+        };
+
+        // Get output width
+        let output_width = {
+            let outputs = self.state.outputs.read().await;
+            match outputs.get(&output_name).and_then(|o| o.logical.as_ref()) {
+                Some(logical) => logical.width,
+                None => return "Could not get output dimensions".to_string(),
+            }
+        };
+
+        // Calculate usable width and current proportion
+        let usable_width = output_width.saturating_sub(STRUTS_AND_GAPS);
+        if usable_width == 0 {
+            return "Invalid usable width".to_string();
+        }
+
+        let current_proportion = window_width as f64 / usable_width as f64;
+
+        // Find closest preset index
+        let closest_idx = PRESETS
+            .iter()
+            .enumerate()
+            .min_by(|(_, a), (_, b)| {
+                let diff_a = (*a - current_proportion).abs();
+                let diff_b = (*b - current_proportion).abs();
+                diff_a.partial_cmp(&diff_b).unwrap_or(std::cmp::Ordering::Equal)
+            })
+            .map(|(i, _)| i)
+            .unwrap_or(0);
+
+        // Calculate target index based on direction (clamping, no wrap)
+        let target_idx = match direction.as_str() {
+            "next" => {
+                if closest_idx >= PRESETS.len() - 1 {
+                    return "Already at maximum width".to_string();
+                }
+                closest_idx + 1
+            }
+            "prev" => {
+                if closest_idx == 0 {
+                    return "Already at minimum width".to_string();
+                }
+                closest_idx - 1
+            }
+            _ => return "Invalid direction: use 'next' or 'prev'".to_string(),
+        };
+
+        // Send SetColumnWidth action
+        let action = format!(
+            "{{\"SetColumnWidth\":{{\"change\":{{\"SetProportion\":{}}}}}}}",
+            PRESETS[target_idx]
+        );
+        self.send_action(&action).await
+    }
+
     // Signals for state changes (named _updated to avoid conflict with property _changed methods)
     #[zbus(signal)]
     async fn workspaces_updated(ctx: &SignalContext<'_>) -> zbus::Result<()>;

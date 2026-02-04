@@ -91,63 +91,6 @@
     # Keybindings
     binds = let
       qs = "${pkgs.quickshell}/bin/qs";
-      niri = "${pkgs.niri}/bin/niri";
-      jq = "${pkgs.jq}/bin/jq";
-
-      # Helper script for column width cycling without wrap
-      cycleColumnWidth = pkgs.writeShellScript "cycle-column-width" ''
-        direction="$1"  # "next" or "prev"
-        presets=(0.33333 0.5 0.66667 1.0)
-
-        # Get focused window info
-        window_json=$(${niri} msg -j focused-window 2>/dev/null)
-        [ "$window_json" = "null" ] || [ -z "$window_json" ] && exit 0
-
-        # Get window width from the window's size
-        window_width=$(echo "$window_json" | ${jq} -r '.size.width // empty')
-        [ -z "$window_width" ] && exit 0
-
-        # Get the output (monitor) that the window is on
-        workspace_id=$(echo "$window_json" | ${jq} -r '.workspace_id // empty')
-        [ -z "$workspace_id" ] && exit 0
-
-        # Get monitor width from the workspace's output
-        output_name=$(${niri} msg -j workspaces 2>/dev/null | ${jq} -r ".[] | select(.id == $workspace_id) | .output")
-        [ -z "$output_name" ] && exit 0
-
-        monitor_width=$(${niri} msg -j outputs 2>/dev/null | ${jq} -r ".[] | select(.name == \"$output_name\") | .modes[] | select(.is_current) | .width")
-        [ -z "$monitor_width" ] || [ "$monitor_width" = "0" ] && exit 0
-
-        # Account for gaps and struts (approximate - 2*26 for left/right struts, 2*8 for gaps)
-        usable_width=$((monitor_width - 52 - 16))
-
-        # Calculate current proportion
-        current=$(echo "scale=5; $window_width / $usable_width" | ${pkgs.bc}/bin/bc)
-
-        # Find closest preset index
-        closest_idx=0
-        min_diff=999
-        for i in "''${!presets[@]}"; do
-          diff=$(echo "scale=5; x = ''${presets[$i]} - $current; if (x < 0) -x else x" | ${pkgs.bc}/bin/bc)
-          is_smaller=$(echo "$diff < $min_diff" | ${pkgs.bc}/bin/bc)
-          if [ "$is_smaller" = "1" ]; then
-            min_diff=$diff
-            closest_idx=$i
-          fi
-        done
-
-        # Calculate target index based on direction
-        if [ "$direction" = "next" ]; then
-          target_idx=$((closest_idx + 1))
-          [ $target_idx -ge ''${#presets[@]} ] && exit 0  # already at max
-        else
-          target_idx=$((closest_idx - 1))
-          [ $target_idx -lt 0 ] && exit 0  # already at min
-        fi
-
-        # Set new width
-        ${niri} msg action set-column-width "''${presets[$target_idx]}"
-      '';
     in {
       # Theme picker
       "Mod+T".action.spawn = [ qs "ipc" "call" "themePicker" "toggle" ];
@@ -174,8 +117,8 @@
       "Mod+Shift+L".action.move-column-right = [];
 
       # Resize columns (cycle through preset widths: 1/3 → 1/2 → 2/3 → full, no wrap)
-      "Mod+O".action.spawn = [ "${cycleColumnWidth}" "next" ];
-      "Mod+Y".action.spawn = [ "${cycleColumnWidth}" "prev" ];
+      "Mod+O".action.spawn = [ "busctl" "--user" "call" "org.caelestia.Niri" "/org/caelestia/Niri" "org.caelestia.Niri" "CycleColumnWidth" "s" "next" ];
+      "Mod+Y".action.spawn = [ "busctl" "--user" "call" "org.caelestia.Niri" "/org/caelestia/Niri" "org.caelestia.Niri" "CycleColumnWidth" "s" "prev" ];
 
       # Workspace navigation (creates new workspace if navigating past the last one)
       "Mod+J".action.focus-workspace-down = [];

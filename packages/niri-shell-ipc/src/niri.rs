@@ -68,7 +68,7 @@ async fn fetch_initial_state(socket_path: &str, state: &SharedState) -> Result<(
 }
 
 /// Send a single request to niri and get response
-async fn send_request(socket_path: &str, request: &str) -> Result<String> {
+pub async fn send_request(socket_path: &str, request: &str) -> Result<String> {
     let mut stream = UnixStream::connect(socket_path)
         .await
         .context("Failed to connect to niri socket")?;
