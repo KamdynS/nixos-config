@@ -23,6 +23,14 @@
     # Gaps between windows
     layout.gaps = 8;
 
+    # Preset column widths for cycling (1/3 → 1/2 → 2/3 → full)
+    layout.preset-column-widths = [
+      { proportion = 0.33333; }
+      { proportion = 0.5; }
+      { proportion = 0.66667; }
+      { proportion = 1.0; }
+    ];
+
     # Struts to reserve space for quickshell panels
     # These values must match Layout.qml: totalBorderWidth=16, barHeight=32
     layout.struts = {
@@ -81,7 +89,44 @@
     };
     
     # Keybindings
-    binds = let qs = "${pkgs.quickshell}/bin/qs"; in {
+    binds = let
+      qs = "${pkgs.quickshell}/bin/qs";
+      # Helper script for column width cycling without wrap
+      cycleColumnWidth = pkgs.writeShellScript "cycle-column-width" ''
+        direction="$1"  # "grow" or "shrink"
+        presets=(0.33333 0.5 0.66667 1.0)
+
+        # Get current width from niri (returns JSON with width proportion)
+        current=$(${pkgs.niri}/bin/niri msg -j focused-window 2>/dev/null | ${pkgs.jq}/bin/jq -r '.width // empty')
+
+        # If no focused window or can't get width, do nothing
+        [ -z "$current" ] && exit 0
+
+        # Find closest preset index
+        closest_idx=0
+        min_diff=999
+        for i in "''${!presets[@]}"; do
+          diff=$(echo "''${presets[$i]} - $current" | ${pkgs.bc}/bin/bc -l)
+          diff=''${diff#-}  # absolute value
+          if (( $(echo "$diff < $min_diff" | ${pkgs.bc}/bin/bc -l) )); then
+            min_diff=$diff
+            closest_idx=$i
+          fi
+        done
+
+        # Calculate target index based on direction
+        if [ "$direction" = "grow" ]; then
+          target_idx=$((closest_idx + 1))
+          [ $target_idx -ge ''${#presets[@]} ] && exit 0  # already at max
+        else
+          target_idx=$((closest_idx - 1))
+          [ $target_idx -lt 0 ] && exit 0  # already at min
+        fi
+
+        # Set new width
+        ${pkgs.niri}/bin/niri msg action set-column-width "''${presets[$target_idx]}"
+      '';
+    in {
       # Theme picker
       "Mod+T".action.spawn = [ qs "ipc" "call" "themePicker" "toggle" ];
 
@@ -105,6 +150,10 @@
       # Move columns
       "Mod+Shift+H".action.move-column-left = [];
       "Mod+Shift+L".action.move-column-right = [];
+
+      # Resize columns (cycle through 1/3 → 1/2 → 2/3 → full)
+      "Mod+O".action.spawn = [ cycleColumnWidth "grow" ];
+      "Mod+Y".action.spawn = [ cycleColumnWidth "shrink" ];
 
       # Workspace navigation (creates new workspace if navigating past the last one)
       "Mod+J".action.focus-workspace-down = [];
