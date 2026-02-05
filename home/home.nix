@@ -169,11 +169,16 @@
 	home.packages = with pkgs; [
 		# language toolchains
 		go
-		rustup
+		cargo
+		rustc
+		rustfmt
+		clippy
+		rustlings
 
 		# LSPs
 		gopls
 		pyright
+		rust-analyzer
 
 		# Formatters
 		stylua
