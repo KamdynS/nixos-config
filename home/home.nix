@@ -16,6 +16,19 @@
   home.sessionVariables = {
     # Tell Firefox to not draw its own titlebar (allows niri borders to show)
     MOZ_GTK_TITLEBAR_DECORATION = "none";
+    # Fcitx5 input method environment variables
+    GTK_IM_MODULE = "fcitx";
+    QT_IM_MODULE = "fcitx";
+    XMODIFIERS = "@im=fcitx";
+  };
+
+  # Japanese input method (fcitx5 + mozc)
+  i18n.inputMethod = {
+    enabled = "fcitx5";
+    fcitx5.addons = with pkgs; [
+      fcitx5-mozc    # Japanese input engine
+      fcitx5-gtk     # GTK integration
+    ];
   };
 
 	programs.home-manager.enable = true;

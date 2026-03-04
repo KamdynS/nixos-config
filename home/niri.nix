@@ -174,6 +174,9 @@
       
       # Power off monitors (not suspend)
       "Mod+Shift+P".action.power-off-monitors = [];
+
+      # Toggle Japanese/English input method (fcitx5)
+      "Mod+Space".action.spawn = [ "fcitx5-remote" "-t" ];
     };
     
     # Start apps with niri
