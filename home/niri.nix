@@ -93,7 +93,7 @@
       qs = "${pkgs.quickshell}/bin/qs";
     in {
       # Theme picker
-      "Mod+T".action.spawn = [ qs "ipc" "call" "themePicker" "toggle" ];
+      "Mod+Shift+T".action.spawn = [ qs "ipc" "call" "themePicker" "toggle" ];
 
       # Caelestia drawers
       "Mod+D".action.spawn = [ qs "ipc" "call" "drawers" "toggle" "launcher" ];
