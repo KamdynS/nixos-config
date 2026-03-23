@@ -127,8 +127,15 @@
     '';
   };
 
-	# Neovim dotfiles
-	xdg.configFile."nvim".source = config.lib.file.mkOutOfStoreSymlink "/home/kamdyns/nixos-config/dotfiles/nvim";
+  # ════════════════════════════════════════════════════════════════════════════
+  # Symlinked Dotfiles
+  # These point directly to ~/nixos-config/dotfiles/ so changes apply instantly
+  # without needing a rebuild. Just `git pull` in dotfiles repo to update.
+  # ════════════════════════════════════════════════════════════════════════════
+  xdg.configFile."nvim".source = config.lib.file.mkOutOfStoreSymlink "/home/kamdyns/nixos-config/dotfiles/nvim";
+  xdg.configFile."lazygit".source = config.lib.file.mkOutOfStoreSymlink "/home/kamdyns/nixos-config/dotfiles/lazygit";
+  xdg.configFile."neofetch".source = config.lib.file.mkOutOfStoreSymlink "/home/kamdyns/nixos-config/dotfiles/neofetch";
+  xdg.configFile."htop".source = config.lib.file.mkOutOfStoreSymlink "/home/kamdyns/nixos-config/dotfiles/htop";
 
   # Niri keybinding help script
   xdg.configFile."niri/keybinds-help.sh" = {
