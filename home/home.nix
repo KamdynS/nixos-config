@@ -73,12 +73,36 @@
 
   services.ssh-agent.enable = true;
 	
-  # Neovim 
+  # Neovim
 	programs.neovim = {
 		enable = true;
 		defaultEditor = true;
 		vimAlias = true;
 		viAlias = true;
+		plugins = with pkgs.vimPlugins; [
+			# Pre-compiled treesitter parsers (NixOS can't compile at runtime reliably)
+			(nvim-treesitter.withPlugins (p: [
+				p.rust
+				p.go
+				p.lua
+				p.python
+				p.javascript
+				p.typescript
+				p.c
+				p.cpp
+				p.haskell
+				p.html
+				p.css
+				p.vim
+				p.vimdoc
+				p.bash
+				p.json
+				p.toml
+				p.yaml
+				p.markdown
+				p.nix
+			]))
+		];
 	};
 
   # ghostty
