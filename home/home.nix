@@ -102,7 +102,14 @@
     enable = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
-    
+
+    shellAliases = {
+      ".." = "cd ..";
+      "..." = "cd ../..";
+      "...." = "cd ../../..";
+      "....." = "cd ../../../..";
+    };
+
     history = {
       size = 10000;
       path = "${config.xdg.dataHome}/zsh/history";
