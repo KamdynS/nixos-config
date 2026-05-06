@@ -1,0 +1,34 @@
+{
+  "bookshelf": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/bookshelf.jpg",
+    "theme": "gruvbox-light"
+  },
+  "harbor-sunset": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/harbor-sunset.jpg",
+    "theme": "gruvbox-dark"
+  },
+  "waterfall": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/waterfall.jpg",
+    "theme": "gruvbox-dark"
+  },
+  "gas-station": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/gas-station.jpg",
+    "theme": "catppuccin-mocha"
+  },
+  "ocean-sunset": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/ocean-sunset.png",
+    "theme": "kanagawa"
+  },
+  "cherry-blossoms": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/cherry-blossoms.jpg",
+    "theme": "rose-pine"
+  },
+  "castle": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/castle.jpg",
+    "theme": "rose-pine"
+  },
+  "city-sunset": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/city-sunset.png",
+    "theme": "tokyonight"
+  }
+}

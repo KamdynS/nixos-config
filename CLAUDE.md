@@ -1,107 +1,124 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code when working with this repository.
 
 ## Overview
 
-This is a NixOS flake configuration for a Niri-based Wayland desktop with a custom Quickshell (Caelestia) shell. It supports two hosts: `lg-gram` (Intel laptop with systemd-boot) and `desktop` (AMD workstation with GRUB dual-boot).
+NixOS flake configuration for a niri-based Wayland desktop. Rice v2 - minimal, fast, themeable.
+
+**Hosts:**
+- `desktop` (AMD workstation, GRUB dual-boot) - rice v2, primary development target
+- `lg-gram` (Intel laptop, systemd-boot) - legacy config, not yet migrated
 
 ## Common Commands
 
-### System Rebuild
 ```bash
-# Rebuild and switch (laptop)
-sudo nixos-rebuild switch --flake /home/kamdyns/nixos-config#lg-gram
-
-# Rebuild and switch (desktop)
+# Rebuild desktop
 sudo nixos-rebuild switch --flake /home/kamdyns/nixos-config#desktop
 
 # Test without switching
-sudo nixos-rebuild test --flake /home/kamdyns/nixos-config#lg-gram
-```
+sudo nixos-rebuild test --flake /home/kamdyns/nixos-config#desktop
 
-### Home-Manager
-```bash
-home-manager switch --flake /home/kamdyns/nixos-config#kamdyns
-```
+# Update flake inputs
+nix flake update
 
-### Flake Operations
-```bash
-nix flake check                                    # Verify configuration syntax
-nix flake update --flake /home/kamdyns/nixos-config  # Update inputs
-nix build /home/kamdyns/nixos-config#desktop       # Test build
-```
+# Check syntax
+nix flake check
 
-### Service Management
-```bash
-systemctl --user status quickshell
-systemctl --user status niri-shell-ipc
-journalctl --user -fu quickshell
-```
-
-### DBus Testing (niri-shell-ipc)
-```bash
-busctl --user introspect org.caelestia.Niri /org/caelestia/Niri
-busctl --user get-property org.caelestia.Niri /org/caelestia/Niri org.caelestia.Niri Workspaces
-busctl --user call org.caelestia.Apps /org/caelestia/Apps org.caelestia.Apps Search s "firefox"
-busctl --user monitor org.caelestia.Niri
-RUST_LOG=debug niri-shell-ipc  # Run daemon in foreground with debug logs
+# Switch theme at runtime
+theme-switch gruvbox-light
+theme-pick  # fuzzel menu
 ```
 
 ## Architecture
 
 ### Entry Points
-- `flake.nix` - Defines `nixosConfigurations.lg-gram` and `nixosConfigurations.desktop`
-- `hosts/{hostname}/configuration.nix` - Per-host system configuration
-- `home/home.nix` - Main home-manager config, imports niri.nix, waybar.nix, wofi.nix, quickshell.nix
-- `home/caelestia/shell.qml` - Quickshell entry point
+- `flake.nix` - Defines nixosConfigurations for desktop and lg-gram
+- `hosts/desktop/configuration.nix` - System config (AMD GPU, GDM, niri, pipewire)
+- `home/desktop.nix` - Home-manager entry for desktop user
 
-### Custom Daemon: niri-shell-ipc
-Located in `packages/niri-shell-ipc/`, this Rust daemon bridges Niri's IPC socket to DBus for the Quickshell UI. It exposes interfaces for:
-- `org.caelestia.Niri` - Workspaces, windows, layouts
-- `org.caelestia.Apps` - Application search/launch
-- `org.caelestia.System` - CPU/memory/disk/temp monitoring
-- `org.caelestia.Audio` - PipeWire volume control
-- `org.caelestia.Power` - Battery via UPower
-- `org.caelestia.Network` - NetworkManager proxy
-- `org.caelestia.Bluetooth` - BlueZ proxy
-- `org.caelestia.Brightness` - Backlight + DDC/CI
-- `org.caelestia.Media` - MPRIS aggregation
-- `org.caelestia.Notifications` - freedesktop notifications
-
-See `docs/niri-shell-daemon-spec.md` for complete interface specifications.
-
-### Theming
-Dynamic theming with Gruvbox light/dark support. Theme colors flow from JSON files through `stubs/Theme.qml` to `services/Colours.qml` to UI components. User config at `~/.config/niri-shell/config.json`. See `docs/theming.md` for architecture and troubleshooting.
-
-### Caelestia Shell (QML)
-Located in `home/caelestia/`, this is a Quickshell-based desktop shell forked from caelestia-dots/shell. Components:
-- `modules/` - UI components (bar, dashboard, launcher, session menu, OSD, lock screen)
-- `services/` - QML singletons for system state (Niri.qml, Colours.qml, Theme.qml)
-- `stubs/` - Simplified service implementations (Theme.qml is the active theme loader)
-- `themes/` - Color theme definitions (JSON files, Gruvbox theme)
-
-**Important**: The shell uses `stubs/Theme.qml` (not `services/Theme.qml`) for theme loading. See `docs/theming.md` for the full theming architecture.
-
-### Host Differences
-| | lg-gram | desktop |
-|---|---------|---------|
-| CPU | Intel | AMD |
-| Boot | systemd-boot | GRUB (dual-boot) |
-| Hostname | nixos | desktop |
-| I2C/DDC | Enabled | N/A |
-
-### Dependency Flow
+### Module Structure
 ```
-graphical-session.target
-    └── niri-shell-ipc.service (DBus daemon)
-            └── quickshell.service (UI shell)
+home/
+  desktop.nix              # Entry point, imports all modules
+  modules/
+    theming.nix            # Theme system (generates configs, switch scripts)
+    niri.nix               # Compositor config
+    waybar.nix             # Bar (minimal: clock, workspaces, network)
+    fuzzel.nix             # App launcher
+    mako.nix               # Notifications
+    cliphist.nix           # Clipboard manager
+    swww.nix               # Wallpaper daemon
+    ghostty.nix            # Terminal
+    apps.nix               # Zen Browser, Spotify, Discord
+    shell.nix              # zsh + oh-my-zsh + starship
+    editor.nix             # neovim + LSPs
+themes/
+  gruvbox-light.nix        # Default theme
+  gruvbox-dark.nix
+  catppuccin-mocha.nix
+  kanagawa.nix
+  rose-pine.nix
+  tokyonight.nix
+wallpapers/
+  (user adds wallpapers here, named to match themes)
+dotfiles/
+  nvim/                    # Symlinked, edit without rebuild
+  lazygit/                 # Symlinked
 ```
 
-## Development Notes
+### Theming System
 
-- Wayland-native setup; XWayland available for X11 app compatibility
-- Consistent Gruvbox theming across Niri, Waybar, Wofi, Ghostty, and Caelestia
-- Theme changes in Niri require rebuild; Quickshell supports hot reload
-- Dotfiles (nvim, zsh, lazygit) symlinked from `dotfiles/` directory
-- The Caelestia shell has C++ plugin stubs (audio visualization, beat detection) that are placeholder-only
+Themes are defined in `themes/*.nix` using `nix-colors` for base16 palettes. At build time, `theming.nix` generates themed config files for each app:
+- `~/.config/waybar/themes/<name>.css`
+- `~/.config/ghostty/themes/<name>`
+- `~/.config/mako/themes/<name>.conf`
+- `~/.config/fuzzel/themes/<name>.ini`
+- `~/.config/nvim/lua/themes/<name>.lua`
+- `~/.config/starship.toml` (all palettes embedded)
+
+At runtime, `theme-switch <name>`:
+1. Updates symlinks to point active config at chosen theme
+2. Sets wallpaper via swww with transition
+3. Reloads services (waybar, mako, ghostty via SIGUSR2)
+4. Updates starship palette in config file
+
+### Keybinds (niri)
+
+| Key | Action |
+|-----|--------|
+| Mod+Return | ghostty |
+| Mod+B | Zen Browser |
+| Mod+S | Spotify |
+| Mod+D | Discord |
+| Mod+Space | fuzzel |
+| Mod+V | cliphist picker |
+| Mod+Shift+S | screenshot region → clipboard |
+| Mod+T | theme picker |
+| Mod+Q | close window |
+| Mod+R | cycle column widths |
+| Mod+1-9 | workspace |
+| Mod+H/J/K/L | focus |
+| Mod+Shift+H/J/K/L | move to workspace |
+
+### Stack
+
+| Role | Tool |
+|------|------|
+| Compositor | niri |
+| Bar | waybar |
+| Launcher | fuzzel |
+| Notifications | mako |
+| Clipboard | cliphist |
+| Wallpaper | swww |
+| Terminal | ghostty |
+| Shell | zsh + oh-my-zsh + starship |
+| Editor | neovim |
+| Browser | Zen |
+
+## Notes
+
+- Wallpapers go in `wallpapers/` directory, named `<theme-name>.jpg`
+- Theme switching is instant (<1s), no rebuild needed
+- Dotfiles (nvim, lazygit) are symlinked - edit without rebuild
+- Font: JetBrains Mono Nerd Font everywhere
