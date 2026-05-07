@@ -380,7 +380,7 @@ let
 
     # Set wallpaper
     if [[ -f "$WALLPAPER_PATH" ]]; then
-      ${pkgs.awww}/bin/swww img "$WALLPAPER_PATH" --transition-type wipe --transition-duration 1
+      ${pkgs.awww}/bin/awww img "$WALLPAPER_PATH" --transition-type wipe --transition-duration 1
     else
       echo "Warning: Wallpaper file not found at $WALLPAPER_PATH"
     fi

@@ -172,7 +172,7 @@
     # Startup apps
     spawn-at-startup = [
       { command = [ "waybar" ]; }
-      { command = [ "swww-daemon" ]; }
+      { command = [ "awww-daemon" ]; }
       { command = [ "mako" ]; }
       { command = [ "wl-paste" "--watch" "cliphist" "store" ]; }
     ];
