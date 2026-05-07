@@ -485,10 +485,11 @@ let
 in
 {
   # Generate all themed config files
-  xdg.configFile = themeConfigs // {
-    # Starship config with all palettes
-    "starship.toml".text = starshipConfig;
-  };
+  # NOTE: starship.toml is intentionally NOT managed via xdg.configFile because
+  # theme-switch must `sed -i` it to update the active palette, which would
+  # break a nix-store symlink. It's seeded as a regular file via activation
+  # script below.
+  xdg.configFile = themeConfigs;
 
   # Add scripts to PATH
   home.packages = [
@@ -523,5 +524,18 @@ in
     if [[ ! -L $HOME/.config/nvim-theme/active.lua ]]; then
       $DRY_RUN_CMD ln -sf $HOME/.config/nvim-theme/${defaultTheme}.lua $HOME/.config/nvim-theme/active.lua
     fi
+
+    # Seed starship.toml as a writable regular file (theme-switch sed-edits it).
+    # If it already exists, refresh contents but preserve the active palette.
+    STARSHIP_SRC="${pkgs.writeText "starship-template.toml" starshipConfig}"
+    STARSHIP_DST="$HOME/.config/starship.toml"
+    CURRENT_PALETTE="${defaultTheme}"
+    if [[ -f "$STARSHIP_DST" && ! -L "$STARSHIP_DST" ]]; then
+      EXISTING=$(${pkgs.gnused}/bin/sed -n 's/^palette = "\(.*\)"/\1/p' "$STARSHIP_DST" | head -1)
+      [[ -n "$EXISTING" ]] && CURRENT_PALETTE="$EXISTING"
+    fi
+    $DRY_RUN_CMD rm -f "$STARSHIP_DST"
+    $DRY_RUN_CMD install -m 644 "$STARSHIP_SRC" "$STARSHIP_DST"
+    $DRY_RUN_CMD ${pkgs.gnused}/bin/sed -i "s/^palette = .*/palette = \"$CURRENT_PALETTE\"/" "$STARSHIP_DST"
   '';
 }
