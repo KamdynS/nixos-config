@@ -48,5 +48,9 @@
     gnumake
     unzip
     tree
+
+    # Required by nvim-treesitter main branch (compiles parsers from source)
+    tree-sitter
+    nodejs  # some grammars use node-gyp during install
   ];
 }
