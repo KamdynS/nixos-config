@@ -14,6 +14,22 @@ let
   themeNames = builtins.attrNames themes;
   defaultTheme = "gruvbox-light";
 
+  # Powerline chevron glyphs (Nerd Font private-use area)
+  # Decoded via fromJSON so the source file stays plain ASCII
+  chevronR = builtins.fromJSON "\"\\ue0b0\"";  # right-pointing solid
+  chevronL = builtins.fromJSON "\"\\ue0b2\"";  # left-pointing solid
+  iconNixOS = builtins.fromJSON "\"\\uf313\"";
+  iconBranch = builtins.fromJSON "\"\\uf418\"";
+  iconRust = builtins.fromJSON "\"\\ue7a8\"";
+  iconGo = builtins.fromJSON "\"\\ue65e\"";
+  iconPython = builtins.fromJSON "\"\\ue235\"";
+  iconNode = builtins.fromJSON "\"\\ue718\"";
+  iconBun = builtins.fromJSON "\"\\ue76f\"";
+  iconLua = builtins.fromJSON "\"\\ue620\"";
+  iconNix = builtins.fromJSON "\"\\uf313\"";
+  iconClock = builtins.fromJSON "\"\\uf017\"";
+  iconTimer = builtins.fromJSON "\"\\uf252\"";
+
   # Generate waybar CSS for a theme
   mkWaybarCss = theme: ''
     /* Theme: ${theme.name} */
@@ -208,20 +224,28 @@ let
     # Palettes are defined per-theme, palette_name is set by theme-switch
 
     format = """
-    [](base0D)\
+    [${chevronR}](fg:base0D)\
     $os\
-    [](bg:base0A fg:base0D)\
+    [${chevronR}](fg:base0D bg:base0A)\
     $directory\
-    [](fg:base0A bg:base0B)\
+    [${chevronR}](fg:base0A bg:base0B)\
     $git_branch\
     $git_status\
-    [](fg:base0B bg:base02)\
+    [${chevronR}](fg:base0B bg:base0E)\
+    $rust\
+    $golang\
+    $python\
+    $nodejs\
+    $bun\
+    $lua\
+    $nix_shell\
+    [${chevronR}](fg:base0E)\
     $fill\
-    [](fg:base02 bg:base02)\
+    [${chevronL}](fg:base02)\
     $cmd_duration\
-    [](fg:base03 bg:base02)\
+    [${chevronL}](fg:base02 bg:base03)\
     $time\
-    [](fg:base03)\
+    [${chevronL}](fg:base03)\
     $line_break\
     $character"""
 
@@ -233,7 +257,7 @@ let
     format = "[ $symbol ]($style)"
 
     [os.symbols]
-    NixOS = ""
+    NixOS = "${iconNixOS}"
 
     [directory]
     style = "bg:base0A fg:base00"
@@ -242,18 +266,53 @@ let
     truncation_symbol = "…/"
 
     [git_branch]
-    symbol = ""
+    symbol = "${iconBranch}"
     style = "bg:base0B fg:base00"
     format = "[ $symbol $branch ]($style)"
 
     [git_status]
     style = "bg:base0B fg:base00"
-    format = "[$all_status$ahead_behind]($style)"
+    format = "[$all_status$ahead_behind ]($style)"
     ahead = "↑"
     behind = "↓"
     modified = "!"
     untracked = "?"
     staged = "+"
+
+    [rust]
+    symbol = "${iconRust}"
+    style = "bg:base0E fg:base00"
+    format = "[ $symbol $version ]($style)"
+
+    [golang]
+    symbol = "${iconGo}"
+    style = "bg:base0E fg:base00"
+    format = "[ $symbol $version ]($style)"
+
+    [python]
+    symbol = "${iconPython}"
+    style = "bg:base0E fg:base00"
+    format = "[ $symbol $version$virtualenv ]($style)"
+
+    [nodejs]
+    symbol = "${iconNode}"
+    style = "bg:base0E fg:base00"
+    format = "[ $symbol $version ]($style)"
+
+    [bun]
+    symbol = "${iconBun}"
+    style = "bg:base0E fg:base00"
+    format = "[ $symbol $version ]($style)"
+
+    [lua]
+    symbol = "${iconLua}"
+    style = "bg:base0E fg:base00"
+    format = "[ $symbol $version ]($style)"
+
+    [nix_shell]
+    symbol = "${iconNix}"
+    style = "bg:base0E fg:base00"
+    format = "[ $symbol $state ]($style)"
 
     [fill]
     symbol = " "
@@ -261,17 +320,17 @@ let
     [cmd_duration]
     min_time = 500
     style = "bg:base02 fg:base05"
-    format = "[⏱ $duration ]($style)"
+    format = "[ ${iconTimer} $duration ]($style)"
 
     [time]
     disabled = false
     time_format = "%H:%M"
     style = "bg:base03 fg:base05"
-    format = "[  $time ]($style)"
+    format = "[ ${iconClock} $time ]($style)"
 
     [character]
-    success_symbol = "[λ](bold base0B)"
-    error_symbol = "[λ](bold base08)"
+    success_symbol = "[ λ](bold base0B)"
+    error_symbol = "[ λ](bold base08)"
 
     ${lib.concatStringsSep "\n" (lib.mapAttrsToList (name: theme: mkStarshipPalette theme) themes)}
   '';
