@@ -85,7 +85,7 @@
     binds = {
       # App launchers
       "Mod+Return".action.spawn = [ "ghostty" ];
-      "Mod+B".action.spawn = [ "zen" ];
+      "Mod+B".action.spawn = [ "zen-beta" ];
       "Mod+S".action.spawn = [ "spotify" ];
       "Mod+D".action.spawn = [ "vesktop" ];
       "Mod+Space".action.spawn = [ "fuzzel" ];
