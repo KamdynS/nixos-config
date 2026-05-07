@@ -29,6 +29,13 @@ let
   iconNix = builtins.fromJSON "\"\\uf313\"";
   iconClock = builtins.fromJSON "\"\\uf017\"";
   iconTimer = builtins.fromJSON "\"\\uf252\"";
+  iconC = builtins.fromJSON "\"\\ue61e\"";
+  iconJava = builtins.fromJSON "\"\\ue256\"";
+  iconKotlin = builtins.fromJSON "\"\\ue634\"";
+  iconHaskell = builtins.fromJSON "\"\\ue777\"";
+  iconDocker = builtins.fromJSON "\"\\uf308\"";
+  iconConda = builtins.fromJSON "\"\\ue73c\"";
+  iconPrompt = builtins.fromJSON "\"\\u276f\"";  # ❯
 
   # Generate waybar CSS for a theme
   mkWaybarCss = theme: ''
@@ -152,25 +159,32 @@ let
   '';
 
   # Generate starship palette section for a theme
-  mkStarshipPalette = theme: ''
-    [palettes.${theme.name}]
-    base00 = "#${theme.palette.base00}"
-    base01 = "#${theme.palette.base01}"
-    base02 = "#${theme.palette.base02}"
-    base03 = "#${theme.palette.base03}"
-    base04 = "#${theme.palette.base04}"
-    base05 = "#${theme.palette.base05}"
-    base06 = "#${theme.palette.base06}"
-    base07 = "#${theme.palette.base07}"
-    base08 = "#${theme.palette.base08}"
-    base09 = "#${theme.palette.base09}"
-    base0A = "#${theme.palette.base0A}"
-    base0B = "#${theme.palette.base0B}"
-    base0C = "#${theme.palette.base0C}"
-    base0D = "#${theme.palette.base0D}"
-    base0E = "#${theme.palette.base0E}"
-    base0F = "#${theme.palette.base0F}"
-  '';
+  # fg_accent = the lightest color in the palette: base00 for light themes,
+  # base07 for dark. Used as text color on saturated segments so it stays
+  # readable across all six themes.
+  mkStarshipPalette = theme:
+    let
+      fgAccent = if theme.polarity == "light" then theme.palette.base00 else theme.palette.base07;
+    in ''
+      [palettes.${theme.name}]
+      base00 = "#${theme.palette.base00}"
+      base01 = "#${theme.palette.base01}"
+      base02 = "#${theme.palette.base02}"
+      base03 = "#${theme.palette.base03}"
+      base04 = "#${theme.palette.base04}"
+      base05 = "#${theme.palette.base05}"
+      base06 = "#${theme.palette.base06}"
+      base07 = "#${theme.palette.base07}"
+      base08 = "#${theme.palette.base08}"
+      base09 = "#${theme.palette.base09}"
+      base0A = "#${theme.palette.base0A}"
+      base0B = "#${theme.palette.base0B}"
+      base0C = "#${theme.palette.base0C}"
+      base0D = "#${theme.palette.base0D}"
+      base0E = "#${theme.palette.base0E}"
+      base0F = "#${theme.palette.base0F}"
+      fg_accent = "#${fgAccent}"
+    '';
 
   # Generate nvim active-theme.lua for a theme
   mkNvimTheme = theme: ''
@@ -223,29 +237,38 @@ let
     # Starship prompt configuration
     # Palettes are defined per-theme, palette_name is set by theme-switch
 
+    # Gruvbox-rainbow preset, ported to base16 so it works with all themes.
+    # Color flow:
+    #   base09 (orange) → base0A (yellow) → base0C (aqua)
+    #   → base0D (blue) → base02 (gray) → base01 (deeper gray)
     format = """
-    [${chevronR}](fg:base0D)\
+    [${chevronR}](fg:base09)\
     $os\
-    [${chevronR}](fg:base0D bg:base0A)\
+    $username\
+    [${chevronR}](fg:base09 bg:base0A)\
     $directory\
-    [${chevronR}](fg:base0A bg:base0B)\
+    [${chevronR}](fg:base0A bg:base0C)\
     $git_branch\
     $git_status\
-    [${chevronR}](fg:base0B bg:base0E)\
+    [${chevronR}](fg:base0C bg:base0D)\
+    $c\
     $rust\
     $golang\
-    $python\
     $nodejs\
     $bun\
+    $python\
     $lua\
+    $java\
+    $kotlin\
+    $haskell\
     $nix_shell\
-    [${chevronR}](fg:base0E)\
-    $fill\
-    [${chevronL}](fg:base02)\
+    [${chevronR}](fg:base0D bg:base02)\
+    $docker_context\
+    $conda\
+    [${chevronR}](fg:base02 bg:base01)\
     $cmd_duration\
-    [${chevronL}](fg:base02 bg:base03)\
     $time\
-    [${chevronL}](fg:base03)\
+    [${chevronR} ](fg:base01)\
     $line_break\
     $character"""
 
@@ -253,84 +276,125 @@ let
 
     [os]
     disabled = false
-    style = "bg:base0D fg:base00"
+    style = "bg:base09 fg:fg_accent"
     format = "[ $symbol ]($style)"
 
     [os.symbols]
     NixOS = "${iconNixOS}"
+    Macos = ""
+    Linux = "${iconNixOS}"
+
+    [username]
+    show_always = true
+    style_user = "bg:base09 fg:fg_accent"
+    style_root = "bg:base09 fg:fg_accent"
+    format = "[ $user ]($style)"
 
     [directory]
-    style = "bg:base0A fg:base00"
+    style = "fg:fg_accent bg:base0A"
     format = "[ $path ]($style)"
     truncation_length = 3
     truncation_symbol = "…/"
 
     [git_branch]
     symbol = "${iconBranch}"
-    style = "bg:base0B fg:base00"
-    format = "[ $symbol $branch ]($style)"
+    style = "bg:base0C"
+    format = "[[ $symbol $branch ](fg:fg_accent bg:base0C)]($style)"
 
     [git_status]
-    style = "bg:base0B fg:base00"
-    format = "[$all_status$ahead_behind ]($style)"
+    style = "bg:base0C"
+    format = "[[($all_status$ahead_behind )](fg:fg_accent bg:base0C)]($style)"
     ahead = "↑"
     behind = "↓"
     modified = "!"
     untracked = "?"
     staged = "+"
 
+    [c]
+    symbol = "${iconC}"
+    style = "bg:base0D"
+    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0D)]($style)"
+
     [rust]
     symbol = "${iconRust}"
-    style = "bg:base0E fg:base00"
-    format = "[ $symbol $version ]($style)"
+    style = "bg:base0D"
+    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0D)]($style)"
 
     [golang]
     symbol = "${iconGo}"
-    style = "bg:base0E fg:base00"
-    format = "[ $symbol $version ]($style)"
-
-    [python]
-    symbol = "${iconPython}"
-    style = "bg:base0E fg:base00"
-    format = "[ $symbol $version$virtualenv ]($style)"
+    style = "bg:base0D"
+    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0D)]($style)"
 
     [nodejs]
     symbol = "${iconNode}"
-    style = "bg:base0E fg:base00"
-    format = "[ $symbol $version ]($style)"
+    style = "bg:base0D"
+    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0D)]($style)"
 
     [bun]
     symbol = "${iconBun}"
-    style = "bg:base0E fg:base00"
-    format = "[ $symbol $version ]($style)"
+    style = "bg:base0D"
+    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0D)]($style)"
+
+    [python]
+    symbol = "${iconPython}"
+    style = "bg:base0D"
+    format = "[[ $symbol( $version)$virtualenv ](fg:fg_accent bg:base0D)]($style)"
 
     [lua]
     symbol = "${iconLua}"
-    style = "bg:base0E fg:base00"
-    format = "[ $symbol $version ]($style)"
+    style = "bg:base0D"
+    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0D)]($style)"
+
+    [java]
+    symbol = "${iconJava}"
+    style = "bg:base0D"
+    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0D)]($style)"
+
+    [kotlin]
+    symbol = "${iconKotlin}"
+    style = "bg:base0D"
+    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0D)]($style)"
+
+    [haskell]
+    symbol = "${iconHaskell}"
+    style = "bg:base0D"
+    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0D)]($style)"
 
     [nix_shell]
     symbol = "${iconNix}"
-    style = "bg:base0E fg:base00"
-    format = "[ $symbol $state ]($style)"
+    style = "bg:base0D"
+    format = "[[ $symbol $state ](fg:fg_accent bg:base0D)]($style)"
 
-    [fill]
-    symbol = " "
+    [docker_context]
+    symbol = "${iconDocker}"
+    style = "bg:base02"
+    format = "[[ $symbol( $context) ](fg:base0D bg:base02)]($style)"
+
+    [conda]
+    symbol = "${iconConda}"
+    style = "bg:base02"
+    format = "[[ $symbol( $environment) ](fg:base0D bg:base02)]($style)"
 
     [cmd_duration]
     min_time = 500
-    style = "bg:base02 fg:base05"
-    format = "[ ${iconTimer} $duration ]($style)"
+    style = "bg:base01"
+    format = "[[ ${iconTimer} $duration ](fg:base05 bg:base01)]($style)"
 
     [time]
     disabled = false
-    time_format = "%H:%M"
-    style = "bg:base03 fg:base05"
-    format = "[ ${iconClock} $time ]($style)"
+    time_format = "%R"
+    style = "bg:base01"
+    format = "[[ ${iconClock} $time ](fg:base05 bg:base01)]($style)"
+
+    [line_break]
+    disabled = false
 
     [character]
-    success_symbol = "[ λ](bold base0B)"
-    error_symbol = "[ λ](bold base08)"
+    success_symbol = "[λ](bold fg:base0B)"
+    error_symbol = "[λ](bold fg:base08)"
+    vimcmd_symbol = "[${iconPrompt}](bold fg:base0B)"
+    vimcmd_replace_symbol = "[${iconPrompt}](bold fg:base0E)"
+    vimcmd_visual_symbol = "[${iconPrompt}](bold fg:base0A)"
 
     ${lib.concatStringsSep "\n" (lib.mapAttrsToList (name: theme: mkStarshipPalette theme) themes)}
   '';
