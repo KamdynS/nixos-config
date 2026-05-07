@@ -71,7 +71,11 @@
 
     # Input settings
     input = {
-      keyboard.xkb.layout = "us";
+      keyboard = {
+        xkb.layout = "us";
+        repeat-delay = 200;
+        repeat-rate = 50;
+      };
       touchpad = {
         tap = true;
         natural-scroll = true;
