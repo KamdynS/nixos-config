@@ -17,8 +17,9 @@
 
     # Layout settings
     layout = {
-      # Gaps between windows
-      gaps = 8;
+      # Gap between windows (and between windows and the working area edge)
+      # = the "margin" around fullscreen windows
+      gaps = 16;
 
       # Enable window shadows
       shadow.enable = true;
@@ -34,28 +35,17 @@
       # Default column width
       default-column-width = { proportion = 0.5; };
 
-      # Reserve space for waybar
-      struts.top = 32;
+      # Reserve space for waybar (matches waybar's height)
+      struts.top = 42;
 
-      # Window borders
-      border = {
-        enable = true;
-        width = 2;
-        active.color = "#d79921";   # Gruvbox yellow (static - niri doesn't hot-reload)
-        inactive.color = "#928374"; # Gruvbox gray
-      };
+      # No window borders (rounded corners handled in window-rules)
+      border.enable = false;
     };
 
     # Window rules
     window-rules = [
       {
         matches = [];  # Match all windows
-        border = {
-          enable = true;
-          width = 2;
-          active.color = "#d79921";
-          inactive.color = "#928374";
-        };
         geometry-corner-radius = let r = 8.0; in {
           top-left = r;
           top-right = r;

@@ -8,18 +8,16 @@
     settings = [{
       layer = "top";
       position = "top";
-      height = 32;
+      height = 42;
 
       modules-left = [ "niri/workspaces" ];
       modules-center = [ "clock" ];
       modules-right = [ "network" ];
 
       "niri/workspaces" = {
-        format = "{icon}";
-        format-icons = {
-          active = "";
-          default = "";
-        };
+        format = "{index}";
+        all-outputs = false;  # each bar instance shows only its monitor's workspaces
+        on-click = "activate";
       };
 
       clock = {

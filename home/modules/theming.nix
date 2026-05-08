@@ -42,7 +42,7 @@ let
     /* Theme: ${theme.name} */
     * {
       font-family: "JetBrainsMono Nerd Font", monospace;
-      font-size: 14px;
+      font-size: 18px;
     }
 
     window#waybar {
