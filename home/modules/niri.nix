@@ -144,6 +144,9 @@
       "Mod+Shift+8".action.move-column-to-workspace = 8;
       "Mod+Shift+9".action.move-column-to-workspace = 9;
 
+      # Focus other monitor
+      "Mod+Tab".action.focus-monitor-next = [];
+
       # Move between monitors
       "Mod+Shift+Period".action.move-column-to-monitor-right = [];
       "Mod+Shift+Comma".action.move-column-to-monitor-left = [];
