@@ -177,12 +177,12 @@ let
       base07 = "#${theme.palette.base07}"
       base08 = "#${theme.palette.base08}"
       base09 = "#${theme.palette.base09}"
-      base0A = "#${theme.palette.base0A}"
-      base0B = "#${theme.palette.base0B}"
-      base0C = "#${theme.palette.base0C}"
-      base0D = "#${theme.palette.base0D}"
-      base0E = "#${theme.palette.base0E}"
-      base0F = "#${theme.palette.base0F}"
+      base0a = "#${theme.palette.base0A}"
+      base0b = "#${theme.palette.base0B}"
+      base0c = "#${theme.palette.base0C}"
+      base0d = "#${theme.palette.base0D}"
+      base0e = "#${theme.palette.base0E}"
+      base0f = "#${theme.palette.base0F}"
       fg_accent = "#${fgAccent}"
     '';
 
@@ -245,12 +245,12 @@ let
     [${chevronR}](fg:base09)\
     $os\
     $username\
-    [${chevronR}](fg:base09 bg:base0A)\
+    [${chevronR}](fg:base09 bg:base0a)\
     $directory\
-    [${chevronR}](fg:base0A bg:base0C)\
+    [${chevronR}](fg:base0a bg:base0c)\
     $git_branch\
     $git_status\
-    [${chevronR}](fg:base0C bg:base0D)\
+    [${chevronR}](fg:base0c bg:base0d)\
     $c\
     $rust\
     $golang\
@@ -262,7 +262,7 @@ let
     $kotlin\
     $haskell\
     $nix_shell\
-    [${chevronR}](fg:base0D bg:base02)\
+    [${chevronR}](fg:base0d bg:base02)\
     $docker_context\
     $conda\
     [${chevronR}](fg:base02 bg:base01)\
@@ -291,19 +291,19 @@ let
     format = "[ $user ]($style)"
 
     [directory]
-    style = "fg:fg_accent bg:base0A"
+    style = "fg:fg_accent bg:base0a"
     format = "[ $path ]($style)"
     truncation_length = 3
     truncation_symbol = "…/"
 
     [git_branch]
     symbol = "${iconBranch}"
-    style = "bg:base0C"
-    format = "[[ $symbol $branch ](fg:fg_accent bg:base0C)]($style)"
+    style = "bg:base0c"
+    format = "[[ $symbol $branch ](fg:fg_accent bg:base0c)]($style)"
 
     [git_status]
-    style = "bg:base0C"
-    format = "[[($all_status$ahead_behind )](fg:fg_accent bg:base0C)]($style)"
+    style = "bg:base0c"
+    format = "[[($all_status$ahead_behind )](fg:fg_accent bg:base0c)]($style)"
     ahead = "↑"
     behind = "↓"
     modified = "!"
@@ -312,68 +312,68 @@ let
 
     [c]
     symbol = "${iconC}"
-    style = "bg:base0D"
-    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0D)]($style)"
+    style = "bg:base0d"
+    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0d)]($style)"
 
     [rust]
     symbol = "${iconRust}"
-    style = "bg:base0D"
-    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0D)]($style)"
+    style = "bg:base0d"
+    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0d)]($style)"
 
     [golang]
     symbol = "${iconGo}"
-    style = "bg:base0D"
-    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0D)]($style)"
+    style = "bg:base0d"
+    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0d)]($style)"
 
     [nodejs]
     symbol = "${iconNode}"
-    style = "bg:base0D"
-    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0D)]($style)"
+    style = "bg:base0d"
+    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0d)]($style)"
 
     [bun]
     symbol = "${iconBun}"
-    style = "bg:base0D"
-    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0D)]($style)"
+    style = "bg:base0d"
+    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0d)]($style)"
 
     [python]
     symbol = "${iconPython}"
-    style = "bg:base0D"
-    format = "[[ $symbol( $version)$virtualenv ](fg:fg_accent bg:base0D)]($style)"
+    style = "bg:base0d"
+    format = "[[ $symbol( $version)$virtualenv ](fg:fg_accent bg:base0d)]($style)"
 
     [lua]
     symbol = "${iconLua}"
-    style = "bg:base0D"
-    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0D)]($style)"
+    style = "bg:base0d"
+    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0d)]($style)"
 
     [java]
     symbol = "${iconJava}"
-    style = "bg:base0D"
-    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0D)]($style)"
+    style = "bg:base0d"
+    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0d)]($style)"
 
     [kotlin]
     symbol = "${iconKotlin}"
-    style = "bg:base0D"
-    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0D)]($style)"
+    style = "bg:base0d"
+    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0d)]($style)"
 
     [haskell]
     symbol = "${iconHaskell}"
-    style = "bg:base0D"
-    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0D)]($style)"
+    style = "bg:base0d"
+    format = "[[ $symbol( $version) ](fg:fg_accent bg:base0d)]($style)"
 
     [nix_shell]
     symbol = "${iconNix}"
-    style = "bg:base0D"
-    format = "[[ $symbol $state ](fg:fg_accent bg:base0D)]($style)"
+    style = "bg:base0d"
+    format = "[[ $symbol $state ](fg:fg_accent bg:base0d)]($style)"
 
     [docker_context]
     symbol = "${iconDocker}"
     style = "bg:base02"
-    format = "[[ $symbol( $context) ](fg:base0D bg:base02)]($style)"
+    format = "[[ $symbol( $context) ](fg:base0d bg:base02)]($style)"
 
     [conda]
     symbol = "${iconConda}"
     style = "bg:base02"
-    format = "[[ $symbol( $environment) ](fg:base0D bg:base02)]($style)"
+    format = "[[ $symbol( $environment) ](fg:base0d bg:base02)]($style)"
 
     [cmd_duration]
     min_time = 500
@@ -390,11 +390,11 @@ let
     disabled = false
 
     [character]
-    success_symbol = "[λ](bold fg:base0B)"
+    success_symbol = "[λ](bold fg:base0b)"
     error_symbol = "[λ](bold fg:base08)"
-    vimcmd_symbol = "[${iconPrompt}](bold fg:base0B)"
-    vimcmd_replace_symbol = "[${iconPrompt}](bold fg:base0E)"
-    vimcmd_visual_symbol = "[${iconPrompt}](bold fg:base0A)"
+    vimcmd_symbol = "[${iconPrompt}](bold fg:base0b)"
+    vimcmd_replace_symbol = "[${iconPrompt}](bold fg:base0e)"
+    vimcmd_visual_symbol = "[${iconPrompt}](bold fg:base0a)"
 
     ${lib.concatStringsSep "\n" (lib.mapAttrsToList (name: theme: mkStarshipPalette theme) themes)}
   '';
