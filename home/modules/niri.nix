@@ -1,14 +1,25 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   programs.niri.settings = {
     # Monitor configuration - both monitors configured, user can swap freely
     outputs = {
       "HDMI-A-1" = {
-        position = { x = 0; y = 0; };
+        position = {
+          x = 0;
+          y = 0;
+        };
       };
       "DP-3" = {
-        position = { x = 1920; y = 0; };
+        position = {
+          x = 1920;
+          y = 0;
+        };
       };
     };
 
@@ -20,7 +31,7 @@
       # Gap between windows when split. niri applies this uniformly to
       # outer edges too, so we keep it small and use struts for outer
       # margins that don't add to the top (under the bar).
-      gaps = 0;
+      gaps = 16;
 
       # Enable window shadows
       shadow.enable = true;
@@ -34,13 +45,15 @@
       ];
 
       # Default column width
-      default-column-width = { proportion = 0.5; };
+      default-column-width = {
+        proportion = 0.5;
+      };
 
       # Margins around the working area. No top strut so windows sit
       # directly under the bar (waybar's exclusive zone reserves the bar's
       # height already).
       struts = {
-        top = 0;
+        top = 16;
         bottom = 16;
         left = 16;
         right = 16;
@@ -53,13 +66,17 @@
     # Window rules
     window-rules = [
       {
-        matches = [];  # Match all windows
-        geometry-corner-radius = let r = 8.0; in {
-          top-left = r;
-          top-right = r;
-          bottom-left = r;
-          bottom-right = r;
-        };
+        matches = [ ]; # Match all windows
+        geometry-corner-radius =
+          let
+            r = 8.0;
+          in
+          {
+            top-left = r;
+            top-right = r;
+            bottom-left = r;
+            bottom-right = r;
+          };
         clip-to-geometry = true;
       }
     ];
@@ -93,10 +110,18 @@
       "Mod+Space".action.spawn = [ "fuzzel" ];
 
       # Clipboard picker
-      "Mod+V".action.spawn = [ "bash" "-c" "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy" ];
+      "Mod+V".action.spawn = [
+        "bash"
+        "-c"
+        "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"
+      ];
 
       # Screenshot (region to clipboard)
-      "Mod+Shift+S".action.spawn = [ "bash" "-c" "grim -g \"$(slurp)\" - | wl-copy" ];
+      "Mod+Shift+S".action.spawn = [
+        "bash"
+        "-c"
+        "grim -g \"$(slurp)\" - | wl-copy"
+      ];
 
       # Wallpaper picker (auto-switches theme)
       "Mod+T".action.spawn = [ "wallpaper-pick" ];
@@ -105,30 +130,30 @@
       "Mod+Escape".action.spawn = [ "power-menu" ];
 
       # Window management
-      "Mod+Q".action.close-window = [];
-      "Mod+F".action.maximize-column = [];
-      "Mod+Shift+F".action.fullscreen-window = [];
+      "Mod+Q".action.close-window = [ ];
+      "Mod+F".action.maximize-column = [ ];
+      "Mod+Shift+F".action.fullscreen-window = [ ];
 
       # Cycle preset column widths
-      "Mod+R".action.switch-preset-column-width = [];
+      "Mod+R".action.switch-preset-column-width = [ ];
 
       # Focus columns
-      "Mod+H".action.focus-column-left = [];
-      "Mod+L".action.focus-column-right = [];
+      "Mod+H".action.focus-column-left = [ ];
+      "Mod+L".action.focus-column-right = [ ];
 
       # Move columns
-      "Mod+Ctrl+H".action.move-column-left = [];
-      "Mod+Ctrl+L".action.move-column-right = [];
+      "Mod+Ctrl+H".action.move-column-left = [ ];
+      "Mod+Ctrl+L".action.move-column-right = [ ];
 
       # Workspace navigation (up/down for vertical workspaces)
-      "Mod+J".action.focus-workspace-down = [];
-      "Mod+K".action.focus-workspace-up = [];
+      "Mod+J".action.focus-workspace-down = [ ];
+      "Mod+K".action.focus-workspace-up = [ ];
 
       # Move window to adjacent workspace
-      "Mod+Shift+H".action.move-column-to-workspace-up = [];
-      "Mod+Shift+J".action.move-column-to-workspace-down = [];
-      "Mod+Shift+K".action.move-column-to-workspace-up = [];
-      "Mod+Shift+L".action.move-column-to-workspace-down = [];
+      "Mod+Shift+H".action.move-column-to-workspace-up = [ ];
+      "Mod+Shift+J".action.move-column-to-workspace-down = [ ];
+      "Mod+Shift+K".action.move-column-to-workspace-up = [ ];
+      "Mod+Shift+L".action.move-column-to-workspace-down = [ ];
 
       # Direct workspace switching
       "Mod+1".action.focus-workspace = 1;
@@ -153,25 +178,25 @@
       "Mod+Shift+9".action.move-column-to-workspace = 9;
 
       # Focus other monitor
-      "Mod+Tab".action.focus-monitor-next = [];
+      "Mod+Tab".action.focus-monitor-next = [ ];
 
       # Move between monitors
-      "Mod+Shift+Period".action.move-column-to-monitor-right = [];
-      "Mod+Shift+Comma".action.move-column-to-monitor-left = [];
+      "Mod+Shift+Period".action.move-column-to-monitor-right = [ ];
+      "Mod+Shift+Comma".action.move-column-to-monitor-left = [ ];
 
       # Scroll through workspaces
-      "Mod+WheelScrollDown".action.focus-workspace-down = [];
-      "Mod+WheelScrollUp".action.focus-workspace-up = [];
+      "Mod+WheelScrollDown".action.focus-workspace-down = [ ];
+      "Mod+WheelScrollUp".action.focus-workspace-up = [ ];
 
       # Screenshots (save to file)
-      "Print".action.screenshot = [];
-      "Alt+Print".action.screenshot-window = [];
+      "Print".action.screenshot = [ ];
+      "Alt+Print".action.screenshot-window = [ ];
 
       # Exit niri
-      "Mod+Shift+E".action.quit = [];
+      "Mod+Shift+E".action.quit = [ ];
 
       # Power off monitors
-      "Mod+Shift+P".action.power-off-monitors = [];
+      "Mod+Shift+P".action.power-off-monitors = [ ];
     };
 
     # Startup apps
@@ -179,7 +204,14 @@
       { command = [ "waybar" ]; }
       { command = [ "awww-daemon" ]; }
       { command = [ "mako" ]; }
-      { command = [ "wl-paste" "--watch" "cliphist" "store" ]; }
+      {
+        command = [
+          "wl-paste"
+          "--watch"
+          "cliphist"
+          "store"
+        ];
+      }
     ];
   };
 }
