@@ -17,9 +17,10 @@
 
     # Layout settings
     layout = {
-      # Gap between windows (and between windows and the working area edge)
-      # = the "margin" around fullscreen windows
-      gaps = 16;
+      # Gap between windows when split. niri applies this uniformly to
+      # outer edges too, so we keep it small and use struts for outer
+      # margins that don't add to the top (under the bar).
+      gaps = 0;
 
       # Enable window shadows
       shadow.enable = true;
@@ -35,8 +36,15 @@
       # Default column width
       default-column-width = { proportion = 0.5; };
 
-      # Reserve space for waybar (matches waybar's height)
-      struts.top = 42;
+      # Margins around the working area. No top strut so windows sit
+      # directly under the bar (waybar's exclusive zone reserves the bar's
+      # height already).
+      struts = {
+        top = 0;
+        bottom = 16;
+        left = 16;
+        right = 16;
+      };
 
       # No window borders (rounded corners handled in window-rules)
       border.enable = false;
