@@ -45,23 +45,5 @@
           }
         ];
       };
-
-      # LG Gram (Intel laptop) - unchanged, still uses old config
-      nixosConfigurations.lg-gram = nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = { inherit inputs; };
-        modules = [
-          { nixpkgs.overlays = [ niri.overlays.niri ]; }
-          ./hosts/lg-gram/configuration.nix
-          niri.nixosModules.niri
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.kamdyns = import ./home/home.nix;
-            home-manager.extraSpecialArgs = { inherit inputs; };
-          }
-        ];
-      };
     };
 }
