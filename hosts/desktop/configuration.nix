@@ -96,8 +96,6 @@
     packages = with pkgs; [];
   };
 
-  programs.firefox.enable = false;
-
   # Zsh
   programs.zsh.enable = true;
   users.users.kamdyns.shell = pkgs.zsh;

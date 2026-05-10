@@ -32,7 +32,6 @@
       # NixOS
       "nrs" = "sudo nixos-rebuild switch --flake /home/kamdyns/nixos-config#desktop";
       "nrt" = "sudo nixos-rebuild test --flake /home/kamdyns/nixos-config#desktop";
-      "hms" = "home-manager switch --flake /home/kamdyns/nixos-config#kamdyns";
     };
 
     history = {

@@ -8,7 +8,6 @@ NixOS flake configuration for a niri-based Wayland desktop. Rice v2 - minimal, f
 
 **Hosts:**
 - `desktop` (AMD workstation, GRUB dual-boot) - rice v2, primary development target
-- `lg-gram` (Intel laptop, systemd-boot) - legacy config, not yet migrated
 
 ## Common Commands
 
@@ -99,8 +98,10 @@ At runtime, `theme-switch <name>`:
 | Mod+Q | close window |
 | Mod+R | cycle column widths |
 | Mod+1-9 | workspace |
-| Mod+H/J/K/L | focus |
-| Mod+Shift+H/J/K/L | move to workspace |
+| Mod+H/L | focus column left/right |
+| Mod+J/K | focus workspace down/up |
+| Mod+Shift+H/L | move column left/right |
+| Mod+Shift+J/K | move column to workspace down/up |
 
 ### Stack
 

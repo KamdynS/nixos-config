@@ -144,19 +144,15 @@
       "Mod+H".action.focus-column-left = [ ];
       "Mod+L".action.focus-column-right = [ ];
 
-      # Move columns
-      "Mod+Ctrl+H".action.move-column-left = [ ];
-      "Mod+Ctrl+L".action.move-column-right = [ ];
-
       # Workspace navigation (up/down for vertical workspaces)
       "Mod+J".action.focus-workspace-down = [ ];
       "Mod+K".action.focus-workspace-up = [ ];
 
-      # Move window to adjacent workspace
-      "Mod+Shift+H".action.move-column-to-workspace-up = [ ];
+      # Move column horizontally / to adjacent workspace
+      "Mod+Shift+H".action.move-column-left = [ ];
+      "Mod+Shift+L".action.move-column-right = [ ];
       "Mod+Shift+J".action.move-column-to-workspace-down = [ ];
       "Mod+Shift+K".action.move-column-to-workspace-up = [ ];
-      "Mod+Shift+L".action.move-column-to-workspace-down = [ ];
 
       # Direct workspace switching
       "Mod+1".action.focus-workspace = 1;
