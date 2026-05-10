@@ -78,6 +78,9 @@
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
+  # Flatpak (used for Spotify so spicetify can patch a writable install)
+  services.flatpak.enable = true;
+
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;

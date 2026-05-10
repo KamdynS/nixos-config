@@ -186,6 +186,32 @@ let
       fg_accent = "#${fgAccent}"
     '';
 
+  # Generate one [<scheme>] section of the spicetify color.ini.
+  # All six rice themes are emitted into a single color.ini under the
+  # `base16` theme directory; theme-switch flips the active section via
+  # `spicetify config color_scheme`.
+  mkSpicetifyScheme = theme: ''
+    [${theme.name}]
+    text                 = ${theme.palette.base05}
+    subtext              = ${theme.palette.base04}
+    sidebar-text         = ${theme.palette.base05}
+    main                 = ${theme.palette.base00}
+    sidebar              = ${theme.palette.base01}
+    player               = ${theme.palette.base01}
+    card                 = ${theme.palette.base01}
+    shadow               = ${theme.palette.base00}
+    selected-row         = ${theme.palette.base02}
+    button               = ${theme.palette.base0D}
+    button-active        = ${theme.palette.base0C}
+    button-disabled      = ${theme.palette.base03}
+    tab-active           = ${theme.palette.base02}
+    notification         = ${theme.palette.base0B}
+    notification-error   = ${theme.palette.base08}
+    misc                 = ${theme.palette.base02}
+  '';
+
+  spicetifyColorIni = lib.concatStringsSep "\n" (lib.mapAttrsToList (_: mkSpicetifyScheme) themes);
+
   # Generate nvim active-theme.lua for a theme
   mkNvimTheme = theme: ''
     -- Theme: ${theme.name}
@@ -230,7 +256,12 @@ let
   }) themes // lib.mapAttrs' (name: theme: {
     name = "nvim-theme/${name}.lua";
     value = { text = mkNvimTheme theme; };
-  }) themes;
+  }) themes // {
+    # Spicetify uses a single theme dir with all six schemes as sections.
+    # color.ini is read by `spicetify apply`; user.css is required but unused.
+    "spicetify/Themes/base16/color.ini".text = spicetifyColorIni;
+    "spicetify/Themes/base16/user.css".text = "/* base16 theme — colors only */\n";
+  };
 
   # Build starship.toml with all palette definitions
   starshipConfig = ''
@@ -456,6 +487,14 @@ let
       ${pkgs.neovim}/bin/nvim --server "$NVIM_SOCKET" --remote-send ':luafile ~/.config/nvim-theme/active.lua<CR>' 2>/dev/null || true
     fi
 
+    # Spicetify: switch color scheme and re-apply (no-op if Flatpak Spotify
+    # isn't installed yet). `spicetify apply` will restart Spotify if running.
+    SPOTIFY_DIR="$HOME/.local/share/flatpak/app/com.spotify.Client/current/active/files/extra/share/spotify"
+    if [[ -d "$SPOTIFY_DIR" ]]; then
+      ${pkgs.spicetify-cli}/bin/spicetify config color_scheme "$THEME" >/dev/null 2>&1 || true
+      ${pkgs.spicetify-cli}/bin/spicetify apply >/dev/null 2>&1 || true
+    fi
+
     echo "Theme switched to: $THEME"
   '';
 
@@ -601,5 +640,42 @@ in
     $DRY_RUN_CMD rm -f "$STARSHIP_DST"
     $DRY_RUN_CMD install -m 644 "$STARSHIP_SRC" "$STARSHIP_DST"
     $DRY_RUN_CMD ${pkgs.gnused}/bin/sed -i "s/^palette = .*/palette = \"$CURRENT_PALETTE\"/" "$STARSHIP_DST"
+
+    # Seed spicetify config-xpui.ini as a writable file (spicetify-cli rewrites
+    # it via `spicetify config`). Preserve active color_scheme on rebuild.
+    $DRY_RUN_CMD mkdir -p $HOME/.config/spicetify
+    SPICETIFY_CONFIG="$HOME/.config/spicetify/config-xpui.ini"
+    SPICETIFY_SCHEME="${defaultTheme}"
+    if [[ -f "$SPICETIFY_CONFIG" ]]; then
+      EXISTING=$(${pkgs.gnused}/bin/sed -n 's/^color_scheme[[:space:]]*=[[:space:]]*\(.*\)/\1/p' "$SPICETIFY_CONFIG" | head -1)
+      [[ -n "$EXISTING" ]] && SPICETIFY_SCHEME="$EXISTING"
+    fi
+    $DRY_RUN_CMD rm -f "$SPICETIFY_CONFIG"
+    $DRY_RUN_CMD ${pkgs.coreutils}/bin/tee "$SPICETIFY_CONFIG" > /dev/null <<EOF
+[Setting]
+spotify_path           = $HOME/.local/share/flatpak/app/com.spotify.Client/current/active/files/extra/share/spotify
+prefs_path             = $HOME/.var/app/com.spotify.Client/config/spotify/prefs
+current_theme          = base16
+color_scheme           = $SPICETIFY_SCHEME
+spotify_launch_flags   =
+check_spicetify_update = 0
+inject_css             = 1
+inject_theme_js        = 1
+replace_colors         = 1
+overwrite_assets       = 0
+
+[Preprocesses]
+disable_sentry         = 1
+disable_ui_logging     = 1
+remove_rtl_rule        = 1
+expose_apis            = 1
+
+[AdditionalOptions]
+extensions             =
+custom_apps            =
+sidebar_config         = 1
+home_config            = 1
+experimental_features  = 0
+EOF
   '';
 }

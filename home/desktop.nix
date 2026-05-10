@@ -11,6 +11,7 @@
     ./modules/swww.nix
     ./modules/ghostty.nix
     ./modules/apps.nix
+    ./modules/spicetify.nix
     ./modules/shell.nix
     ./modules/editor.nix
   ];

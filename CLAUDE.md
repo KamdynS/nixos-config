@@ -117,10 +117,28 @@ At runtime, `theme-switch <name>`:
 | Shell | zsh + oh-my-zsh + starship |
 | Editor | neovim |
 | Browser | Zen |
+| Music | Spotify (Flatpak) + spicetify-cli |
+
+### Spotify / Spicetify
+
+Spotify is installed via Flatpak so spicetify-cli can patch a writable install
+(NixOS `/nix/store` is read-only). All six base16 schemes are emitted as
+sections in `~/.config/spicetify/Themes/base16/color.ini`; `theme-switch` runs
+`spicetify config color_scheme <name> && spicetify apply` to swap them.
+Spotify restarts on apply if it's running.
+
+One-time bootstrap after first rebuild:
+
+```bash
+flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
+flatpak install --user -y flathub com.spotify.Client
+# Then re-run a home-manager activation OR manually:
+spicetify backup apply --no-restart
+```
 
 ## Notes
 
 - Wallpapers go in `wallpapers/` directory, named `<theme-name>.jpg`
-- Theme switching is instant (<1s), no rebuild needed
+- Theme switching is instant (<1s) for live apps; Spotify restarts on theme swap
 - Dotfiles (nvim, lazygit) are symlinked - edit without rebuild
 - Font: JetBrains Mono Nerd Font everywhere
