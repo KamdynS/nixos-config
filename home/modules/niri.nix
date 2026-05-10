@@ -129,6 +129,9 @@
       # Power menu
       "Mod+Escape".action.spawn = [ "power-menu" ];
 
+      # Show keybind overlay
+      "Mod+Shift+Slash".action.show-hotkey-overlay = [ ];
+
       # Window management
       "Mod+Q".action.close-window = [ ];
       "Mod+F".action.maximize-column = [ ];

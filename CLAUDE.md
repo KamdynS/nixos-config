@@ -95,6 +95,7 @@ At runtime, `theme-switch <name>`:
 | Mod+V | cliphist picker |
 | Mod+Shift+S | screenshot region → clipboard |
 | Mod+T | theme picker |
+| Mod+Shift+/ | show hotkey overlay |
 | Mod+Q | close window |
 | Mod+R | cycle column widths |
 | Mod+1-9 | workspace |
