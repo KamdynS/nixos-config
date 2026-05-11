@@ -703,7 +703,7 @@ let
       | while IFS= read -r key; do
           printf '%s\0icon\x1f%s/%s.png\n' "$key" "$THUMBS_DIR" "$key"
         done \
-      | ${pkgs.rofi-wayland}/bin/rofi -dmenu -show-icons -theme "$ROFI_THEME" -p "Wallpaper")
+      | ${pkgs.rofi}/bin/rofi -dmenu -show-icons -theme "$ROFI_THEME" -p "Wallpaper")
 
     if [[ -n "$SELECTED" ]]; then
       ${wallpaperSwitchScript}/bin/wallpaper-switch "$SELECTED"

@@ -109,7 +109,7 @@ At runtime, `theme-switch <name>`:
 |------|------|
 | Compositor | niri |
 | Bar | waybar |
-| Launcher | fuzzel (apps) + rofi-wayland (wallpaper carousel) |
+| Launcher | fuzzel (apps) + rofi (wallpaper carousel) |
 | Notifications | mako |
 | Clipboard | cliphist |
 | Wallpaper | swww |
