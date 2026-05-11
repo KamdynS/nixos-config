@@ -103,31 +103,58 @@
     # Keybindings
     binds = {
       # App launchers
-      "Mod+Return".action.spawn = [ "ghostty" ];
-      "Mod+B".action.spawn = [ "zen-beta" ];
-      "Mod+S".action.spawn = [ "spotify" ];
-      "Mod+D".action.spawn = [ "vesktop" ];
-      "Mod+Space".action.spawn = [ "fuzzel" ];
+      "Mod+Return" = {
+        action.spawn = [ "ghostty" ];
+        hotkey-overlay.title = "Terminal";
+      };
+      "Mod+B" = {
+        action.spawn = [ "zen-beta" ];
+        hotkey-overlay.title = "Browser";
+      };
+      "Mod+S" = {
+        action.spawn = [ "spotify" ];
+        hotkey-overlay.title = "Spotify";
+      };
+      "Mod+D" = {
+        action.spawn = [ "vesktop" ];
+        hotkey-overlay.title = "Discord";
+      };
+      "Mod+Space" = {
+        action.spawn = [ "fuzzel" ];
+        hotkey-overlay.title = "App launcher";
+      };
 
       # Clipboard picker
-      "Mod+V".action.spawn = [
-        "bash"
-        "-c"
-        "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"
-      ];
+      "Mod+V" = {
+        action.spawn = [
+          "bash"
+          "-c"
+          "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"
+        ];
+        hotkey-overlay.title = "Clipboard history";
+      };
 
       # Screenshot (region to clipboard)
-      "Mod+Shift+S".action.spawn = [
-        "bash"
-        "-c"
-        "grim -g \"$(slurp)\" - | wl-copy"
-      ];
+      "Mod+Shift+S" = {
+        action.spawn = [
+          "bash"
+          "-c"
+          "grim -g \"$(slurp)\" - | wl-copy"
+        ];
+        hotkey-overlay.title = "Screenshot region → clipboard";
+      };
 
       # Wallpaper picker (auto-switches theme)
-      "Mod+T".action.spawn = [ "wallpaper-pick" ];
+      "Mod+T" = {
+        action.spawn = [ "wallpaper-pick" ];
+        hotkey-overlay.title = "Wallpaper picker";
+      };
 
       # Power menu
-      "Mod+Escape".action.spawn = [ "power-menu" ];
+      "Mod+Escape" = {
+        action.spawn = [ "power-menu" ];
+        hotkey-overlay.title = "Power menu";
+      };
 
       # Show keybind overlay
       "Mod+Shift+Slash".action.show-hotkey-overlay = [ ];
