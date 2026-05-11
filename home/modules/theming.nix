@@ -234,7 +234,7 @@ let
         border-color:     @accent;
         border-radius:    12px;
         padding:          24px;
-        width:            1024px;
+        width:            1200px;
         location:         center;
         anchor:           center;
         children:         [ mainbox ];
