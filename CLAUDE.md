@@ -116,8 +116,19 @@ At runtime, `theme-switch <name>`:
 | Terminal | ghostty |
 | Shell | zsh + oh-my-zsh + starship |
 | Editor | neovim |
-| Browser | Zen |
+| Browser | Zen (themed via userChrome.css) |
 | Music | Spotify (Flatpak) + spicetify-cli |
+
+### Zen Browser
+
+Per-theme `userChrome.css` files are generated in `~/.config/zen-chrome/`.
+`theme-switch` symlinks the active one into `~/.zen/<profile>/chrome/userChrome.css`.
+Zen reads `userChrome.css` only at launch — **theme changes apply on next Zen
+restart**, not instantly. Any pre-existing `userChrome.css` is backed up once
+to `userChrome.css.pre-rice` on first activation.
+
+Requires `toolkit.legacyUserProfileCustomizations.stylesheets = true` in
+`about:config` (already on in this profile).
 
 ### Spotify / Spicetify
 
