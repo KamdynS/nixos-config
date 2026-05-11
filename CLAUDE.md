@@ -93,7 +93,7 @@ At runtime, `theme-switch <name>`:
 | Mod+Space | fuzzel |
 | Mod+V | cliphist picker |
 | Mod+Shift+S | screenshot region → clipboard |
-| Mod+T | theme picker |
+| Mod+T | wallpaper carousel (rofi) |
 | Mod+Shift+/ | show hotkey overlay |
 | Mod+Q | close window |
 | Mod+R | cycle column widths |
@@ -109,7 +109,7 @@ At runtime, `theme-switch <name>`:
 |------|------|
 | Compositor | niri |
 | Bar | waybar |
-| Launcher | fuzzel |
+| Launcher | fuzzel (apps) + rofi-wayland (wallpaper carousel) |
 | Notifications | mako |
 | Clipboard | cliphist |
 | Wallpaper | swww |

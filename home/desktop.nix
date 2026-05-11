@@ -6,6 +6,7 @@
     ./modules/niri.nix
     ./modules/waybar.nix
     ./modules/fuzzel.nix
+    ./modules/rofi.nix
     ./modules/mako.nix
     ./modules/cliphist.nix
     ./modules/swww.nix
