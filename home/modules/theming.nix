@@ -767,8 +767,8 @@ let
           -no-custom \
           -format i \
           -selected-row "$row_idx" \
-          -kb-row-left  'h,Left' \
-          -kb-row-right 'l,Right' \
+          -kb-row-left  'h' \
+          -kb-row-right 'l' \
           -kb-custom-1  'j' \
           -kb-custom-2  'k')
       rc=$?
