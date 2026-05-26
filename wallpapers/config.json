@@ -30,5 +30,201 @@
   "city-sunset": {
     "path": "/home/kamdyns/nixos-config/wallpapers/city-sunset.png",
     "theme": "tokyonight"
+  },
+  "catppuccin-latte-color-fade": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/catppuccin-latte-color-fade.png",
+    "theme": "catppuccin-latte"
+  },
+  "everforest-tree-tops": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/everforest-tree-tops.jpg",
+    "theme": "everforest"
+  },
+  "nord-black-moon": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/nord-black-moon.jpg",
+    "theme": "nord"
+  },
+  "nord-city-view": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/nord-city-view.png",
+    "theme": "nord"
+  },
+  "nord-night-hawks": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/nord-night-hawks.png",
+    "theme": "nord"
+  },
+  "ethereal-cosmic": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/ethereal-cosmic.jpg",
+    "theme": "ethereal"
+  },
+  "ethereal-meadow": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/ethereal-meadow.jpg",
+    "theme": "ethereal"
+  },
+  "flexoki-light-orb": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/flexoki-light-orb.png",
+    "theme": "flexoki-light"
+  },
+  "flexoki-light-omarchy": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/flexoki-light-omarchy.png",
+    "theme": "flexoki-light"
+  },
+  "hackerman-synth-scape": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/hackerman-synth-scape.jpg",
+    "theme": "hackerman"
+  },
+  "hackerman-geometric": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/hackerman-geometric.jpg",
+    "theme": "hackerman"
+  },
+  "last-horizon-eyes-wide": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/last-horizon-eyes-wide.jpg",
+    "theme": "last-horizon"
+  },
+  "last-horizon-blink": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/last-horizon-blink.jpg",
+    "theme": "last-horizon"
+  },
+  "last-horizon-bokeh": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/last-horizon-bokeh.jpg",
+    "theme": "last-horizon"
+  },
+  "last-horizon-new-horizons": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/last-horizon-new-horizons.jpg",
+    "theme": "last-horizon"
+  },
+  "lumon-united-in-severance": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/lumon-united-in-severance.jpg",
+    "theme": "lumon"
+  },
+  "lumon-opinions-equally": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/lumon-opinions-equally.jpg",
+    "theme": "lumon"
+  },
+  "matte-black-ship-at-sea": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/matte-black-ship-at-sea.jpg",
+    "theme": "matte-black"
+  },
+  "matte-black-dark-waters": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/matte-black-dark-waters.jpg",
+    "theme": "matte-black"
+  },
+  "matte-black-dot-hands": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/matte-black-dot-hands.jpg",
+    "theme": "matte-black"
+  },
+  "miasma-nature-of-fear": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/miasma-nature-of-fear.jpg",
+    "theme": "miasma"
+  },
+  "miasma-crowned": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/miasma-crowned.jpg",
+    "theme": "miasma"
+  },
+  "osaka-jade-glowing-city": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/osaka-jade-glowing-city.jpg",
+    "theme": "osaka-jade"
+  },
+  "osaka-jade-shaded-entrance": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/osaka-jade-shaded-entrance.jpg",
+    "theme": "osaka-jade"
+  },
+  "osaka-jade-mountain-moon": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/osaka-jade-mountain-moon.jpg",
+    "theme": "osaka-jade"
+  },
+  "retro-82-in-the-groove": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/retro-82-in-the-groove.jpg",
+    "theme": "retro-82"
+  },
+  "retro-82-dusk-guardian": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/retro-82-dusk-guardian.jpg",
+    "theme": "retro-82"
+  },
+  "retro-82-glassy-lines": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/retro-82-glassy-lines.jpg",
+    "theme": "retro-82"
+  },
+  "retro-82-gateway": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/retro-82-gateway.jpg",
+    "theme": "retro-82"
+  },
+  "retro-82-zen-boat": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/retro-82-zen-boat.jpg",
+    "theme": "retro-82"
+  },
+  "retro-82-abstract-pyramids": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/retro-82-abstract-pyramids.jpg",
+    "theme": "retro-82"
+  },
+  "retro-82-the-journey": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/retro-82-the-journey.jpg",
+    "theme": "retro-82"
+  },
+  "retro-82-glitter-glass": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/retro-82-glitter-glass.jpg",
+    "theme": "retro-82"
+  },
+  "ristretto-launch": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/ristretto-launch.png",
+    "theme": "ristretto"
+  },
+  "ristretto-color-curves": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/ristretto-color-curves.jpg",
+    "theme": "ristretto"
+  },
+  "ristretto-coffee-beans": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/ristretto-coffee-beans.jpg",
+    "theme": "ristretto"
+  },
+  "ristretto-industrial-moon": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/ristretto-industrial-moon.jpg",
+    "theme": "ristretto"
+  },
+  "solitude-on-pole": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/solitude-on-pole.jpg",
+    "theme": "solitude"
+  },
+  "solitude-wreakage": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/solitude-wreakage.jpg",
+    "theme": "solitude"
+  },
+  "solitude-climb": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/solitude-climb.jpg",
+    "theme": "solitude"
+  },
+  "solitude-ether": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/solitude-ether.jpg",
+    "theme": "solitude"
+  },
+  "solitude-eyed": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/solitude-eyed.jpg",
+    "theme": "solitude"
+  },
+  "vantablack-dot-hands": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/vantablack-dot-hands.jpg",
+    "theme": "vantablack"
+  },
+  "vantablack-twisted-stairs": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/vantablack-twisted-stairs.jpg",
+    "theme": "vantablack"
+  },
+  "vantablack-layers-deep": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/vantablack-layers-deep.jpg",
+    "theme": "vantablack"
+  },
+  "vantablack-layers-stacked": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/vantablack-layers-stacked.jpg",
+    "theme": "vantablack"
+  },
+  "white-white-1": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/white-white-1.jpg",
+    "theme": "white"
+  },
+  "white-white-2": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/white-white-2.jpg",
+    "theme": "white"
+  },
+  "white-white-3": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/white-white-3.jpg",
+    "theme": "white"
   }
 }
