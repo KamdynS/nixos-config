@@ -58,7 +58,6 @@
   
   # Keep GDM for login
   services.displayManager.gdm.enable = true;
-  services.displayManager.gdm.wayland = true;
   
   # Enable niri
   programs.niri.enable = true;
