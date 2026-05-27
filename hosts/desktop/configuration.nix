@@ -53,18 +53,22 @@
   # AMD GPU support
   hardware.graphics.enable = true;
 
-  # Disable GNOME
-  services.desktopManager.gnome.enable = false;
-  
-  # Keep GDM for login
-  services.displayManager.gdm.enable = true;
-  
   # Enable niri
   programs.niri.enable = true;
   programs.niri.package = pkgs.niri-unstable;
 
   services.displayManager.sessionPackages = [ pkgs.niri-unstable ];
-  services.xserver.enable = true;
+
+  # GDM 50 in nixos-unstable crashes its Wayland greeter on this AMD setup; use greetd instead.
+  services.greetd = {
+    enable = true;
+    settings = {
+      default_session = {
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd niri-session";
+        user = "greeter";
+      };
+    };
+  };
   
   # Portal for screen sharing, file dialogs
   xdg.portal = {
