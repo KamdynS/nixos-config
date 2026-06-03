@@ -32,6 +32,9 @@
       # NixOS
       "nrs" = "sudo nixos-rebuild switch --flake /home/kamdyns/nixos-config#desktop";
       "nrt" = "sudo nixos-rebuild test --flake /home/kamdyns/nixos-config#desktop";
+
+      # Bevy: cargo run with dynamic linking (fast incremental rebuilds)
+      "crb" = "cargo run --features bevy/dynamic_linking";
     };
 
     history = {
