@@ -66,6 +66,13 @@
     enableZshIntegration = true;
   };
 
+  # direnv + nix-direnv (per-project devShells auto-load on cd)
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+    enableZshIntegration = true;
+  };
+
   # Required packages
   home.packages = with pkgs; [
     zoxide
