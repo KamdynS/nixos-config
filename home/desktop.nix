@@ -88,6 +88,7 @@
 
     # CLI tools
     git
+    gh
     jq
     curl
     wget
