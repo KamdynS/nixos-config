@@ -20,9 +20,20 @@
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    codex.url = "github:openai/codex";
   };
 
-  outputs = { self, nixpkgs, home-manager, niri, nix-colors, zen-browser, ... }@inputs:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      niri,
+      nix-colors,
+      zen-browser,
+      ...
+    }@inputs:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};

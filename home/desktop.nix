@@ -1,4 +1,10 @@
-{ config, pkgs, inputs, nix-colors, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  nix-colors,
+  ...
+}:
 
 {
   imports = [
@@ -95,6 +101,7 @@
 
     # Claude Code
     claude-code
+    inputs.codex.packages.${pkgs.system}.default
   ];
 
   # Create Pictures/Screenshots directory
