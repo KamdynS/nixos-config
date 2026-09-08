@@ -21,7 +21,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    codex.url = "github:openai/codex";
+    llm-agents.url = "github:numtide/llm-agents.nix";
   };
 
   outputs =

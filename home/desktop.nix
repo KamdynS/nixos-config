@@ -101,7 +101,7 @@
 
     # Claude Code
     claude-code
-    inputs.codex.packages.${pkgs.system}.default
+    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex
   ];
 
   # Create Pictures/Screenshots directory
