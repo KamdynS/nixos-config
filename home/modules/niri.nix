@@ -7,9 +7,9 @@
 
 {
   programs.niri.settings = {
-    # Monitor configuration - both monitors configured, user can swap freely
+    # Acer on the left, ASUS on the right.
     outputs = {
-      "HDMI-A-1" = {
+      "DP-2" = {
         position = {
           x = 0;
           y = 0;
