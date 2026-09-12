@@ -44,6 +44,13 @@ local theme_map = {
     ["tokyonight"] = { scheme = "tokyonight", bg = "dark" },
 }
 
+local function refresh_winbar_highlights()
+    local ok, winbar = pcall(require, "winbar")
+    if ok then
+        winbar.setup_highlights()
+    end
+end
+
 local function apply_theme()
     local theme_file = vim.fn.expand "~/.config/nvim-theme/active.lua"
     if not vim.uv.fs_stat(theme_file) then
@@ -60,6 +67,7 @@ local function apply_theme()
     if t then
         vim.opt.background = t.bg
         pcall(vim.cmd.colorscheme, t.scheme)
+        refresh_winbar_highlights()
         return
     end
 
@@ -72,6 +80,7 @@ local function apply_theme()
     if ok_b16 then
         pcall(base16.apply, theme)
     end
+    refresh_winbar_highlights()
 end
 
 apply_theme()

@@ -23,8 +23,9 @@ opt.signcolumn = "yes"
 opt.cursorline = true
 opt.scrolloff = 8
 opt.sidescrolloff = 8
--- Bufferline is global; this labels the buffer displayed in each split.
-opt.winbar = "%=%m %t %="
+-- Unlike the global tabline, winbar renders a clickable buffer strip in each
+-- split and highlights the buffer displayed in that particular window.
+opt.winbar = "%!v:lua.require'winbar'.render()"
 
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "NvimTree",

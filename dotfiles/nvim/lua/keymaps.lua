@@ -18,17 +18,50 @@ map("n", "<C-h>", "<C-w>h", { desc = "Window left" })
 map("n", "<C-j>", "<C-w>j", { desc = "Window down" })
 map("n", "<C-k>", "<C-w>k", { desc = "Window up" })
 map("n", "<C-l>", "<C-w>l", { desc = "Window right" })
-map("n", "<leader>wv", "<cmd>vsplit<cr>", { desc = "Split vertically" })
-map("n", "<leader>wh", "<cmd>split<cr>", { desc = "Split horizontally" })
+
+-- Move the current buffer into a new split, leaving another buffer behind in
+-- the original window. Native <C-w>v/<C-w>s remain available when a duplicate
+-- view of the same buffer is wanted instead.
+local function move_buffer_to_split(command)
+    local source_win = vim.api.nvim_get_current_win()
+    local moving_buf = vim.api.nvim_get_current_buf()
+    local replacement = vim.fn.bufnr "#"
+
+    if replacement < 0
+        or replacement == moving_buf
+        or not vim.api.nvim_buf_is_valid(replacement)
+        or not vim.bo[replacement].buflisted
+    then
+        replacement = nil
+        for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+            if buf ~= moving_buf and vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].buflisted then
+                replacement = buf
+                break
+            end
+        end
+    end
+
+    replacement = replacement or vim.api.nvim_create_buf(true, false)
+    vim.cmd(command)
+    vim.api.nvim_win_set_buf(source_win, replacement)
+end
+
+map("n", "<leader>wv", function()
+    move_buffer_to_split "vsplit"
+end, { desc = "Move buffer to vertical split" })
+map("n", "<leader>wh", function()
+    move_buffer_to_split "split"
+end, { desc = "Move buffer to horizontal split" })
 
 -- Buffer navigation
 map("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
 map("n", "<S-l>", "<cmd>bnext<cr>", { desc = "Next buffer" })
+map("n", "<S-Tab>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
+map("n", "<Tab>", "<cmd>bnext<cr>", { desc = "Next buffer" })
 
 -- Close current buffer without nuking the window layout.
 -- Switches every window showing this buffer to another listed buffer first,
--- so nvim-tree (or any other sidebar) doesn't collapse / get covered by the
--- bufferline of orphaned buffers.
+-- so nvim-tree (or any other sidebar) doesn't collapse or get covered.
 local function close_buffer()
     local cur = vim.api.nvim_get_current_buf()
     local alt = vim.tbl_filter(function(b)

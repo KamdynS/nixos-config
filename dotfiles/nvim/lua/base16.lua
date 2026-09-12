@@ -241,9 +241,6 @@ function M.apply(theme)
     hl("TelescopeSelection", { bg = p.base02 })
     hl("TelescopeMatching", { fg = p.base0A, bold = true })
 
-    -- BufferLine: keep default plugin styling; only nudge fills
-    hl("BufferLineFill", { bg = p.base01 })
-
     -- WhichKey
     hl("WhichKey", { fg = p.base0D })
     hl("WhichKeyGroup", { fg = p.base0E })
