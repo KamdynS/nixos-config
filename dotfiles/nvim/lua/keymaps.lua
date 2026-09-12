@@ -43,7 +43,9 @@ local function move_buffer_to_split(command)
 
     replacement = replacement or vim.api.nvim_create_buf(true, false)
     vim.cmd(command)
+    local destination_win = vim.api.nvim_get_current_win()
     vim.api.nvim_win_set_buf(source_win, replacement)
+    require("winbar").move_buffer(source_win, destination_win, moving_buf, replacement)
 end
 
 map("n", "<leader>wv", function()
@@ -54,10 +56,18 @@ map("n", "<leader>wh", function()
 end, { desc = "Move buffer to horizontal split" })
 
 -- Buffer navigation
-map("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
-map("n", "<S-l>", "<cmd>bnext<cr>", { desc = "Next buffer" })
-map("n", "<S-Tab>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
-map("n", "<Tab>", "<cmd>bnext<cr>", { desc = "Next buffer" })
+map("n", "<S-h>", function()
+    require("winbar").cycle(-1)
+end, { desc = "Prev window buffer" })
+map("n", "<S-l>", function()
+    require("winbar").cycle(1)
+end, { desc = "Next window buffer" })
+map("n", "<S-Tab>", function()
+    require("winbar").cycle(-1)
+end, { desc = "Prev window buffer" })
+map("n", "<Tab>", function()
+    require("winbar").cycle(1)
+end, { desc = "Next window buffer" })
 
 -- Close current buffer without nuking the window layout.
 -- Switches every window showing this buffer to another listed buffer first,

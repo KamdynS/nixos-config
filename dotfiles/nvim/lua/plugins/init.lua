@@ -266,7 +266,15 @@ return {
             filters = { dotfiles = false, git_ignored = false },
             git = { enable = true },
             diagnostics = { enable = true },
-            actions = { open_file = { quit_on_open = false } },
+            actions = {
+                open_file = {
+                    quit_on_open = false,
+                    window_picker = {
+                        enable = true,
+                        chars = "123456789",
+                    },
+                },
+            },
         },
     },
 

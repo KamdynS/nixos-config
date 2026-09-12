@@ -4,7 +4,57 @@
   pkgs,
   ...
 }:
-
+let
+  spotifyPrevious = {
+    action.spawn = [
+      "${pkgs.playerctl}/bin/playerctl"
+      "--player=spotify"
+      "previous"
+    ];
+    allow-when-locked = true;
+    hotkey-overlay.title = "Spotify: previous";
+  };
+  spotifyPlayPause = {
+    action.spawn = [
+      "${pkgs.playerctl}/bin/playerctl"
+      "--player=spotify"
+      "play-pause"
+    ];
+    allow-when-locked = true;
+    hotkey-overlay.title = "Spotify: play / pause";
+  };
+  spotifyNext = {
+    action.spawn = [
+      "${pkgs.playerctl}/bin/playerctl"
+      "--player=spotify"
+      "next"
+    ];
+    allow-when-locked = true;
+    hotkey-overlay.title = "Spotify: next";
+  };
+  volumeDown = {
+    action.spawn = [
+      "${pkgs.wireplumber}/bin/wpctl"
+      "set-volume"
+      "@DEFAULT_AUDIO_SINK@"
+      "0.05-"
+    ];
+    allow-when-locked = true;
+    hotkey-overlay.title = "Volume down";
+  };
+  volumeUp = {
+    action.spawn = [
+      "${pkgs.wireplumber}/bin/wpctl"
+      "set-volume"
+      "@DEFAULT_AUDIO_SINK@"
+      "0.05+"
+      "-l"
+      "1.0"
+    ];
+    allow-when-locked = true;
+    hotkey-overlay.title = "Volume up";
+  };
+in
 {
   programs.niri.settings = {
     # Acer on the left, ASUS on the right.
@@ -123,6 +173,20 @@
         action.spawn = [ "fuzzel" ];
         hotkey-overlay.title = "App launcher";
       };
+
+      # Media controls. Bind both raw function keys and the XF86 keysyms that
+      # keyboards send when their media/Fn mode is active.
+      "F7" = spotifyPrevious;
+      "XF86AudioPrev" = spotifyPrevious;
+      "F8" = spotifyPlayPause;
+      "XF86AudioPlay" = spotifyPlayPause;
+      "XF86AudioPause" = spotifyPlayPause;
+      "F9" = spotifyNext;
+      "XF86AudioNext" = spotifyNext;
+      "F10" = volumeDown;
+      "XF86AudioLowerVolume" = volumeDown;
+      "F11" = volumeUp;
+      "XF86AudioRaiseVolume" = volumeUp;
 
       # Clipboard picker
       "Mod+V" = {

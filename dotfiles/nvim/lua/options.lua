@@ -30,7 +30,9 @@ opt.winbar = "%!v:lua.require'winbar'.render()"
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "NvimTree",
     callback = function()
-        vim.opt_local.winbar = ""
+        -- An empty local value inherits the global winbar; use a real tree
+        -- label so editor buffer tabs are not repeated above the explorer.
+        vim.opt_local.winbar = " File Explorer"
     end,
 })
 

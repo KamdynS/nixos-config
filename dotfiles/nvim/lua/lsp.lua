@@ -1,16 +1,111 @@
 -- Native LSP configuration (Neovim 0.12+)
 -- LSPs are installed via Nix, not Mason
 
+-- Virtual diagnostic lines do not honor the normal 'wrap' option. Wrap their
+-- messages explicitly against the narrowest window displaying the buffer so a
+-- diagnostic in one split cannot spill into the next split.
+local function buffer_window_width(bufnr)
+    local width
+    for _, win in ipairs(vim.fn.win_findbuf(bufnr)) do
+        if vim.api.nvim_win_is_valid(win) then
+            local info = vim.fn.getwininfo(win)[1] or {}
+            local text_width = vim.api.nvim_win_get_width(win) - (info.textoff or 0)
+            width = math.min(width or text_width, text_width)
+        end
+    end
+    return math.max(width or vim.o.columns, 1)
+end
+
+local function take_display_width(text, max_width)
+    local chars = vim.fn.strchars(text)
+    local count = 0
+    for i = 1, chars do
+        if vim.fn.strdisplaywidth(vim.fn.strcharpart(text, 0, i)) > max_width then
+            break
+        end
+        count = i
+    end
+    count = math.max(count, 1)
+    return vim.fn.strcharpart(text, 0, count), vim.fn.strcharpart(text, count)
+end
+
+local function wrap_line(line, width, output)
+    local current = ""
+    for word in line:gmatch "%S+" do
+        local candidate = current == "" and word or current .. " " .. word
+        if vim.fn.strdisplaywidth(candidate) <= width then
+            current = candidate
+        else
+            if current ~= "" then
+                output[#output + 1] = current
+                current = ""
+            end
+            while vim.fn.strdisplaywidth(word) > width do
+                local chunk
+                chunk, word = take_display_width(word, width)
+                output[#output + 1] = chunk
+            end
+            current = word
+        end
+    end
+    output[#output + 1] = current
+end
+
+local function wrap_diagnostic(diagnostic, bufnr)
+    local message = diagnostic.code and string.format("%s: %s", diagnostic.code, diagnostic.message)
+        or diagnostic.message
+    -- virtcol() matches Neovim's renderer and includes tabs plus inline inlay
+    -- hints that occur before the diagnostic column.
+    local indent_width = vim.api.nvim_buf_call(bufnr, function()
+        return math.max(vim.fn.virtcol({ diagnostic.lnum + 1, (diagnostic.col or 0) + 1 }) - 1, 0)
+    end)
+    -- Native virtual lines add a six-cell connector before the message. Keep
+    -- one more cell clear of the window separator.
+    local width = math.max(buffer_window_width(bufnr) - indent_width - 7, 1)
+    local output = {}
+
+    for line in (message .. "\n"):gmatch "(.-)\n" do
+        wrap_line(line, width, output)
+    end
+    return table.concat(output, "\n")
+end
+
 -- Diagnostic config
 vim.diagnostic.config {
-    virtual_lines = { current_line = true }, -- multi-line, wrapped, only on cursor line
+    virtual_lines = function(_, bufnr)
+        return {
+            current_line = true,
+            format = function(diagnostic)
+                return wrap_diagnostic(diagnostic, bufnr)
+            end,
+        }
+    end,
     virtual_text = false,
     signs = true,
     underline = true,
     update_in_insert = false,
     severity_sort = true,
-    float = { border = "rounded" },
+    float = function(_, bufnr)
+        return {
+            border = "rounded",
+            max_width = math.max(buffer_window_width(bufnr) - 4, 1),
+        }
+    end,
 }
+
+-- Re-run diagnostic formatting after a split is created or resized.
+vim.api.nvim_create_autocmd("WinResized", {
+    callback = function()
+        local seen = {}
+        for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+            local buf = vim.api.nvim_win_get_buf(win)
+            if not seen[buf] then
+                seen[buf] = true
+                vim.diagnostic.show(nil, buf)
+            end
+        end
+    end,
+})
 
 -- LSP server configs
 vim.lsp.config("lua_ls", {
