@@ -37,7 +37,7 @@
       "crb" = "cargo run --features bevy/dynamic_linking";
 
       # Open the Nix-managed Rust standard library documentation
-      "rust-doc" = "${pkgs.xdg-utils}/bin/xdg-open ${pkgs.rustc.doc}/share/doc/rust/html/std/index.html";
+      "rust-doc" = "${pkgs.xdg-utils}/bin/xdg-open ${pkgs.rustc.doc}/share/doc/docs/html/std/index.html";
     };
 
     history = {
