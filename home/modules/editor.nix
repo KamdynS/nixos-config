@@ -25,6 +25,12 @@
     rustfmt
     clippy
 
+    # On-demand Cargo utilities
+    cargo-expand
+    cargo-machete
+    cargo-deny
+    cargo-llvm-cov
+
     # LSPs
     gopls
     pyright
