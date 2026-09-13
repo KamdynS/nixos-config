@@ -44,7 +44,6 @@
         inherit system;
         specialArgs = { inherit inputs; };
         modules = [
-          { nixpkgs.overlays = [ niri.overlays.niri ]; }
           ./hosts/desktop/configuration.nix
           niri.nixosModules.niri
           home-manager.nixosModules.home-manager

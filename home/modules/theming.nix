@@ -625,12 +625,12 @@ let
     printf '%s\n' "$THEME" > "$HOME/.cache/rice/current-theme"
 
     # Update symlinks
-    ln -sf "$CONFIG_DIR/waybar/themes/$THEME.css" "$CONFIG_DIR/waybar/colors.css"
-    ln -sf "$CONFIG_DIR/ghostty/themes/$THEME" "$CONFIG_DIR/ghostty/theme"
-    ln -sf "$CONFIG_DIR/mako/themes/$THEME.conf" "$CONFIG_DIR/mako/config"
-    ln -sf "$CONFIG_DIR/fuzzel/themes/$THEME.ini" "$CONFIG_DIR/fuzzel/fuzzel.ini"
-    ln -sf "$CONFIG_DIR/nvim-theme/$THEME.lua" "$CONFIG_DIR/nvim-theme/active.lua"
-    ln -sf "$CONFIG_DIR/rofi/themes/$THEME.rasi" "$CONFIG_DIR/rofi/wallpaper-picker.rasi"
+    ln -sfnT "$CONFIG_DIR/waybar/themes/$THEME.css" "$CONFIG_DIR/waybar/colors.css"
+    ln -sfnT "$CONFIG_DIR/ghostty/themes/$THEME" "$CONFIG_DIR/ghostty/theme"
+    ln -sfnT "$CONFIG_DIR/mako/themes/$THEME.conf" "$CONFIG_DIR/mako/config"
+    ln -sfnT "$CONFIG_DIR/fuzzel/themes/$THEME.ini" "$CONFIG_DIR/fuzzel/fuzzel.ini"
+    ln -sfnT "$CONFIG_DIR/nvim-theme/$THEME.lua" "$CONFIG_DIR/nvim-theme/active.lua"
+    ln -sfnT "$CONFIG_DIR/rofi/themes/$THEME.rasi" "$CONFIG_DIR/rofi/wallpaper-picker.rasi"
 
     # Update starship palette
     ${pkgs.gnused}/bin/sed -i "s/^palette = .*/palette = \"$THEME\"/" "$CONFIG_DIR/starship.toml"
@@ -639,12 +639,6 @@ let
     ${pkgs.procps}/bin/pkill -SIGUSR2 waybar || true
     ${pkgs.mako}/bin/makoctl reload || true
     ${pkgs.procps}/bin/pkill -SIGUSR2 ghostty || true
-
-    # Best-effort nvim reload
-    NVIM_SOCKET="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/nvim.sock"
-    if [[ -S "$NVIM_SOCKET" ]]; then
-      ${pkgs.neovim}/bin/nvim --server "$NVIM_SOCKET" --remote-send ':luafile ~/.config/nvim-theme/active.lua<CR>' 2>/dev/null || true
-    fi
 
     # Spicetify: switch color scheme and re-apply (no-op if Flatpak Spotify
     # isn't installed yet). `spicetify apply` will restart Spotify if running.
@@ -661,7 +655,7 @@ let
     zen_profiles=("$HOME"/.zen/*.Default*/chrome)
     shopt -u nullglob
     if [[ ''${#zen_profiles[@]} -gt 0 ]]; then
-      ln -sf "$CONFIG_DIR/zen-chrome/$THEME.css" "''${zen_profiles[0]}/userChrome.css"
+      ln -sfnT "$CONFIG_DIR/zen-chrome/$THEME.css" "''${zen_profiles[0]}/userChrome.css"
     fi
 
     echo "Theme switched to: $THEME"
@@ -829,7 +823,7 @@ in
     powerMenuScript
   ];
 
-  # Create initial symlinks for default theme on activation
+  # Repair active theme links on activation while preserving the selected theme.
   home.activation.setupThemeSymlinks = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     $DRY_RUN_CMD mkdir -p $HOME/.config/waybar
     $DRY_RUN_CMD mkdir -p $HOME/.config/ghostty
@@ -838,25 +832,33 @@ in
     $DRY_RUN_CMD mkdir -p $HOME/.config/nvim-theme
     $DRY_RUN_CMD mkdir -p $HOME/.config/rofi
 
-    # Only create symlinks if they don't exist (preserve user's current theme choice)
-    if [[ ! -L $HOME/.config/waybar/colors.css ]]; then
-      $DRY_RUN_CMD ln -sf $HOME/.config/waybar/themes/${defaultTheme}.css $HOME/.config/waybar/colors.css
+    # The cache is the canonical theme selection. Validate it so removing or
+    # renaming a theme cannot leave broken links after a rebuild.
+    THEME_STATE="$HOME/.cache/rice/current-theme"
+    ACTIVE_THEME="${defaultTheme}"
+    CANDIDATE=""
+    THEMES=(${lib.escapeShellArgs themeNames})
+    if [[ -f "$THEME_STATE" ]]; then
+      CANDIDATE=$(head -n 1 "$THEME_STATE")
+      for theme in "''${THEMES[@]}"; do
+        if [[ "$CANDIDATE" == "$theme" ]]; then
+          ACTIVE_THEME="$CANDIDATE"
+          break
+        fi
+      done
     fi
-    if [[ ! -L $HOME/.config/ghostty/theme ]]; then
-      $DRY_RUN_CMD ln -sf $HOME/.config/ghostty/themes/${defaultTheme} $HOME/.config/ghostty/theme
+
+    if [[ "$CANDIDATE" != "$ACTIVE_THEME" ]]; then
+      $DRY_RUN_CMD mkdir -p "$HOME/.cache/rice"
+      $DRY_RUN_CMD install -m 644 ${pkgs.writeText "rice-default-theme" "${defaultTheme}\n"} "$THEME_STATE"
     fi
-    if [[ ! -L $HOME/.config/mako/config ]]; then
-      $DRY_RUN_CMD ln -sf $HOME/.config/mako/themes/${defaultTheme}.conf $HOME/.config/mako/config
-    fi
-    if [[ ! -L $HOME/.config/fuzzel/fuzzel.ini ]]; then
-      $DRY_RUN_CMD ln -sf $HOME/.config/fuzzel/themes/${defaultTheme}.ini $HOME/.config/fuzzel/fuzzel.ini
-    fi
-    if [[ ! -L $HOME/.config/nvim-theme/active.lua ]]; then
-      $DRY_RUN_CMD ln -sf $HOME/.config/nvim-theme/${defaultTheme}.lua $HOME/.config/nvim-theme/active.lua
-    fi
-    if [[ ! -L $HOME/.config/rofi/wallpaper-picker.rasi ]]; then
-      $DRY_RUN_CMD ln -sf $HOME/.config/rofi/themes/${defaultTheme}.rasi $HOME/.config/rofi/wallpaper-picker.rasi
-    fi
+
+    $DRY_RUN_CMD ln -sfnT "$HOME/.config/waybar/themes/$ACTIVE_THEME.css" "$HOME/.config/waybar/colors.css"
+    $DRY_RUN_CMD ln -sfnT "$HOME/.config/ghostty/themes/$ACTIVE_THEME" "$HOME/.config/ghostty/theme"
+    $DRY_RUN_CMD ln -sfnT "$HOME/.config/mako/themes/$ACTIVE_THEME.conf" "$HOME/.config/mako/config"
+    $DRY_RUN_CMD ln -sfnT "$HOME/.config/fuzzel/themes/$ACTIVE_THEME.ini" "$HOME/.config/fuzzel/fuzzel.ini"
+    $DRY_RUN_CMD ln -sfnT "$HOME/.config/nvim-theme/$ACTIVE_THEME.lua" "$HOME/.config/nvim-theme/active.lua"
+    $DRY_RUN_CMD ln -sfnT "$HOME/.config/rofi/themes/$ACTIVE_THEME.rasi" "$HOME/.config/rofi/wallpaper-picker.rasi"
 
     # Pre-render wallpaper thumbnails (800x500, center-cropped 16:10) for the
     # single-pane rofi carousel. Idempotent: regenerates only when source is newer.
@@ -873,28 +875,17 @@ in
     fi
 
     # Seed starship.toml as a writable regular file (theme-switch sed-edits it).
-    # If it already exists, refresh contents but preserve the active palette.
     STARSHIP_SRC="${pkgs.writeText "starship-template.toml" starshipConfig}"
     STARSHIP_DST="$HOME/.config/starship.toml"
-    CURRENT_PALETTE="${defaultTheme}"
-    if [[ -f "$STARSHIP_DST" && ! -L "$STARSHIP_DST" ]]; then
-      EXISTING=$(${pkgs.gnused}/bin/sed -n 's/^palette = "\(.*\)"/\1/p' "$STARSHIP_DST" | head -1)
-      [[ -n "$EXISTING" ]] && CURRENT_PALETTE="$EXISTING"
-    fi
     $DRY_RUN_CMD rm -f "$STARSHIP_DST"
     $DRY_RUN_CMD install -m 644 "$STARSHIP_SRC" "$STARSHIP_DST"
-    $DRY_RUN_CMD ${pkgs.gnused}/bin/sed -i "s/^palette = .*/palette = \"$CURRENT_PALETTE\"/" "$STARSHIP_DST"
+    $DRY_RUN_CMD ${pkgs.gnused}/bin/sed -i "s/^palette = .*/palette = \"$ACTIVE_THEME\"/" "$STARSHIP_DST"
 
     # Seed spicetify config-xpui.ini as a writable file (spicetify-cli rewrites
-    # it via `spicetify config`). Preserve active color_scheme on rebuild.
+    # it via `spicetify config`).
     $DRY_RUN_CMD mkdir -p $HOME/.config/spicetify
     SPICETIFY_CONFIG="$HOME/.config/spicetify/config-xpui.ini"
-    SPICETIFY_SCHEME="${defaultTheme}"
-    if [[ -f "$SPICETIFY_CONFIG" ]]; then
-      EXISTING=$(${pkgs.gnused}/bin/sed -n 's/^color_scheme[[:space:]]*=[[:space:]]*\(.*\)/\1/p' "$SPICETIFY_CONFIG" | head -1)
-      [[ -n "$EXISTING" ]] && SPICETIFY_SCHEME="$EXISTING"
-    fi
-    # Zen Browser: symlink default userChrome.css into the active profile.
+    # Zen Browser: symlink the active userChrome.css into the active profile.
     # Backs up any pre-existing userChrome.css (e.g., from Caelestia) once.
     shopt -s nullglob
     zen_profiles=("$HOME"/.zen/*.Default*/chrome)
@@ -906,8 +897,8 @@ in
           $DRY_RUN_CMD cp "$ZEN_USERCHROME" "$ZEN_USERCHROME.pre-rice"
         fi
         $DRY_RUN_CMD rm -f "$ZEN_USERCHROME"
-        $DRY_RUN_CMD ln -sf "$HOME/.config/zen-chrome/${defaultTheme}.css" "$ZEN_USERCHROME"
       fi
+      $DRY_RUN_CMD ln -sfnT "$HOME/.config/zen-chrome/$ACTIVE_THEME.css" "$ZEN_USERCHROME"
     fi
 
     $DRY_RUN_CMD rm -f "$SPICETIFY_CONFIG"
@@ -916,7 +907,7 @@ in
 spotify_path           = $HOME/.local/share/flatpak/app/com.spotify.Client/current/active/files/extra/share/spotify
 prefs_path             = $HOME/.var/app/com.spotify.Client/config/spotify/prefs
 current_theme          = base16
-color_scheme           = $SPICETIFY_SCHEME
+color_scheme           = $ACTIVE_THEME
 spotify_launch_flags   =
 check_spicetify_update = 0
 inject_css             = 1

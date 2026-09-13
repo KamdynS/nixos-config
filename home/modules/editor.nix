@@ -7,9 +7,12 @@
   # nvim config symlinked via activation script (avoids home-manager conflicts)
   # Theme files go to ~/.config/nvim-theme/
   home.activation.linkNvimConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    if [[ ! -L $HOME/.config/nvim ]]; then
-      $DRY_RUN_CMD rm -rf $HOME/.config/nvim 2>/dev/null || true
-      $DRY_RUN_CMD ln -sf /home/kamdyns/nixos-config/dotfiles/nvim $HOME/.config/nvim
+    NVIM_CONFIG="$HOME/.config/nvim"
+    NVIM_SOURCE="/home/kamdyns/nixos-config/dotfiles/nvim"
+    if [[ -L "$NVIM_CONFIG" || ! -e "$NVIM_CONFIG" ]]; then
+      $DRY_RUN_CMD ln -sfnT "$NVIM_SOURCE" "$NVIM_CONFIG"
+    else
+      echo "Not replacing existing non-symlink Neovim config: $NVIM_CONFIG" >&2
     fi
   '';
 

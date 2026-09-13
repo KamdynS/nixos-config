@@ -55,9 +55,7 @@
 
   # Enable niri
   programs.niri.enable = true;
-  programs.niri.package = pkgs.niri-unstable;
-
-  services.displayManager.sessionPackages = [ pkgs.niri-unstable ];
+  programs.niri.package = pkgs.niri;
 
   # GDM 50 in nixos-unstable crashes its Wayland greeter on this AMD setup; use greetd instead.
   services.greetd = {
