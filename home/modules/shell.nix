@@ -35,6 +35,9 @@
 
       # Bevy: cargo run with dynamic linking (fast incremental rebuilds)
       "crb" = "cargo run --features bevy/dynamic_linking";
+
+      # Open the Nix-managed Rust standard library documentation
+      "rust-doc" = "${pkgs.xdg-utils}/bin/xdg-open ${pkgs.rustc.doc}/share/doc/rust/html/std/index.html";
     };
 
     history = {
