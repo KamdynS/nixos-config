@@ -100,9 +100,12 @@
     curl
     wget
 
-    # Claude Code
+    # Coding agents and review tools
     claude-code
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex
+    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.herdr
+    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.pi
+    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.plannotator
   ];
 
   # Create Pictures/Screenshots directory

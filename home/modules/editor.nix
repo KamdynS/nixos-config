@@ -32,7 +32,9 @@
     cargo-expand
     cargo-machete
     cargo-deny
-    cargo-llvm-cov
+    # Upstream's test suite fails inside the nix build sandbox (llvm-profdata
+    # merge step); skip checks, the binary itself works fine.
+    (cargo-llvm-cov.overrideAttrs (_: { doCheck = false; }))
 
     # LSPs
     gopls

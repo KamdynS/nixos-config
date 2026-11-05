@@ -107,6 +107,10 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+  # gtk2 is marked broken (removal scheduled, not actually nonfunctional) in
+  # nixpkgs; something in the closure still pulls it in transitively.
+  nixpkgs.config.problems.handlers."gtk+".broken = "warn";
+
   environment.systemPackages = with pkgs; [
     git
   ];
