@@ -156,6 +156,7 @@ return {
             wk.add {
                 { "<leader>f", group = "find" },
                 { "<leader>h", group = "git hunk" },
+                { "<leader>a", group = "annotate" },
                 { "<leader>c", group = "code" },
                 { "<leader>w", group = "window" },
                 { "<leader>x", group = "diagnostics" },

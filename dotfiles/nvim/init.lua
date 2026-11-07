@@ -27,6 +27,7 @@ vim.opt.rtp:prepend(lazypath)
 require "options"
 require "keymaps"
 require "lsp"
+require("review").setup()
 require("lazy").setup("plugins", {
     change_detection = { notify = false },
 })
