@@ -3,6 +3,9 @@
 {
   # Use neovim as package, not programs.neovim (avoids home-manager managing ~/.config/nvim)
   home.sessionVariables.EDITOR = "nvim";
+  # uv-downloaded Pythons are generic-linux binaries that fail without nix-ld;
+  # make uv use the Nix python3 instead.
+  home.sessionVariables.UV_PYTHON_DOWNLOADS = "never";
 
   # nvim config symlinked via activation script (avoids home-manager conflicts)
   # Theme files go to ~/.config/nvim-theme/
@@ -23,6 +26,8 @@
 
     # Language toolchains
     go
+    python3
+    uv
     cargo
     rustc
     rustfmt
