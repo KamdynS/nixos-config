@@ -25,6 +25,9 @@ let
     solitude = import ../../themes/solitude.nix { inherit nix-colors; };
     vantablack = import ../../themes/vantablack.nix { inherit nix-colors; };
     white = import ../../themes/white.nix { inherit nix-colors; };
+    jade-horse = import ../../themes/jade-horse.nix { inherit nix-colors; };
+    lupine = import ../../themes/lupine.nix { inherit nix-colors; };
+    starship = import ../../themes/starship.nix { inherit nix-colors; };
   };
 
   themeNames = builtins.attrNames themes;

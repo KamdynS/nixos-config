@@ -11,12 +11,48 @@
     "path": "/home/kamdyns/nixos-config/wallpapers/waterfall.jpg",
     "theme": "gruvbox-dark"
   },
+  "gruvbox-dark-the-backwater": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/gruvbox-dark-the-backwater.jpg",
+    "theme": "gruvbox-dark"
+  },
+  "gruvbox-dark-flower-basket": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/gruvbox-dark-flower-basket.webp",
+    "theme": "gruvbox-dark"
+  },
+  "gruvbox-dark-village-square": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/gruvbox-dark-village-square.jpg",
+    "theme": "gruvbox-dark"
+  },
+  "gruvbox-dark-idyllic-procession": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/gruvbox-dark-idyllic-procession.jpg",
+    "theme": "gruvbox-dark"
+  },
+  "gruvbox-dark-leaves": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/gruvbox-dark-leaves.jpg",
+    "theme": "gruvbox-dark"
+  },
   "gas-station": {
     "path": "/home/kamdyns/nixos-config/wallpapers/gas-station.jpg",
     "theme": "catppuccin-mocha"
   },
+  "catppuccin-mocha-totoro": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/catppuccin-mocha-totoro.webp",
+    "theme": "catppuccin-mocha"
+  },
+  "catppuccin-mocha-waves": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/catppuccin-mocha-waves.webp",
+    "theme": "catppuccin-mocha"
+  },
+  "catppuccin-mocha-blue-eye": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/catppuccin-mocha-blue-eye.webp",
+    "theme": "catppuccin-mocha"
+  },
   "ocean-sunset": {
     "path": "/home/kamdyns/nixos-config/wallpapers/ocean-sunset.png",
+    "theme": "kanagawa"
+  },
+  "kanagawa-kanagawa": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/kanagawa-kanagawa.jpg",
     "theme": "kanagawa"
   },
   "cherry-blossoms": {
@@ -27,8 +63,48 @@
     "path": "/home/kamdyns/nixos-config/wallpapers/castle.jpg",
     "theme": "rose-pine"
   },
+  "rose-pine-funky-shapes": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/rose-pine-funky-shapes.webp",
+    "theme": "rose-pine"
+  },
+  "rose-pine-dot-map": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/rose-pine-dot-map.webp",
+    "theme": "rose-pine"
+  },
+  "rose-pine-omarchy-plants": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/rose-pine-omarchy-plants.webp",
+    "theme": "rose-pine"
+  },
   "city-sunset": {
     "path": "/home/kamdyns/nixos-config/wallpapers/city-sunset.png",
+    "theme": "tokyonight"
+  },
+  "tokyonight-liftoff": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/tokyonight-liftoff.webp",
+    "theme": "tokyonight"
+  },
+  "tokyonight-winding-road": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/tokyonight-winding-road.webp",
+    "theme": "tokyonight"
+  },
+  "tokyonight-quattro": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/tokyonight-quattro.webp",
+    "theme": "tokyonight"
+  },
+  "tokyonight-swirl-buck": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/tokyonight-swirl-buck.webp",
+    "theme": "tokyonight"
+  },
+  "tokyonight-sunset-lake": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/tokyonight-sunset-lake.webp",
+    "theme": "tokyonight"
+  },
+  "tokyonight-omakub": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/tokyonight-omakub.webp",
+    "theme": "tokyonight"
+  },
+  "tokyonight-oma-cityscape": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/tokyonight-oma-cityscape.jpg",
     "theme": "tokyonight"
   },
   "catppuccin-latte-color-fade": {
@@ -57,6 +133,10 @@
   },
   "ethereal-meadow": {
     "path": "/home/kamdyns/nixos-config/wallpapers/ethereal-meadow.jpg",
+    "theme": "ethereal"
+  },
+  "ethereal-roadster-starlight": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/ethereal-roadster-starlight.webp",
     "theme": "ethereal"
   },
   "flexoki-light-orb": {
@@ -226,5 +306,53 @@
   "white-white-3": {
     "path": "/home/kamdyns/nixos-config/wallpapers/white-white-3.jpg",
     "theme": "white"
+  },
+  "jade-horse-mountain-horses": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/jade-horse-mountain-horses.webp",
+    "theme": "jade-horse"
+  },
+  "jade-horse-ink-horse": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/jade-horse-ink-horse.webp",
+    "theme": "jade-horse"
+  },
+  "jade-horse-carved-jade-horse": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/jade-horse-carved-jade-horse.webp",
+    "theme": "jade-horse"
+  },
+  "lupine-cherry-blossom-bokeh": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/lupine-cherry-blossom-bokeh.webp",
+    "theme": "lupine"
+  },
+  "lupine-cherry-blossom-white": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/lupine-cherry-blossom-white.webp",
+    "theme": "lupine"
+  },
+  "lupine-pastel-clouds": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/lupine-pastel-clouds.webp",
+    "theme": "lupine"
+  },
+  "lupine-elegant-blue-wave": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/lupine-elegant-blue-wave.webp",
+    "theme": "lupine"
+  },
+  "lupine-abstract-wave": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/lupine-abstract-wave.webp",
+    "theme": "lupine"
+  },
+  "starship-starbase": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/starship-starbase.webp",
+    "theme": "starship"
+  },
+  "starship-flight14-dawn": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/starship-flight14-dawn.webp",
+    "theme": "starship"
+  },
+  "starship-engine-cluster": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/starship-engine-cluster.webp",
+    "theme": "starship"
+  },
+  "starship-morning-pad": {
+    "path": "/home/kamdyns/nixos-config/wallpapers/starship-morning-pad.webp",
+    "theme": "starship"
   }
 }
